@@ -1,15 +1,9 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
-from huey.contrib.djhuey import task
 
 from huey_monitor.models import SignalInfoModel, TaskModel
 from huey_monitor_tests.html_assertion import HtmlAssertionMixin  # TODO: use from bx_py_utils!
-from huey_monitor_tests.test_app.tasks import delay_task
-
-
-@task()
-def raise_error_task(msg):
-    raise AssertionError(msg)
+from huey_monitor_tests.test_app.tasks import delay_task, raise_error_task
 
 
 class HueyMonitorTestCase(HtmlAssertionMixin, TestCase):
@@ -61,7 +55,10 @@ class HueyMonitorTestCase(HtmlAssertionMixin, TestCase):
         assert TaskModel.objects.count() == 0
         assert SignalInfoModel.objects.count() == 0
 
-        raise_error_task('This is a test exception')
+        raise_error_task(
+            error_class_name='AssertionError',
+            msg='This is a test exception'
+        )
 
         assert TaskModel.objects.count() == 1
 

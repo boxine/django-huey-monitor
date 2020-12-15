@@ -93,4 +93,7 @@ reload_huey: ## Reload the Huey worker
 
 restart: down up  ## Restart the containers
 
+fire_test_tasks:  ## Call "fire_test_tasks" manage command to create some Huey Tasks
+	./compose.sh exec django /django/manage.sh fire_test_tasks
+
 .PHONY: help install lint fix pytest publish

@@ -37,6 +37,7 @@ logs                 Display and follow docker logs
 reload_django        Reload the Django dev server
 reload_huey          Reload the Huey worker
 restart              Restart the containers
+fire_test_tasks      Call "fire_test_tasks" manage command to create some Huey Tasks
 ```
 
 
