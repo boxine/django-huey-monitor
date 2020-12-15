@@ -7,6 +7,7 @@ packages = [
     { include = "huey_monitor" },
     { include = "huey_monitor_tests" },
 ]
+homepage = "https://github.com/boxine/django-huey-monitor/"
 keywords=['huey','django']
 classifiers = [
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
