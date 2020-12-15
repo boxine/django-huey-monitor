@@ -1,0 +1,66 @@
+version: "3.7"
+
+services:
+    django:
+        build:
+            context: .
+            dockerfile: docker/django/Dockerfile
+        restart: "no"
+        hostname: django
+        ports:
+            - "8000:8000"
+        env_file: ./docker/common.env
+        links:
+            - postgres:postgres
+            - redis:redis
+        depends_on:
+            - postgres
+            - redis
+        volumes:
+            - .:/django/:ro
+            # static files, served by caddy:
+            - ./volumes/django/static/:/static/:rw
+            # Use files, served by django:
+            - ./volumes/django/media/:/media/:rw
+        entrypoint: /django/docker/django/entrypoint.sh
+
+    huey:
+        build:
+            context: .
+            dockerfile: docker/django/Dockerfile
+        restart: "no"
+        hostname: huey
+        env_file: ./docker/common.env
+        links:
+            - postgres:postgres
+            - redis:redis
+        depends_on:
+            - django
+        volumes:
+            - .:/django/:ro
+            # static files, served by caddy:
+            - ./volumes/django/static/:/static/:rw
+            # Use files, served by django:
+            - ./volumes/django/media/:/media/:rw
+        entrypoint: /django/docker/huey/entrypoint.sh
+
+    postgres:
+        image: postgres:11-alpine
+        restart: "no"
+        hostname: postgres
+        ports:
+            - "5432"
+        env_file: ./docker/common.env
+        environment:
+            - POSTGRES_HOST_AUTH_METHOD=trust
+        volumes:
+            - ./docker/postgres/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh:ro
+            - ./volumes/postgresql/data/:/var/lib/postgresql/data/:rw
+
+    redis:
+        image: redis:latest
+        restart: "no"
+        hostname: redis
+        ports:
+            - "6379"
+        env_file: ./docker/common.env
