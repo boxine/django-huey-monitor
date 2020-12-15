@@ -1,0 +1,35 @@
+{% load i18n %}
+
+<table class="table-bordered table-condensed table-striped">
+<thead>
+    <tr>
+        <th>{% trans 'Time period' %}</th>
+        <th>{% trans 'Signal Name' %}</th>
+        <th>{% trans 'Exception Line' %}</th>
+    </tr>
+</thead>
+<tbody>
+{% for signal in signals %}
+    <tr>
+        <td>
+            {% if not forloop.last %}
+                <span title="{{ signal.create_dt }}">
+                    {{ signal.create_dt|timesince:task.create_dt }}
+                </span>
+            {% else %}
+                {{ signal.create_dt }}
+            {% endif %}
+        </td>
+        <td>{{ signal.signal_name }}</td>
+        <td>
+            {% if signal.exception_line %}
+                <strong>{{ signal.exception_line }}</strong>
+                <pre>{{ signal.exception }}</pre>
+            {% else %}
+                -
+            {% endif %}
+        </td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
