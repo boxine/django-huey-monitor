@@ -42,3 +42,8 @@ logs                 Display and follow docker logs
 ## License
 
 [GPL](LICENSE). Patches welcome!
+
+
+## Links
+
+* https://pypi.org/project/django-huey-monitor/
