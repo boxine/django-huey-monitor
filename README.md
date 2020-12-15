@@ -22,10 +22,6 @@ lint                 Run code formatters and linter
 fix-code-style       Fix code formatting
 tox-listenvs         List all tox test environments
 tox                  Run pytest via tox with all environments
-tox-py36             Run pytest via tox with *python v3.6*
-tox-py37             Run pytest via tox with *python v3.7*
-tox-py38             Run pytest via tox with *python v3.8*
-tox-py39             Run pytest via tox with *python v3.9*
 pytest               Run pytest
 pytest-ci            Run pytest with CI settings
 publish              Release new version to PyPi
@@ -35,7 +31,12 @@ clean                Remove created files from the test project (e.g.: SQlite, s
 build                Update/Build docker services
 up                   Start docker containers
 down                 Stop all containers
+shell_django         go into a interactive bash shell in Django container
+shell_huey           go into a interactive bash shell in Huey worker container
 logs                 Display and follow docker logs
+reload_django        Reload the Django dev server
+reload_huey          Reload the Huey worker
+restart              Restart the containers
 ```
 
 
