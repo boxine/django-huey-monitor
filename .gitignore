@@ -2,6 +2,7 @@
 !.github
 !.dockerignore
 !.editorconfig
+!.flake8
 !.gitignore
 
 dist
