@@ -1,0 +1,15 @@
+.*
+!.github
+!.dockerignore
+!.editorconfig
+!.gitignore
+
+__pycache__
+
+htmlcov
+volumes
+
+poetry.lock
+*.xml
+*.log
+*.sqlite*
