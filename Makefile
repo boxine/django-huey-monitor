@@ -52,9 +52,8 @@ publish: ## Release new version to PyPi
 makemessages: ## Make and compile locales message files
 	./manage.sh makemessages --all --no-location --no-obsolete
 	./manage.sh compilemessages --ignore=.tox
-
-start-dev-server: ## Start Django dev. server with the test project
-	./manage.sh run_testserver
+	./manage.sh makemessages --all --no-location --no-obsolete --ignore=htmlcov --ignore=.tox --ignore=volumes
+	./manage.sh compilemessages  --ignore=htmlcov --ignore=.tox --ignore=volumes
 
 clean: ## Remove created files from the test project (e.g.: SQlite, static files)
 	git clean -dfX huey_monitor_tests_tests/

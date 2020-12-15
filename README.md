@@ -26,7 +26,6 @@ pytest               Run pytest
 pytest-ci            Run pytest with CI settings
 publish              Release new version to PyPi
 makemessages         Make and compile locales message files
-start-dev-server     Start Django dev. server with the test project
 clean                Remove created files from the test project (e.g.: SQlite, static files)
 build                Update/Build docker services
 up                   Start docker containers
