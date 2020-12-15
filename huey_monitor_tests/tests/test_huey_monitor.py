@@ -1,8 +1,8 @@
+from bx_py_utils.test_utils.html_assertion import HtmlAssertionMixin
 from django.contrib.auth.models import User
 from django.test import TestCase
 
 from huey_monitor.models import SignalInfoModel, TaskModel
-from huey_monitor_tests.html_assertion import HtmlAssertionMixin  # TODO: use from bx_py_utils!
 from huey_monitor_tests.test_app.tasks import delay_task, raise_error_task
 
 
