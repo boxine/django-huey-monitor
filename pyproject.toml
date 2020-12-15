@@ -57,7 +57,6 @@ postgres = ["psycopg2-binary"]
 poetry-publish = "*"  # https://github.com/jedie/poetry-publish
 docker-compose = "*"
 psycopg2-binary = "*"
-gevent = "*"
 tox = "*"
 pytest = "*"
 pytest-randomly = "*"
@@ -128,27 +127,6 @@ addopts = """
     --new-first
     -p no:randomly
 """
-
-
-[tool.autopep8]
-# https://github.com/hhatto/autopep8#pyprojecttoml
-max_line_length = 120
-exclude="*/htmlcov/*,*/migrations/*,*/volumes/*"
-
-
-[tool.isort]
-# https://pycqa.github.io/isort/docs/configuration/config_files/#pyprojecttoml-preferred-format
-atomic=true
-line_length=120
-case_sensitive=false
-skip_glob=["*/htmlcov/*","*/migrations/*"]
-multi_line_output=3
-include_trailing_comma=true
-known_first_party=["huey_monitor","huey_monitor_tests"]
-no_lines_before="LOCALFOLDER"
-default_section="THIRDPARTY"
-sections=["FUTURE","STDLIB","THIRDPARTY","FIRSTPARTY","LOCALFOLDER"]
-lines_after_imports=2
 
 
 [tool.tox]
