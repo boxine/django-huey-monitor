@@ -4,6 +4,7 @@
 !.editorconfig
 !.gitignore
 
+dist
 __pycache__
 
 htmlcov

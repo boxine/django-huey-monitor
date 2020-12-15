@@ -3,7 +3,7 @@ MAX_LINE_LENGTH := 119
 POETRY_VERSION := $(shell poetry --version 2>/dev/null)
 
 help: ## List all commands
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9 -]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9 -_]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 check-poetry:
 	@if [[ "${POETRY_VERSION}" == *"Poetry"* ]] ; \
@@ -85,10 +85,15 @@ logs: ## Display and follow docker logs
 
 reload_django: ## Reload the Django dev server
 	./compose.sh exec django /django/docker/utils/kill_python.sh
+	$(MAKE) logs
 
 reload_huey: ## Reload the Huey worker
 	./compose.sh exec huey /django/docker/utils/kill_python.sh
+	$(MAKE) logs
 
-restart: down up
+restart: down up  ## Restart the containers
+
+fire_test_tasks:  ## Call "fire_test_tasks" manage command to create some Huey Tasks
+	./compose.sh exec django /django/manage.sh fire_test_tasks
 
 .PHONY: help install lint fix pytest publish

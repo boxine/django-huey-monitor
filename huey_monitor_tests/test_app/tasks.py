@@ -2,10 +2,17 @@ import logging
 import time
 
 from huey import crontab
-from huey.contrib.djhuey import lock_task, periodic_task, task
+from huey.contrib.djhuey import periodic_task, task
 
 
 logger = logging.getLogger(__name__)
+
+
+@task()
+def raise_error_task(error_class_name, msg):
+    logger.info('Raise %r with msg=%r', error_class_name, msg)
+    ErrorClass = __builtins__[error_class_name]
+    raise ErrorClass(msg)
 
 
 @task()
