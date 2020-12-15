@@ -2,12 +2,14 @@
 !.github
 !.dockerignore
 !.editorconfig
+!.flake8
 !.gitignore
 
 dist
 __pycache__
 
 htmlcov
+static
 volumes
 
 poetry.lock

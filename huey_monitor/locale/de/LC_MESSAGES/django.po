@@ -1,0 +1,69 @@
+# Copyright (C) boxine.de
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-huey-monitor\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-15 15:03+0000\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "huey Monitor"
+msgstr ""
+
+msgid "Task UUID"
+msgstr ""
+
+msgid "The UUID of the Huey-Task"
+msgstr ""
+
+msgid "Task name"
+msgstr ""
+
+msgid "State"
+msgstr ""
+
+msgid "Last Signal information"
+msgstr ""
+
+msgid "Task"
+msgstr ""
+
+msgid "Tasks"
+msgstr ""
+
+msgid "The Task instance for this Signal Info entry."
+msgstr ""
+
+msgid "Signal Name"
+msgstr ""
+
+msgid "Name of the signal"
+msgstr ""
+
+msgid "Exception Line"
+msgstr ""
+
+msgid "Exception"
+msgstr ""
+
+msgid "Full information of a exception"
+msgstr ""
+
+msgid "Create date"
+msgstr ""
+
+msgid "(will be set automatically)"
+msgstr ""
+
+msgid "Task Signal"
+msgstr ""
+
+msgid "Task Signals"
+msgstr ""
+
+msgid "Time period"
+msgstr ""

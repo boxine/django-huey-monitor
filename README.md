@@ -1,12 +1,31 @@
 # django-huey-monitor
 
-Django based tool for monitoring huey task queue: https://github.com/coleifer/huey
+Django based tool for monitoring [huey task queue](https://github.com/coleifer/huey)
+
+Current implementation will just store all Huey task signals into the database
+and display them in the Django admin.
 
 
-Project state: planing/pre-alpha ;)
+## Quickstart
+
+```bash
+pip install django-huey-monitor
+```
+
+```python
+INSTALLED_APPS = [
+    #...
+    'huey_monitor',
+    #...
+]
+```
 
 
 ## developing
+
+* install docker
+* clone the project
+* start the container
 
 To start developing e.g.:
 
@@ -26,7 +45,6 @@ pytest               Run pytest
 pytest-ci            Run pytest with CI settings
 publish              Release new version to PyPi
 makemessages         Make and compile locales message files
-start-dev-server     Start Django dev. server with the test project
 clean                Remove created files from the test project (e.g.: SQlite, static files)
 build                Update/Build docker services
 up                   Start docker containers
@@ -38,6 +56,20 @@ reload_django        Reload the Django dev server
 reload_huey          Reload the Huey worker
 restart              Restart the containers
 fire_test_tasks      Call "fire_test_tasks" manage command to create some Huey Tasks
+
+~/django-huey-monitor$ make install-poetry
+~/django-huey-monitor$ make install
+~/django-huey-monitor$ make up
+```
+
+
+It's also possible to run the test setup with SQLite and Huey immediate setup
+without docker:
+
+```bash
+~$ git clone https://github.com/boxine/django-huey-monitor.git
+~$ cd django-huey-monitor
+~/django-huey-monitor$ ./manage.sh run_testserver
 ```
 
 

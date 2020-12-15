@@ -26,13 +26,13 @@ update: check-poetry ## Update the dependencies as according to the pyproject.to
 
 lint: ## Run code formatters and linter
 	poetry run flynt --fail-on-change --line_length=${MAX_LINE_LENGTH} huey_monitor huey_monitor_tests
-	poetry run isort --check-only huey_monitor huey_monitor_tests
+	poetry run isort --check-only .
 	poetry run flake8 huey_monitor huey_monitor_tests
 
 fix-code-style: ## Fix code formatting
 	poetry run flynt --line_length=${MAX_LINE_LENGTH} huey_monitor huey_monitor_tests
 	poetry run autopep8 --ignore-local-config --max-line-length=${MAX_LINE_LENGTH} --aggressive --aggressive --in-place --recursive huey_monitor huey_monitor_tests
-	poetry run isort huey_monitor huey_monitor_tests
+	poetry run isort .
 
 tox-listenvs: check-poetry ## List all tox test environments
 	poetry run tox --listenvs
@@ -50,11 +50,8 @@ publish: ## Release new version to PyPi
 	poetry run publish
 
 makemessages: ## Make and compile locales message files
-	./manage.sh makemessages --all --no-location --no-obsolete
-	./manage.sh compilemessages --ignore=.tox
-
-start-dev-server: ## Start Django dev. server with the test project
-	./manage.sh run_testserver
+	./manage.sh makemessages --all --no-location --no-obsolete --ignore=htmlcov --ignore=".tox*" --ignore=volumes
+	./manage.sh compilemessages --ignore=htmlcov --ignore=".tox*" --ignore=volumes
 
 clean: ## Remove created files from the test project (e.g.: SQlite, static files)
 	git clean -dfX huey_monitor_tests_tests/

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-huey-monitor"
-version = "0.0.1rc1"
+version = "0.0.1"
 description = "Django based tool for monitoring huey task queue: https://github.com/coleifer/huey"
 authors = ["JensDiemer <git@jensdiemer.de>"]
 packages = [
@@ -11,9 +11,7 @@ homepage = "https://github.com/boxine/django-huey-monitor/"
 keywords=['huey','django']
 classifiers = [
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
-    "Development Status :: 1 - Planning",
-#    "Development Status :: 2 - Pre-Alpha",
-#    "Development Status :: 3 - Alpha",
+    "Development Status :: 3 - Alpha",
 #    "Development Status :: 4 - Beta",
 #    "Development Status :: 5 - Production/Stable",
     "Environment :: Web Environment",
@@ -38,23 +36,15 @@ readme='README.md'
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0.0"
-#
-# https://www.djangoproject.com/download/#supported-versions
-# v2.2 LTS - extended support until April 2022
-django = "2.2.*"
-django-debug-toolbar = "*"  # http://django-debug-toolbar.readthedocs.io/en/stable/changes.html
+django = "*"
 huey = "*"
-django-redis = "*"
 
 # We can't install v5 until https://github.com/python-poetry/poetry/issues/3320 is fixed!
 bx_py_utils = "0.0.4"  # https://github.com/boxine/bx_py_utils
 
-
-[tool.poetry.extras]
-docker = ["docker-compose"]
-postgres = ["psycopg2-binary"]
-
 [tool.poetry.dev-dependencies]
+django-redis = "*"
+django-debug-toolbar = "*"  # http://django-debug-toolbar.readthedocs.io/en/stable/changes.html
 poetry-publish = "*"  # https://github.com/jedie/poetry-publish
 docker-compose = "*"
 psycopg2-binary = "*"
@@ -71,7 +61,6 @@ autopep8 = "*"
 pyupgrade = "*"
 
 [tool.poetry.scripts]
-#manage = "huey_monitor_tests.manage:main"
 publish = "huey_monitor_tests.test_project.publish:publish"
 
 [build-system]
