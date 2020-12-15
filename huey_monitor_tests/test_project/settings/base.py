@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 from pathlib import Path
 
 
-BASE_DIR = Path(__file__).parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent.parent
+assert Path(BASE_DIR / 'huey_monitor').is_dir(), f'Wrong BASE_DIR: {BASE_DIR}'
 
 
 # Quick-start development settings - unsuitable for production
@@ -92,7 +93,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 LOCALE_PATHS = (
-    BASE_DIR.parent / 'huey_monitor' / 'locale',
+    str(BASE_DIR / 'huey_monitor' / 'locale'),
 )
 
 # Static files (CSS, JavaScript, Images)
