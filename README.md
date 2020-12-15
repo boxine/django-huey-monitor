@@ -63,6 +63,16 @@ fire_test_tasks      Call "fire_test_tasks" manage command to create some Huey T
 ```
 
 
+It's also possible to run the test setup with SQLite and Huey immediate setup
+without docker:
+
+```bash
+~$ git clone https://github.com/boxine/django-huey-monitor.git
+~$ cd django-huey-monitor
+~/django-huey-monitor$ ./manage.sh run_testserver
+```
+
+
 ## License
 
 [GPL](LICENSE). Patches welcome!

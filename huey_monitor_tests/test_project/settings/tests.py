@@ -18,3 +18,6 @@ DATABASES = {
     }
 }
 print(f'Use Database: {DATABASES["default"]["NAME"]!r}', file=__sys.stderr)
+
+STATIC_ROOT = str(BASE_DIR / 'static')  # noqa: F405
+MEDIA_ROOT = str(BASE_DIR / 'media')  # noqa: F405

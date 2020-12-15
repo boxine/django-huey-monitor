@@ -9,6 +9,7 @@ dist
 __pycache__
 
 htmlcov
+static
 volumes
 
 poetry.lock
