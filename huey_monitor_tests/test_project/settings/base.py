@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'debug_toolbar',
+    'bx_py_utils',
 
     'huey.contrib.djhuey',  # https://github.com/coleifer/huey
 
