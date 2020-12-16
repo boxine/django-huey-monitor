@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-huey-monitor"
-version = "0.0.1"
+version = "0.0.2"
 description = "Django based tool for monitoring huey task queue: https://github.com/coleifer/huey"
 authors = ["JensDiemer <git@jensdiemer.de>"]
 packages = [
@@ -38,9 +38,7 @@ readme='README.md'
 python = ">=3.7,<4.0.0"
 django = "*"
 huey = "*"
-
-# We can't install v5 until https://github.com/python-poetry/poetry/issues/3320 is fixed!
-bx_py_utils = "0.0.4"  # https://github.com/boxine/bx_py_utils
+bx_py_utils = "*"  # https://github.com/boxine/bx_py_utils
 
 [tool.poetry.dev-dependencies]
 django-redis = "*"
