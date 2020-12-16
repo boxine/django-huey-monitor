@@ -2,7 +2,7 @@ import logging
 import time
 
 from huey import crontab
-from huey.contrib.djhuey import periodic_task, task
+from huey.contrib.djhuey import lock_task, periodic_task, task
 
 
 logger = logging.getLogger(__name__)
@@ -25,3 +25,11 @@ def delay_task(name='<no-name>', sleep=3):
 @periodic_task(crontab(minute='1'), context=True)
 def one_minute_test_task(task):
     logger.info('one_minute_test_task UUID: %s', task.id)
+
+
+@task(retries=2)  # Retry the task up to 2 times.
+@lock_task('retry_and_lock_task')  # no multiple invocations from running concurrently
+def retry_and_lock_task(info='<no-info>', sleep=3):
+    logger.info('Start "retry_and_lock_task" - %r - sleep %s Sec.', info, sleep)
+    time.sleep(sleep)
+    raise RuntimeError(f'{info!r} error after {sleep} sec. sleep')

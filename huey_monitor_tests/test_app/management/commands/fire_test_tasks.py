@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from huey_monitor_tests.test_app.tasks import delay_task, raise_error_task
+from huey_monitor_tests.test_app.tasks import delay_task, raise_error_task, retry_and_lock_task
 
 
 class Command(BaseCommand):
@@ -12,9 +12,13 @@ class Command(BaseCommand):
             error_class_name='TypeError',
             msg='test type error exception'
         )
+        retry_and_lock_task(info='1', sleep=5)
+
         delay_task(name='test sleep 10', sleep=10)
         raise_error_task(
             error_class_name='SystemError',
             msg='test system error exception'
         )
         delay_task(name='test sleep 60', sleep=60)
+        retry_and_lock_task(info='2', sleep=10)
+        retry_and_lock_task(info='3', sleep=20)
