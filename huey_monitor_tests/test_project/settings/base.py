@@ -103,15 +103,21 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'verbose': {
-            'format': '{asctime} {levelname} {name} {module}.{funcName} {message}',
+        'colored': {
+            '()': 'colorlog.ColoredFormatter',
+            'format': (
+                '{log_color}{asctime} {levelname}'
+                ' PID:{process} {threadName} {name} {module}.{funcName} {message}'
+            ),
             'style': '{',
-        },
+        }
     },
-    'handlers': {'console': {
-        'class': 'logging.StreamHandler',
-        'formatter': 'verbose'
-    }},
+    'handlers': {
+        'console': {
+            'class': 'colorlog.StreamHandler',
+            'formatter': 'colored'
+        }
+    },
     'loggers': {
         'django': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
         'django.auth': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},

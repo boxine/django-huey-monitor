@@ -41,6 +41,7 @@ huey = "*"
 bx_py_utils = "*"  # https://github.com/boxine/bx_py_utils
 
 [tool.poetry.dev-dependencies]
+colorlog = "*"
 django-redis = "*"
 django-debug-toolbar = "*"  # http://django-debug-toolbar.readthedocs.io/en/stable/changes.html
 poetry-publish = "*"  # https://github.com/jedie/poetry-publish
