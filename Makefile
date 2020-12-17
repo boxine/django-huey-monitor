@@ -82,11 +82,11 @@ logs: ## Display and follow docker logs
 
 reload_django: ## Reload the Django dev server
 	./compose.sh exec django /django/docker/utils/kill_python.sh
-	$(MAKE) logs
+	./compose.sh logs --tail=500 --follow django
 
 reload_huey: ## Reload the Huey worker
 	./compose.sh exec huey /django/docker/utils/kill_python.sh
-	$(MAKE) logs
+	./compose.sh logs --tail=500 --follow django huey
 
 restart: down up  ## Restart the containers
 

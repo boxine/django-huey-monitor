@@ -1,6 +1,8 @@
+from pathlib import Path
+
 from django.core.management import BaseCommand
 
-from huey_monitor_tests.test_app.tasks import delay_task, raise_error_task, retry_and_lock_task
+from huey_monitor_tests.test_app.tasks import delay_task, out_of_memory_task, raise_error_task, retry_and_lock_task
 
 
 class Command(BaseCommand):
@@ -13,6 +15,11 @@ class Command(BaseCommand):
             msg='test type error exception'
         )
         retry_and_lock_task(info='1', sleep=5)
+
+        if Path('/.dockerenv').exists():
+            out_of_memory_task()
+        else:
+            print('Skip out of memory task outside docker container ;)')
 
         delay_task(name='test sleep 10', sleep=10)
         raise_error_task(
