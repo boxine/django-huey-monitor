@@ -28,6 +28,11 @@ services:
         build:
             context: .
             dockerfile: docker/django/Dockerfile
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.50'
+                    memory: 100M
         restart: "no"
         hostname: huey
         env_file: ./docker/common.env

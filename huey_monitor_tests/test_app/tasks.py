@@ -1,4 +1,5 @@
 import logging
+import sys
 import time
 
 from huey import crontab
@@ -33,3 +34,13 @@ def retry_and_lock_task(info='<no-info>', sleep=3):
     logger.info('Start "retry_and_lock_task" - %r - sleep %s Sec.', info, sleep)
     time.sleep(sleep)
     raise RuntimeError(f'{info!r} error after {sleep} sec. sleep')
+
+
+@task(retries=1)  # Retry the task one time
+def out_of_memory_task():
+    logger.warning('Start out of memory task !')
+    obj = ['X']
+    while True:
+        obj = obj * 2
+        size = sys.getsizeof(obj)
+        logger.warning('OOM size: %s', size)
