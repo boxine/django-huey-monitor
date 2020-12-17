@@ -10,9 +10,6 @@ class TaskModelAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         return False
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
     def signals(self, obj):
         signals = SignalInfoModel.objects.filter(task_id=obj.pk).order_by('-create_dt')
         context = {
@@ -60,7 +57,4 @@ class SignalInfoModelAdmin(admin.ModelAdmin):
     search_fields = ('task__name', 'exception_line', 'exception')
 
     def has_change_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
         return False

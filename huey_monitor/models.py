@@ -20,7 +20,7 @@ class TaskModel(TimetrackingBaseModel):
         'huey_monitor.SignalInfoModel',
         null=True, blank=True,
         related_name='+',
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         verbose_name=_('State'),
         help_text=_('Last Signal information'),
     )
