@@ -123,6 +123,7 @@ LOGGING = {
         'django.auth': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
         'django.security': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
         'django.request': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
+        'huey': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
         'huey_monitor': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
         'huey_monitor_tests': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
     },
