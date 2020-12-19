@@ -1,14 +1,24 @@
 import logging
+import os
+import socket
 import sys
+import threading
 import traceback
 import uuid
+from functools import lru_cache
 
+from django.db import transaction
 from huey.contrib.djhuey import on_startup, signal
 
 from huey_monitor.models import SignalInfoModel, TaskModel
 
 
 logger = logging.getLogger(__name__)
+
+
+@lru_cache(maxsize=None)
+def get_hostname():
+    return socket.gethostname()
 
 
 @signal()
@@ -19,13 +29,10 @@ def store_signals(signal, task, exc=None):
     task_id = uuid.UUID(task.id)
     logger.info('Store Task %s signal %r', task_id, signal)
 
-    task_model_instance, created = TaskModel.objects.get_or_create(
-        task_id=task_id,
-        defaults={'name': task.name}
-    )
-
     signal_kwargs = {
-        'task': task_model_instance,
+        'hostname': get_hostname(),
+        'pid': os.getpid(),
+        'thread': threading.current_thread().name,
         'signal_name': signal,
     }
 
@@ -35,10 +42,18 @@ def store_signals(signal, task, exc=None):
             traceback.format_exception(*sys.exc_info())
         )
 
-    last_signal = SignalInfoModel.objects.create(**signal_kwargs)
+    with transaction.atomic():
+        task_model_instance, created = TaskModel.objects.get_or_create(
+            task_id=task_id,
+            defaults={'name': task.name}
+        )
 
-    task_model_instance.state_id = last_signal.pk
-    task_model_instance.save(update_fields=('state_id',))
+        signal_kwargs['task'] = task_model_instance
+
+        last_signal = SignalInfoModel.objects.create(**signal_kwargs)
+
+        task_model_instance.state_id = last_signal.pk
+        task_model_instance.save(update_fields=('state_id',))
 
 
 @on_startup()
@@ -57,12 +72,16 @@ def startup_handler():
     """
     logger.debug('startup handler called')
 
-    qs = TaskModel.objects.filter(state__signal_name='executing')
-    for task_model_instance in qs:
-        logger.info('Mark "executing" task %s to "unknown"', task_model_instance.pk)
-        last_signal = SignalInfoModel.objects.create(
-            task_id=task_model_instance.pk,
-            signal_name='unknown',
-        )
-        task_model_instance.state_id = last_signal.pk
-        task_model_instance.save(update_fields=('state_id',))
+    with transaction.atomic():
+        qs = TaskModel.objects.filter(state__signal_name='executing')
+        for task_model_instance in qs:
+            logger.warning('Mark "executing" task %s to "unknown"', task_model_instance.pk)
+            last_signal = SignalInfoModel.objects.create(
+                hostname=get_hostname(),
+                pid=os.getpid(),
+                thread=threading.current_thread().name,
+                task_id=task_model_instance.pk,
+                signal_name='unknown',
+            )
+            task_model_instance.state_id = last_signal.pk
+            task_model_instance.save(update_fields=('state_id',))

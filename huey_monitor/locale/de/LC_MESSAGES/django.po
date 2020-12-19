@@ -4,30 +4,30 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-huey-monitor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-15 15:03+0000\n"
+"POT-Creation-Date: 2020-12-21 10:21+0000\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "huey Monitor"
+msgid "Huey Monitor"
 msgstr ""
 
 msgid "Task UUID"
 msgstr ""
 
 msgid "The UUID of the Huey-Task"
-msgstr ""
+msgstr "Die UUID des Huey-Task"
 
 msgid "Task name"
-msgstr ""
+msgstr "Task Name"
 
 msgid "State"
-msgstr ""
+msgstr "Status"
 
 msgid "Last Signal information"
-msgstr ""
+msgstr "Information des letzten Signals"
 
 msgid "Task"
 msgstr ""
@@ -35,35 +35,56 @@ msgstr ""
 msgid "Tasks"
 msgstr ""
 
-msgid "The Task instance for this Signal Info entry."
+msgid "Hostname"
 msgstr ""
+
+msgid "Hostname of the machine that creates this Signal"
+msgstr "Hostename der Machine welches dieses Signal erstellte"
+
+msgid "PID"
+msgstr ""
+
+msgid "Process ID that creates this Signal"
+msgstr "Prozess ID welches dieses Signal erstellte"
+
+msgid "Thread Name"
+msgstr ""
+
+msgid "Name of the thread that creates this Signal"
+msgstr "Name des Threads welches dieses Signal erstellte"
+
+msgid "The Task instance for this Signal Info entry."
+msgstr "Task Eintrag für dieses Signal Eintrags."
 
 msgid "Signal Name"
 msgstr ""
 
 msgid "Name of the signal"
-msgstr ""
+msgstr "Name des Signals"
 
 msgid "Exception Line"
-msgstr ""
+msgstr "Exception Zeile"
 
 msgid "Exception"
 msgstr ""
 
 msgid "Full information of a exception"
-msgstr ""
+msgstr "Komplette Exception Information"
 
 msgid "Create date"
-msgstr ""
+msgstr "Erstellungsdatum"
 
 msgid "(will be set automatically)"
-msgstr ""
+msgstr "(wird automatisch gesetzt)"
 
 msgid "Task Signal"
 msgstr ""
 
 msgid "Task Signals"
-msgstr ""
+msgstr "Task Signale"
 
 msgid "Time period"
+msgstr "Zeitraum"
+
+msgid "Thread"
 msgstr ""

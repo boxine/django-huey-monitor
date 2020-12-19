@@ -74,8 +74,14 @@ down: ## Stop all containers
 shell_django: ## go into a interactive bash shell in Django container
 	./compose.sh exec django /bin/bash
 
-shell_huey: ## go into a interactive bash shell in Huey worker container
-	./compose.sh exec huey /bin/bash
+shell_huey1: ## go into a interactive bash shell in Huey worker container 1
+	./compose.sh exec huey1 /bin/bash
+
+shell_huey2:  ## go into a interactive bash shell in Huey worker container 2
+	./compose.sh exec huey2 /bin/bash
+
+shell_huey3:  ## go into a interactive bash shell in Huey worker container 3
+	./compose.sh exec huey3 /bin/bash
 
 logs: ## Display and follow docker logs
 	./compose.sh logs --tail=500 --follow
@@ -85,12 +91,17 @@ reload_django: ## Reload the Django dev server
 	./compose.sh logs --tail=500 --follow django
 
 reload_huey: ## Reload the Huey worker
-	./compose.sh exec huey /django/docker/utils/kill_python.sh
-	./compose.sh logs --tail=500 --follow django huey
+	./compose.sh exec huey1 /django/docker/utils/kill_python.sh
+	./compose.sh exec huey2 /django/docker/utils/kill_python.sh
+	./compose.sh exec huey3 /django/docker/utils/kill_python.sh
+	./compose.sh logs --tail=500 --follow huey1 huey2 huey3
 
 restart: down up  ## Restart the containers
 
 fire_test_tasks:  ## Call "fire_test_tasks" manage command to create some Huey Tasks
 	./compose.sh exec django /django/manage.sh fire_test_tasks
+
+delete_all_tasks_data:  ## Delete all Task/Signal database enties
+	./compose.sh exec django /django/manage.sh delete_all_tasks_data
 
 .PHONY: help install lint fix pytest publish

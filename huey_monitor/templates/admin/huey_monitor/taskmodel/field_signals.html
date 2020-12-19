@@ -5,6 +5,9 @@
     <tr>
         <th>{% trans 'Time period' %}</th>
         <th>{% trans 'Signal Name' %}</th>
+        <th>{% trans 'Hostname' %}</th>
+        <th>{% trans 'PID' %}</th>
+        <th>{% trans 'Thread' %}</th>
         <th>{% trans 'Exception Line' %}</th>
     </tr>
 </thead>
@@ -21,6 +24,9 @@
             {% endif %}
         </td>
         <td>{{ signal.signal_name }}</td>
+        <td>{{ signal.hostname }}</td>
+        <td>{{ signal.pid }}</td>
+        <td>{{ signal.thread }}</td>
         <td>
             {% if signal.exception_line %}
                 <strong>{{ signal.exception_line }}</strong>
