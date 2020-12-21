@@ -38,7 +38,7 @@ readme='README.md'
 python = ">=3.7,<4.0.0"
 django = "*"
 huey = "*"
-bx_py_utils = "*"  # https://github.com/boxine/bx_py_utils
+bx_py_utils = ">=16rc2"  # https://github.com/boxine/bx_py_utils
 
 [tool.poetry.dev-dependencies]
 colorlog = "*"

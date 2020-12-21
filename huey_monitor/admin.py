@@ -1,3 +1,4 @@
+from bx_py_utils.templatetags.humanize_time import human_duration
 from django.contrib import admin
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -27,15 +28,10 @@ class TaskModelAdmin(admin.ModelAdmin):
         else:
             end_dt = obj.state.create_dt
 
-        diff = end_dt - obj.create_dt
-        total_seconds = diff.total_seconds()
-        if total_seconds > 60:
-            return f'{total_seconds/60:.2f} Min.'
-        else:
-            return f'{total_seconds:.2f} Sec.'
+        return human_duration(obj.create_dt, end_dt)
 
-    list_display = ('create_dt', 'update_dt', 'name', 'state', 'duration')
-    readonly_fields = ('task_id', 'signals', 'create_dt')
+    list_display = ('human_create_dt', 'human_update_dt', 'name', 'state', 'duration')
+    readonly_fields = ('task_id', 'signals', 'create_dt', 'update_dt')
     ordering = ('-update_dt',)
     list_display_links = ('name',)
     date_hierarchy = 'create_dt'
