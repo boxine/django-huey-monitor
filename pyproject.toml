@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-huey-monitor"
-version = "0.0.4"
+version = "0.1.0"
 description = "Django based tool for monitoring huey task queue: https://github.com/coleifer/huey"
 authors = ["JensDiemer <git@jensdiemer.de>"]
 packages = [
@@ -11,8 +11,7 @@ homepage = "https://github.com/boxine/django-huey-monitor/"
 keywords=['huey','django']
 classifiers = [
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
-    "Development Status :: 3 - Alpha",
-#    "Development Status :: 4 - Beta",
+    "Development Status :: 4 - Beta",
 #    "Development Status :: 5 - Production/Stable",
     "Environment :: Web Environment",
     "Intended Audience :: End Users/Desktop",
