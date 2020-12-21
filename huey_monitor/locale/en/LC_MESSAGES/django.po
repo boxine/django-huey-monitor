@@ -4,14 +4,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-huey-monitor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-15 15:03+0000\n"
+"POT-Creation-Date: 2020-12-21 10:21+0000\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "huey Monitor"
+msgid "Huey Monitor"
 msgstr ""
 
 msgid "Task UUID"
@@ -33,6 +33,24 @@ msgid "Task"
 msgstr ""
 
 msgid "Tasks"
+msgstr ""
+
+msgid "Hostname"
+msgstr ""
+
+msgid "Hostname of the machine that creates this Signal"
+msgstr ""
+
+msgid "PID"
+msgstr ""
+
+msgid "Process ID that creates this Signal"
+msgstr ""
+
+msgid "Thread Name"
+msgstr ""
+
+msgid "Name of the thread that creates this Signal"
 msgstr ""
 
 msgid "The Task instance for this Signal Info entry."
@@ -66,4 +84,7 @@ msgid "Task Signals"
 msgstr ""
 
 msgid "Time period"
+msgstr ""
+
+msgid "Thread"
 msgstr ""

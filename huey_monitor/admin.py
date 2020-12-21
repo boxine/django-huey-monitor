@@ -35,7 +35,7 @@ class TaskModelAdmin(admin.ModelAdmin):
     ordering = ('-update_dt',)
     list_display_links = ('name',)
     date_hierarchy = 'create_dt'
-    list_filter = ('name', 'state__signal_name')
+    list_filter = ('state__hostname', 'name', 'state__signal_name')
     search_fields = ('name', 'state__exception_line', 'state__exception')
 
 
@@ -44,12 +44,12 @@ class SignalInfoModelAdmin(admin.ModelAdmin):
     def task_name(self, obj):
         return obj.task.name
 
-    list_display = ('create_dt', 'task_name', '__str__', 'task_id')
+    list_display = ('create_dt', 'task_name', '__str__', 'hostname', 'pid', 'thread')
     readonly_fields = ('create_dt',)
     list_display_links = ('task_name',)
     ordering = ('-create_dt',)
     date_hierarchy = 'create_dt'
-    list_filter = ('task__name', 'signal_name')
+    list_filter = ('hostname', 'task__name', 'signal_name')
     search_fields = ('task__name', 'exception_line', 'exception')
 
     def has_change_permission(self, request, obj=None):

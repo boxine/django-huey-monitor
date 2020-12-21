@@ -43,6 +43,22 @@ class SignalInfoModel(models.Model):
         default=uuid.uuid4,
         editable=False,
     )
+
+    hostname = models.CharField(
+        max_length=128,
+        verbose_name=_('Hostname'),
+        help_text=_('Hostname of the machine that creates this Signal'),
+    )
+    pid = models.PositiveIntegerField(
+        verbose_name=_('PID'),
+        help_text=_('Process ID that creates this Signal'),
+    )
+    thread = models.CharField(
+        max_length=128,
+        verbose_name=_('Thread Name'),
+        help_text=_('Name of the thread that creates this Signal'),
+    )
+
     task = models.ForeignKey(
         'huey_monitor.TaskModel',
         on_delete=models.CASCADE,
