@@ -20,6 +20,16 @@ INSTALLED_APPS = [
 ]
 ```
 
+Note: You can run quickly test Huey Monitor with the test project, e.g:
+
+```bash
+~/django-huey-monitor$ ./manage.sh run_testserver
+```
+or in an isolated Docker container:
+```bash
+~/django-huey-monitor$ make up
+```
+More info see below.
 
 # Screenshots
 
