@@ -20,7 +20,7 @@ INSTALLED_APPS = [
 ]
 ```
 
-Note: You can run quickly test Huey Monitor with the test project, e.g:
+Note: You can quickly test Huey Monitor with the test project, e.g:
 
 ```bash
 ~/django-huey-monitor$ ./manage.sh run_testserver
