@@ -78,8 +78,23 @@ class TaskModelAdmin(admin.ModelAdmin):
 
         return human_duration(obj.create_dt, end_dt)
 
-    list_display = ('human_create_dt', 'human_update_dt', 'column_name', 'state', 'duration')
-    readonly_fields = ('task_id', 'signals', 'create_dt', 'update_dt')
+    list_display = (
+        'human_update_dt',
+        'column_name',
+        'state',
+        'total',
+        'human_unit',
+        'human_percentage',
+        'human_progress',
+        'human_throughput',
+        'duration'
+    )
+    readonly_fields = (
+        'task_id', 'signals', 'create_dt', 'update_dt',
+        'human_percentage',
+        'human_progress',
+        'human_throughput',
+    )
     ordering = ('-update_dt',)
     list_display_links = None
     date_hierarchy = 'create_dt'
@@ -92,10 +107,11 @@ class TaskModelAdmin(admin.ModelAdmin):
                 'create_dt', 'update_dt'
             )
         }),
-        (_('Basic'), {
+        (_('Task Information'), {
             'fields': (
                 'name',
                 'state',
+                'human_progress_string',
                 'signals'
             )
         }),

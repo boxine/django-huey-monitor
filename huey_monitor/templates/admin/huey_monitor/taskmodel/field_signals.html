@@ -5,6 +5,7 @@
     <tr>
         <th>{% trans 'Time period' %}</th>
         <th>{% trans 'Signal Name' %}</th>
+        <th>{% trans 'Progress Count' %}</th>
         <th>{% trans 'Hostname' %}</th>
         <th>{% trans 'PID' %}</th>
         <th>{% trans 'Thread' %}</th>
@@ -23,7 +24,8 @@
                 {{ signal.create_dt }}
             {% endif %}
         </td>
-        <td>{{ signal.signal_name }}</td>
+        <td>{{ signal.signal_name|default_if_none:"-" }}</td>
+        <td>{{ signal.human_progress_count }}</td>
         <td>{{ signal.hostname }}</td>
         <td>{{ signal.pid }}</td>
         <td>{{ signal.thread }}</td>

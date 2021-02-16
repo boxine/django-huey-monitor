@@ -1,3 +1,4 @@
+
 <strong><a href="{{ main_task.admin_link }}">{{ main_task.name }}</a></strong>
 {% if sub_tasks %}
 <ul style="white-space: nowrap;">
@@ -5,6 +6,7 @@
         <li>
             <a href="{{ sub_task.admin_link }}">{{ sub_task.name }}</a>
             {{ sub_task.state|default_if_none:"-"|truncatechars:40 }}
+            {{ sub_task.human_progress_string }}
         </li>
     {% endfor %}
 </ul>

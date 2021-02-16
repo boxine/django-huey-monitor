@@ -101,6 +101,9 @@ restart: down up  ## Restart the containers
 fire_test_tasks:  ## Call "fire_test_tasks" manage command to create some Huey Tasks
 	./compose.sh exec django /django/manage.sh fire_test_tasks
 
+fire_parallel_processing_task:  ## Just fire "parallel processing" Huey Task
+	./compose.sh exec django /django/manage.sh fire_parallel_processing_task
+
 delete_all_tasks_data:  ## Delete all Task/Signal database enties
 	./compose.sh exec django /django/manage.sh delete_all_tasks_data
 
