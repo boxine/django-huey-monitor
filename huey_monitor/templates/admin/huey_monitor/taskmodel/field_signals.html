@@ -1,6 +1,6 @@
 {% load i18n humanize_time %}
 
-<table class="table-bordered table-condensed table-striped">
+<table class="table-bordered table-condensed table-striped huey_monitor">
 <thead>
     <tr>
         <th>{% trans 'Time period' %}</th>
@@ -27,7 +27,7 @@
         <td>{{ signal.hostname }}</td>
         <td>{{ signal.pid }}</td>
         <td>{{ signal.thread }}</td>
-        <td>
+        <td class="exception_info">
             {% if signal.exception_line %}
                 <strong>{{ signal.exception_line }}</strong>
                 <pre>{{ signal.exception }}</pre>

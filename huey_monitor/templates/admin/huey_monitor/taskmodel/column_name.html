@@ -1,0 +1,11 @@
+<strong><a href="{{ main_task.admin_link }}">{{ main_task.name }}</a></strong>
+{% if sub_tasks %}
+<ul style="white-space: nowrap;">
+    {% for sub_task in sub_tasks %}
+        <li>
+            <a href="{{ sub_task.admin_link }}">{{ sub_task.name }}</a>
+            {{ sub_task.state|default_if_none:"-"|truncatechars:40 }}
+        </li>
+    {% endfor %}
+</ul>
+{% endif %}

@@ -2,7 +2,13 @@ from pathlib import Path
 
 from django.core.management import BaseCommand
 
-from huey_monitor_tests.test_app.tasks import delay_task, out_of_memory_task, raise_error_task, retry_and_lock_task
+from huey_monitor_tests.test_app.tasks import (
+    delay_task,
+    main_task,
+    out_of_memory_task,
+    raise_error_task,
+    retry_and_lock_task,
+)
 
 
 class Command(BaseCommand):
@@ -29,3 +35,5 @@ class Command(BaseCommand):
         delay_task(name='test sleep 60', sleep=60)
         retry_and_lock_task(info='2', sleep=10)
         retry_and_lock_task(info='3', sleep=20)
+
+        main_task()  # A task that fires "sub-tasks"
