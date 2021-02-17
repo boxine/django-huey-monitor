@@ -64,18 +64,15 @@ More info see below.
 
 # Screenshots
 
-### 2020-12-16-v002-change-list.png
+(More Screenshots here: [boxine.github.io/django-huey-monitor/](https://boxine.github.io/django-huey-monitor/))
 
-![2020-12-16-v002-change-list.png](https://raw.githubusercontent.com/boxine/django-huey-monitor/gh-pages/2020-12-16-v002-change-list.png)
+### 2021-02-17-v020-change-list.png
 
-### 2020-12-16-v002-task-details1.png
+![2021-02-17-v020-change-list.png](https://raw.githubusercontent.com/boxine/django-huey-monitor/gh-pages/2021-02-17-v020-change-list.png)
 
-![2020-12-16-v002-task-details1.png](https://raw.githubusercontent.com/boxine/django-huey-monitor/gh-pages/2020-12-16-v002-task-details1.png)
+### 2021-02-17-v020-task-details.png
 
-### 2020-12-16-v002-task-details2.png
-
-![2020-12-16-v002-task-details2.png](https://raw.githubusercontent.com/boxine/django-huey-monitor/gh-pages/2020-12-16-v002-task-details2.png)
-
+![2021-02-17-v020-task-details.png](https://raw.githubusercontent.com/boxine/django-huey-monitor/gh-pages/2021-02-17-v020-task-details.png)
 
 
 ## developing
@@ -129,6 +126,18 @@ without docker:
 ~/django-huey-monitor$ ./manage.sh run_testserver
 ```
 
+## History
+
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.2.0...master)
+  * _tbc_
+* [v0.2.0 - 17.02.2020](https://github.com/boxine/django-huey-monitor/compare/v0.1.0...v0.2.0)
+  * Store "parent_task" information for main-/sub-tasks
+* [v0.1.0 - 21.12.2020](https://github.com/boxine/django-huey-monitor/compare/v0.0.1...v0.1.0)
+  * Work-a-round if a Huey worker died
+  * Fix missing translations from bx_py_utils in test project
+  * Simulate a cluster of Huey worker via docker and the test project
+* v0.0.1 - 15.12.2021
+  * initial release
 
 ## License
 
