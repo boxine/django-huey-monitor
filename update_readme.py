@@ -34,7 +34,7 @@ def main():
 
     image_names = []
 
-    for image_path in sorted(base_path.glob('*.png')):
+    for image_path in sorted(base_path.glob('*.png'), reverse=True):
         cleaned_filename = clean_filename(image_path.name)
         if cleaned_filename != image_path.name:
             print(f'Rename "{image_path.name}" to "{cleaned_filename}"')
@@ -48,6 +48,10 @@ def main():
     print(image_names)
     with readme_path.open('w') as f:
         f.write('## Django-Huey-Monitor screenshots\n')
+        f.write('\n')
+        f.write('[github.com/boxine/django-huey-monitor](https://github.com/boxine/django-huey-monitor)\n')
+        f.write('\n')
+        f.write('---\n')
         for image_name in image_names:
             f.write('\n')
             f.write(f'### {image_name}\n')
@@ -59,6 +63,11 @@ def main():
 
         f.write('\n')
         f.write('---\n')
+        f.write('\n')
+        f.write('[github.com/boxine/django-huey-monitor](https://github.com/boxine/django-huey-monitor)\n')
+        f.write('\n')
+        f.write('---\n')
+        f.write('\n')
         f.write(f'(Auto generated with `{Path(__file__).name}` on {datetime.utcnow()})')
 
     print('Updated:', readme_path)
