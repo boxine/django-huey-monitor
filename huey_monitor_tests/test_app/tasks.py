@@ -5,6 +5,8 @@ import time
 from huey import crontab
 from huey.contrib.djhuey import lock_task, periodic_task, task
 
+from huey_monitor.models import TaskModel
+
 
 logger = logging.getLogger(__name__)
 
@@ -44,3 +46,22 @@ def out_of_memory_task():
         obj = obj * 2
         size = sys.getsizeof(obj)
         logger.warning('OOM size: %s', size)
+
+
+@task(context=True, retries=1)
+def sub_task(task, parent_task_id, raise_error=False):
+    logger.info('Sub task started from main task: %s', parent_task_id)
+    TaskModel.objects.set_parent_task(
+        main_task_id=parent_task_id,
+        sub_task_id=task.id,
+    )
+    if raise_error:
+        raise RuntimeError('This sub task should be raise an error ;)')
+
+
+@task(context=True)
+def main_task(task):
+    logger.info('Main task %s starts three sub tasks', task.id)
+    sub_task(parent_task_id=task.id)
+    sub_task(parent_task_id=task.id, raise_error=True)
+    sub_task(parent_task_id=task.id)

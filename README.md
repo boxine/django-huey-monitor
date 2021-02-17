@@ -20,6 +20,37 @@ INSTALLED_APPS = [
 ]
 ```
 
+Note: You must normally not change your Huey tasks.
+
+### Collect main-/sub-tasks
+
+Huey monitor model can store information about task hierarchy. But this information can't be collected automatically.
+You have to store these information in your Task code.
+
+e.g.:
+
+```python
+@task(context=True)
+def sub_task(task, parent_task_id, chunk_data):
+    # Save the task hierarchy by:
+    TaskModel.objects.set_parent_task(
+        main_task_id=parent_task_id,
+        sub_task_id=task.id,
+    )
+    # ... do something with e.g.: chunk_data ...
+
+
+@task(context=True)
+def main_task(task):
+    for chunk_data in something:
+        sub_task(parent_task_id=task.id, chunk_data=chunk_data)
+```
+
+Working example can be found in the test app here: [huey_monitor_tests/test_app/tasks.py](https://github.com/boxine/django-huey-monitor/blob/master/huey_monitor_tests/test_app/tasks.py)
+
+
+## run test project
+
 Note: You can quickly test Huey Monitor with the test project, e.g:
 
 ```bash
