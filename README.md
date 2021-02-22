@@ -49,6 +49,32 @@ def main_task(task):
 Working example can be found in the test app here: [huey_monitor_tests/test_app/tasks.py](https://github.com/boxine/django-huey-monitor/blob/master/huey_monitor_tests/test_app/tasks.py)
 
 
+### Collect progress information
+
+Running task can store progress information in a similar way as [tqdm](https://pypi.org/project/tqdm/).
+So it's possible to see the progress in admin.
+
+Minimal example:
+
+```python
+@task(context=True)
+def foobar_task(task, list_to_process):
+    process_info = ProcessInfo(
+        task,
+        desc='A description of this Job',
+        total=len(list_to_process)
+    )
+
+    for item in list_to_process:
+        # ...to something with the {item}...
+        process_info.update(n=1) # add the information that one item was processed
+```
+
+It is also possible to divide the work to several tasks and collect information about the processing of main-/sub-tasks.
+
+Working example can be found in the test app here: [huey_monitor_tests/test_app/tasks.py](https://github.com/boxine/django-huey-monitor/blob/master/huey_monitor_tests/test_app/tasks.py)
+
+
 ## run test project
 
 Note: You can quickly test Huey Monitor with the test project, e.g:
@@ -66,13 +92,13 @@ More info see below.
 
 (More Screenshots here: [boxine.github.io/django-huey-monitor/](https://boxine.github.io/django-huey-monitor/))
 
-### 2021-02-17-v020-change-list.png
+### 2021-02-22-v030-task-details.png
 
-![2021-02-17-v020-change-list.png](https://raw.githubusercontent.com/boxine/django-huey-monitor/gh-pages/2021-02-17-v020-change-list.png)
+![2021-02-22-v030-task-details.png](https://raw.githubusercontent.com/boxine/django-huey-monitor/gh-pages/2021-02-22-v030-task-details.png)
 
-### 2021-02-17-v020-task-details.png
+### 2021-02-22-v030-progress-info1.png
 
-![2021-02-17-v020-task-details.png](https://raw.githubusercontent.com/boxine/django-huey-monitor/gh-pages/2021-02-17-v020-task-details.png)
+![2021-02-22-v030-progress-info1.png](https://raw.githubusercontent.com/boxine/django-huey-monitor/gh-pages/2021-02-22-v030-progress-info1.png)
 
 
 ## developing
@@ -128,8 +154,10 @@ without docker:
 
 ## History
 
-* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.2.0...master)
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.3.0...master)
   * _tbc_
+* [v0.3.0 - 22.02.2020](https://github.com/boxine/django-huey-monitor/compare/v0.2.0...v0.3.0)
+  * Store and display running task progress information a little bit as [tqdm](https://pypi.org/project/tqdm/) [#17](https://github.com/boxine/django-huey-monitor/issues/17)
 * [v0.2.0 - 17.02.2020](https://github.com/boxine/django-huey-monitor/compare/v0.1.0...v0.2.0)
   * Store "parent_task" information for main-/sub-tasks
 * [v0.1.0 - 21.12.2020](https://github.com/boxine/django-huey-monitor/compare/v0.0.1...v0.1.0)
