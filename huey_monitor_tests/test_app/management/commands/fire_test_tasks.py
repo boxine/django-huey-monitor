@@ -4,8 +4,10 @@ from django.core.management import BaseCommand
 
 from huey_monitor_tests.test_app.tasks import (
     delay_task,
+    linear_processing_task,
     main_task,
     out_of_memory_task,
+    parallel_task,
     raise_error_task,
     retry_and_lock_task,
 )
@@ -15,6 +17,11 @@ class Command(BaseCommand):
     help = 'Just fire some Huey Tasks to fill the database a little bit ;)'
 
     def handle(self, *args, **options):
+        linear_processing_task()
+        parallel_task(
+            task_num=3  # Create three "worker" tasks
+        )
+
         delay_task(name='test sleep 1', sleep=3)
         raise_error_task(
             error_class_name='TypeError',

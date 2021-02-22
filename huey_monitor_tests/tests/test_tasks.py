@@ -20,7 +20,7 @@ class TasksTestCase(TestCase):
         task_id = task_result.task.id
 
         main_task_instance = TaskModel.objects.get(pk=task_id)
-        assert str(main_task_instance) == f'{task_id} - main_task (Main task)'
+        assert str(main_task_instance) == 'main_task: complete (Main task)'
 
         sub_tasks = TaskModel.objects.filter(parent_task=main_task_instance).order_by('-update_dt')
         values = list(sub_tasks.values_list('name', 'state__signal_name'))

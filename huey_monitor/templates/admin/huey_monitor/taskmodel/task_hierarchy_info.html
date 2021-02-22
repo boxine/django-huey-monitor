@@ -1,13 +1,18 @@
 {% load i18n humanize_time %}
 
 {% if main_task %}
+<p>
     <a href="{{ main_task.admin_link }}">{{ main_task.name }}</a>
+    {{ main_task.state|default_if_none:"" }}
+    {{ main_task.human_progress_string }}
+</p>
 {% elif sub_tasks %}
     <table class="table-bordered table-condensed table-striped huey_monitor">
     <thead>
         <tr>
             <th>{% trans 'Task' %}</th>
             <th>{% trans 'State' %}</th>
+            <th>{% trans 'Progress' %}</th>
             <th>{% trans 'Create date' %}</th>
             <th>{% trans 'Hostname' %}</th>
             <th>{% trans 'PID' %}</th>
@@ -22,6 +27,7 @@
                 <a href="{{ sub_task.admin_link }}">{{ sub_task.name }}</a>
             </td>
             <td>{{ sub_task.state|default_if_none:"-" }}</td>
+            <td>{{ sub_task.human_progress_string }}</td>
             <td>{{ sub_task.state.create_dt }}</td>
             <td>{{ sub_task.state.hostname }}</td>
             <td>{{ sub_task.state.pid }}</td>

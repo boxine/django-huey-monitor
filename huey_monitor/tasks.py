@@ -30,6 +30,7 @@ def store_signals(signal, task, exc=None):
     logger.info('Store Task %s signal %r', task_id, signal)
 
     signal_kwargs = {
+        # TODO: move parts into huey_monitor.models.SignalInfoManager
         'hostname': get_hostname(),
         'pid': os.getpid(),
         'thread': threading.current_thread().name,
@@ -77,6 +78,7 @@ def startup_handler():
         for task_model_instance in qs:
             logger.warning('Mark "executing" task %s to "unknown"', task_model_instance.pk)
             last_signal = SignalInfoModel.objects.create(
+                # TODO: move parts into huey_monitor.models.SignalInfoManager
                 hostname=get_hostname(),
                 pid=os.getpid(),
                 thread=threading.current_thread().name,
