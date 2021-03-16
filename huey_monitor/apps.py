@@ -7,5 +7,8 @@ class HueyMonitorConfig(AppConfig):
     verbose_name = _('Huey Monitor')
 
     def ready(self):
-        # register huey tasks
+        """
+        register our checks and huey tasks:
+        """
+        import huey_monitor.checks  # noqa
         import huey_monitor.tasks  # noqa
