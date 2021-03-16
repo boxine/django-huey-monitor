@@ -15,6 +15,7 @@ pip install django-huey-monitor
 ```python
 INSTALLED_APPS = [
     #...
+    'bx_py_utils', # https://github.com/boxine/bx_py_utils
     'huey_monitor',
     #...
 ]
