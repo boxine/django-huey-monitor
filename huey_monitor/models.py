@@ -1,7 +1,7 @@
 import logging
 import uuid
 
-from bx_py_utils.models.timetracking import TimetrackingBaseModel
+from bx_django_utils.models.timetracking import TimetrackingBaseModel
 from django.db import models
 from django.db.models import Sum
 from django.urls import reverse

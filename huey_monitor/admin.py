@@ -1,4 +1,4 @@
-from bx_py_utils.templatetags.humanize_time import human_duration
+from bx_django_utils.templatetags.humanize_time import human_duration
 from django.contrib import admin
 from django.contrib.admin.views.main import ChangeList
 from django.template.loader import render_to_string

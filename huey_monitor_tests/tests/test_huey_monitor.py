@@ -1,4 +1,4 @@
-from bx_py_utils.test_utils.html_assertion import HtmlAssertionMixin
+from bx_django_utils.test_utils.html_assertion import HtmlAssertionMixin
 from django.contrib.auth.models import User
 from django.test import TestCase
 
@@ -43,7 +43,7 @@ class HueyMonitorTestCase(HtmlAssertionMixin, TestCase):
         assert response.status_code == 200
         self.assertTemplateUsed(response, 'admin/change_form.html')
         self.assert_html_parts(response, parts=(
-            '<title>View Task | Django site admin</title>',
+            '<title>delay_task: complete (Main task) | View Task | Django site admin</title>',
 
             '<div class="readonly">delay_task</div>',
 
@@ -79,7 +79,11 @@ class HueyMonitorTestCase(HtmlAssertionMixin, TestCase):
         assert response.status_code == 200
         self.assertTemplateUsed(response, 'admin/change_form.html')
         self.assert_html_parts(response, parts=(
-            '<title>View Task Signal | Django site admin</title>',
+            (
+                '<title>'
+                'error - This is a test exception | View Task Signal | Django site admin'
+                '</title>'
+            ),
 
             '<div class="readonly">error</div>',
             '<div class="readonly">This is a test exception</div>',

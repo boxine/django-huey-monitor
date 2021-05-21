@@ -17,6 +17,6 @@ class SystemChecksTestCase(SimpleTestCase):
         ]):
             errors = checks.run_checks()
             assert errors == [Warning(
-                '"bx_py_utils" not in INSTALLED_APPS',
+                '"bx_django_utils" not in INSTALLED_APPS',
                 id='huey_monitor.E001',
             )]
