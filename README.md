@@ -15,7 +15,7 @@ pip install django-huey-monitor
 ```python
 INSTALLED_APPS = [
     #...
-    'bx_py_utils', # https://github.com/boxine/bx_py_utils
+    'bx_django_utils', # https://github.com/boxine/bx_django_utils
     'huey_monitor',
     #...
 ]
@@ -153,10 +153,29 @@ without docker:
 ~/django-huey-monitor$ ./manage.sh run_testserver
 ```
 
+## Backwards-incompatible changes
+
+### v0.3.0 -> v0.4.0 - Outsourcing Django stuff
+
+[bx_py_utils](https://github.com/boxine/bx_py_utils) was split and Django related stuff moved into: [bx_django_utils](https://github.com/boxine/bx_django_utils)
+
+You must change your Django settings and replace the app name:
+```diff
+ INSTALLED_APPS = [
+     #...
+-     'bx_py_utils',
++     'bx_django_utils',
+     'huey_monitor',
+     #...
+ ]
+```
+
 ## History
 
-* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.3.0...master)
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.4.0...master)
   * _tbc_
+* [v0.4.0 - 21.05.2020](https://github.com/boxine/django-huey-monitor/compare/v0.3.0...v0.4.0)
+  * bx_py_utils was split and Django related stuff moved into: https://github.com/boxine/bx_django_utils
 * [v0.3.0 - 22.02.2020](https://github.com/boxine/django-huey-monitor/compare/v0.2.0...v0.3.0)
   * Store and display running task progress information a little bit as [tqdm](https://pypi.org/project/tqdm/) [#17](https://github.com/boxine/django-huey-monitor/issues/17)
 * [v0.2.0 - 17.02.2020](https://github.com/boxine/django-huey-monitor/compare/v0.1.0...v0.2.0)

@@ -7,7 +7,7 @@ def huey_monitor_check(app_configs, **kwargs):
     errors = []
 
     if 'bx_django_utils' not in settings.INSTALLED_APPS:
-        # bx_py_utils is needed for "humanize_time" template library
+        # bx_django_utils is needed for "humanize_time" template library
         # See: https://github.com/boxine/django-huey-monitor/issues/21
         errors.append(
             Warning(
