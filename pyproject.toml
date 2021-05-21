@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-huey-monitor"
-version = "0.3.0"
+version = "0.4.0-rc.1"
 description = "Django based tool for monitoring huey task queue: https://github.com/coleifer/huey"
 authors = ["JensDiemer <git@jensdiemer.de>"]
 packages = [
@@ -38,6 +38,7 @@ python = ">=3.7,<4.0.0"
 django = "*"
 huey = "*"
 bx_py_utils = "*"  # https://github.com/boxine/bx_py_utils
+bx_django_utils = "*"  # https://github.com/boxine/bx_django_utils
 
 [tool.poetry.dev-dependencies]
 colorlog = "*"

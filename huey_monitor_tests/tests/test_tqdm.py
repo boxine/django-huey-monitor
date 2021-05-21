@@ -3,7 +3,8 @@ import time
 from pathlib import Path
 from unittest import mock
 
-from bx_py_utils.test_utils.datetime import MockDatetimeGenerator, parse_dt
+from bx_django_utils.test_utils.datetime import MockDatetimeGenerator
+from bx_py_utils.test_utils.datetime import parse_dt
 from django.test import TestCase
 from django.utils import timezone
 from huey.api import Result

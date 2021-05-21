@@ -6,12 +6,12 @@ from django.core.checks import Warning, register
 def huey_monitor_check(app_configs, **kwargs):
     errors = []
 
-    if 'bx_py_utils' not in settings.INSTALLED_APPS:
+    if 'bx_django_utils' not in settings.INSTALLED_APPS:
         # bx_py_utils is needed for "humanize_time" template library
         # See: https://github.com/boxine/django-huey-monitor/issues/21
         errors.append(
             Warning(
-                '"bx_py_utils" not in INSTALLED_APPS',
+                '"bx_django_utils" not in INSTALLED_APPS',
                 id='huey_monitor.E001',
             )
         )
