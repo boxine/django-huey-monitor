@@ -5,12 +5,14 @@ from unittest import mock
 
 from bx_django_utils.test_utils.datetime import MockDatetimeGenerator
 from bx_py_utils.test_utils.datetime import parse_dt
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
-from huey.api import Result
+from huey.api import Result, Task
 
 import huey_monitor
 from huey_monitor.models import SignalInfoModel, TaskModel, TaskProgressModel
+from huey_monitor.tqdm import ProcessInfo
 from huey_monitor_tests.test_app.tasks import linear_processing_task, parallel_task
 
 
@@ -168,3 +170,34 @@ class ProcessInfoTestCase(TestCase):
         assert progress == [
             (30, '1.00it'), (33, '1.00it'), (36, '1.00it'), (39, '1.00it'), (42, '1.00it')
         ]
+
+    def test_process_description_overlong(self):
+        TaskModel.objects.create(task_id='00000000-0000-0000-0000-000000000001')
+
+        # Test with current max length:
+        max_length = TaskModel._meta.get_field('desc').max_length
+        assert max_length == 64
+
+        task = Task(id='00000000-0000-0000-0000-000000000001')
+
+        # Set max length description:
+        with self.assertLogs('huey_monitor.tqdm') as logs:
+            ProcessInfo(task, desc='X' * max_length)
+            instance = TaskModel.objects.get()
+            assert instance.desc == 'X' * max_length
+
+        assert logs.output == [
+            (
+                'INFO:huey_monitor.tqdm:Init TaskModel Task'
+                ' - XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+                ' 0/Noneit (divisor: 1000)'
+            )
+        ]
+
+        # Overlong description should be cut:
+        msg = (
+            '["Process info description overlong:'
+            ' \'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\'"]'
+        )
+        with self.assertRaisesMessage(ValidationError, msg):
+            ProcessInfo(task, desc='Y' * (max_length + 1), total=999)
