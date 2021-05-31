@@ -1,5 +1,6 @@
 import logging
 
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from huey.api import Task
 
@@ -39,6 +40,15 @@ class ProcessInfo:
         self.unit = unit
         self.unit_divisor = unit_divisor
         self.parent_task_id = parent_task_id
+
+        if len(self.desc) > 64:
+            # We call .update() that will not validate the data, so a overlong
+            # description will raise a database error and maybe a user doesn't know
+            # what's happen ;)
+            raise ValidationError(
+                'Process info description overlong: %(desc)r',
+                params={'desc': self.desc},
+            )
 
         TaskModel.objects.filter(task_id=task.id).update(
             desc=self.desc,
