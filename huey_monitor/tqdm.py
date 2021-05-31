@@ -88,5 +88,5 @@ class ProcessInfo:
     def __str__(self):
         return (
             f'{self.task.name} - {self.desc} {self.total_progress}/{self.total}{self.unit}'
-            f' (divisor: {self.desc})'
+            f' (divisor: {self.unit_divisor})'
         )
