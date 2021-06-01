@@ -153,7 +153,20 @@ without docker:
 ~/django-huey-monitor$ ./manage.sh run_testserver
 ```
 
+
 ## Backwards-incompatible changes
+
+
+### Version compatibility
+
+|= huey-monitor   |= Django          |= Python
+| >v0.5.0         | v2.2, v3.1, v3.2 | v3.7, v3.8, v3.9
+| <=v0.4.0        | v2.2, v3.0, v3.1 | v3.7, v3.8, v3.9
+
+
+### v0.5.0
+
+Change CI and remove tests against Django 3.0, but add test run with Django v3.2
 
 ### v0.3.0 -> v0.4.0 - Outsourcing Django stuff
 
@@ -170,9 +183,12 @@ You must change your Django settings and replace the app name:
  ]
 ```
 
+
 ## History
 
 * [dev](https://github.com/boxine/django-huey-monitor/compare/v0.4.0...master)
+  * Remove test against Django 3.0 and add tests with Django 3.2
+  * Bugfix local `tox` runs and use different Python versions
   * _tbc_
 * [v0.4.0 - 21.05.2020](https://github.com/boxine/django-huey-monitor/compare/v0.3.0...v0.4.0)
   * bx_py_utils was split and Django related stuff moved into: https://github.com/boxine/bx_django_utils
