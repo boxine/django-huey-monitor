@@ -187,10 +187,13 @@ You must change your Django settings and replace the app name:
 
 ## History
 
-* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.4.0...master)
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.4.1...master)
+  * _tbc_
+* [v0.4.1 - 02.06.2020](https://github.com/boxine/django-huey-monitor/compare/v0.4.0...v0.4.1)
+  * Bugfix `ProcessInfo.__str__()`
+  * [#27](https://github.com/boxine/django-huey-monitor/issues/27) Check 'desc' length in `ProcessInfo`
   * Remove test against Django 3.0 and add tests with Django 3.2
   * Bugfix local `tox` runs and use different Python versions
-  * _tbc_
 * [v0.4.0 - 21.05.2020](https://github.com/boxine/django-huey-monitor/compare/v0.3.0...v0.4.0)
   * bx_py_utils was split and Django related stuff moved into: https://github.com/boxine/bx_django_utils
 * [v0.3.0 - 22.02.2020](https://github.com/boxine/django-huey-monitor/compare/v0.2.0...v0.3.0)
