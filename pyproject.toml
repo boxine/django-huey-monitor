@@ -131,7 +131,6 @@ skip_missing_interpreters = True
 
 [testenv]
 passenv = *
-whitelist_externals = make
 deps =
     django2.2: django>=2.2,<2.3
     django3.1: django>=3.1,<3.2
