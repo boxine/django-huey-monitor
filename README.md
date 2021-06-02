@@ -159,7 +159,8 @@ without docker:
 
 ### Version compatibility
 
-|= huey-monitor   |= Django          |= Python
+| huey-monitor    | Django           | Python
+|-----------------|------------------|------------------
 | >v0.5.0         | v2.2, v3.1, v3.2 | v3.7, v3.8, v3.9
 | <=v0.4.0        | v2.2, v3.0, v3.1 | v3.7, v3.8, v3.9
 
