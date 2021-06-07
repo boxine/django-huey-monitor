@@ -109,8 +109,6 @@ addopts = """
     --nomigrations
     --cov=.
     --cov-report term-missing
-    --cov-report html
-    --cov-report xml
     --no-cov-on-fail
     --showlocals
     --doctest-modules
