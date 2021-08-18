@@ -73,6 +73,43 @@ def foobar_task(task, list_to_process):
 
 It is also possible to divide the work to several tasks and collect information about the processing of main-/sub-tasks.
 
+```python
+@task(context=True)
+def foobar_task(task, list_to_process):
+    process_info = ProcessInfo(
+        task,
+        desc='A description of this Job',
+        total=len(list_to_process)
+        unit=' items'
+    )
+
+    for item in list_to_process:
+        foobar_subtask(item, parent_task_id = task.id)
+        process_info.update(n=1) # add the information that one item was processed
+
+@huey.db_task(context=True)
+def foobar_subtask(item, task=None, parent_task_id=None):
+    process_info = ProcessInfo(
+        task,
+        parent_task_id=parent_task_id, # to link progress reporting to the parent task
+        
+        cumulate_w_parent_progress=False, # optional: wether or not  the progress reported on the sub task will be cumulated also at the parent task level
+        # by default cumulate_w_parent_progress=True
+        
+        desc='A description of this Job',
+        total=len(item) # task_length,  # info on task size
+        unit=' sub-items'
+    )
+    
+    # ...to process the {item}...
+    for sub_item in item:
+        # ...do something with the {sub_items}...
+        process_info.update(n=1) # add the information that one sub-item was processed
+        # n will be added to the sub-task progress
+        # n will be added to the main-task progress also, unless cumulate_w_parent_progress=False is passed as a parameter
+
+```
+
 Working example can be found in the test app here: [huey_monitor_tests/test_app/tasks.py](https://github.com/boxine/django-huey-monitor/blob/master/huey_monitor_tests/test_app/tasks.py)
 
 
