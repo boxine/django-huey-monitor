@@ -188,6 +188,7 @@ You must change your Django settings and replace the app name:
 ## History
 
 * [dev](https://github.com/boxine/django-huey-monitor/compare/v0.4.1...master)
+  * suppress the default_app_config attribute in Django 3.2+ (contributed by [Jonas Svarvaa](https://github.com/xolan))
   * _tbc_
 * [v0.4.1 - 02.06.2020](https://github.com/boxine/django-huey-monitor/compare/v0.4.0...v0.4.1)
   * Bugfix `ProcessInfo.__str__()`
