@@ -60,16 +60,16 @@ class ProcessInfoTestCase(TestCase):
         info = sleep_mock.progress_info
         assert info == [
             [0, None, 'Foo Bar: executing (Main task)'],
-            [1, 2.0, 'Foo Bar: 1/10it 10% 0.50it/s (Main task)'],
-            [2, 4.0, 'Foo Bar: 2/10it 20% 0.50it/s (Main task)'],
-            [3, 6.0, 'Foo Bar: 3/10it 30% 0.50it/s (Main task)'],
-            [4, 8.0, 'Foo Bar: 4/10it 40% 0.50it/s (Main task)'],
-            [5, 10.0, 'Foo Bar: 5/10it 50% 0.50it/s (Main task)'],
-            [6, 12.0, 'Foo Bar: 6/10it 60% 0.50it/s (Main task)'],
-            [7, 14.0, 'Foo Bar: 7/10it 70% 0.50it/s (Main task)'],
-            [8, 16.0, 'Foo Bar: 8/10it 80% 0.50it/s (Main task)'],
-            [9, 18.0, 'Foo Bar: 9/10it 90% 0.50it/s (Main task)'],
-            [10, 23.0, 'Foo Bar: 10/10it 100% 0.43it/s (Main task)']
+            [1, 2.0, 'Foo Bar: 1/10it 10% 2.0\xa0seconds/it (Main task)'],
+            [2, 4.0, 'Foo Bar: 2/10it 20% 2.0\xa0seconds/it (Main task)'],
+            [3, 6.0, 'Foo Bar: 3/10it 30% 2.0\xa0seconds/it (Main task)'],
+            [4, 8.0, 'Foo Bar: 4/10it 40% 2.0\xa0seconds/it (Main task)'],
+            [5, 10.0, 'Foo Bar: 5/10it 50% 2.0\xa0seconds/it (Main task)'],
+            [6, 12.0, 'Foo Bar: 6/10it 60% 2.0\xa0seconds/it (Main task)'],
+            [7, 14.0, 'Foo Bar: 7/10it 70% 2.0\xa0seconds/it (Main task)'],
+            [8, 16.0, 'Foo Bar: 8/10it 80% 2.0\xa0seconds/it (Main task)'],
+            [9, 18.0, 'Foo Bar: 9/10it 90% 2.0\xa0seconds/it (Main task)'],
+            [10, 23.0, 'Foo Bar: 10/10it 100% 2.3\xa0seconds/it (Main task)']
         ]
 
     def test_progress_info_without_desc(self):
@@ -86,9 +86,9 @@ class ProcessInfoTestCase(TestCase):
         info = sleep_mock.progress_info
         assert info == [
             [0, None, 'linear_processing_task: executing (Main task)'],
-            [1, 2.0, 'linear_processing_task: 1/3it 33% 0.50it/s (Main task)'],
-            [2, 4.0, 'linear_processing_task: 2/3it 67% 0.50it/s (Main task)'],
-            [3, 9.0, 'linear_processing_task: 3/3it 100% 0.33it/s (Main task)']
+            [1, 2.0, 'linear_processing_task: 1/3it 33% 2.0\xa0seconds/it (Main task)'],
+            [2, 4.0, 'linear_processing_task: 2/3it 67% 2.0\xa0seconds/it (Main task)'],
+            [3, 9.0, 'linear_processing_task: 3/3it 100% 3.0\xa0seconds/it (Main task)']
         ]
 
     def test_progress_info_without_total(self):
@@ -105,9 +105,9 @@ class ProcessInfoTestCase(TestCase):
         info = sleep_mock.progress_info
         assert info == [
             [0, None, 'Without total: executing (Main task)'],
-            [1, 2.0, 'Without total: 1it 0.50it/s (Main task)'],
-            [2, 4.0, 'Without total: 2it 0.50it/s (Main task)'],
-            [3, 9.0, 'Without total: 3it 0.33it/s (Main task)']
+            [1, 2.0, 'Without total: 1it 2.0\xa0seconds/it (Main task)'],
+            [2, 4.0, 'Without total: 2it 2.0\xa0seconds/it (Main task)'],
+            [3, 9.0, 'Without total: 3it 3.0\xa0seconds/it (Main task)']
         ]
 
     def test_parallel_task(self):
@@ -133,8 +133,8 @@ class ProcessInfoTestCase(TestCase):
         main_task_id = task_result.task.id
 
         main_task_instance = TaskModel.objects.get(pk=main_task_id)
-        assert main_task_instance.human_progress_string() == '10/10it 100% 0.22it/s'
-        assert str(main_task_instance) == 'parallel_task: 10/10it 100% 0.22it/s (Main task)'
+        assert main_task_instance.human_progress_string() == '10/10it 100% 4.5\xa0seconds/it'
+        assert str(main_task_instance) == 'parallel_task: 10/10it 100% 4.5\xa0seconds/it (Main task)'
 
         sub_tasks = TaskModel.objects.filter(parent_task=main_task_instance).order_by('update_dt')
         values = list(sub_tasks.values_list('name', 'state__signal_name'))
@@ -146,9 +146,9 @@ class ProcessInfoTestCase(TestCase):
         # Note: Huey is in immediate mode, so the tasks executes synchronously!
 
         sub_tasks1 = sub_tasks[0]
-        assert sub_tasks1.human_progress_string() == '5/5it 100% 0.26it/s'
+        assert sub_tasks1.human_progress_string() == '5/5it 100% 3.8\xa0seconds/it'
         assert str(sub_tasks1) == (
-            'parallel_sub_task: 5/5it 100% 0.26it/s (Sub task of parallel_task)'
+            'parallel_sub_task: 5/5it 100% 3.8\xa0seconds/it (Sub task of parallel_task)'
         )
         progress = [
             (entry.create_dt.second, entry.human_progress_count())
@@ -159,9 +159,9 @@ class ProcessInfoTestCase(TestCase):
         ]
 
         sub_tasks2 = sub_tasks[1]
-        assert sub_tasks2.human_progress_string() == '5/5it 100% 0.26it/s'
+        assert sub_tasks2.human_progress_string() == '5/5it 100% 3.8\xa0seconds/it'
         assert str(sub_tasks2) == (
-            'parallel_sub_task: 5/5it 100% 0.26it/s (Sub task of parallel_task)'
+            'parallel_sub_task: 5/5it 100% 3.8\xa0seconds/it (Sub task of parallel_task)'
         )
         progress = [
             (entry.create_dt.second, entry.human_progress_count())

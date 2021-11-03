@@ -1,3 +1,6 @@
+from bx_django_utils.humanize.time import human_timedelta
+
+
 def format_sizeof(num, suffix='', divisor=1000):
     """
     Formats a number (greater than unity) with SI Order of Magnitude
@@ -50,13 +53,23 @@ def percentage(num, total):
     return f'{percentage:.0f}%'
 
 
-def throughput(num, elapsed_sec, suffix='', divisor=1000):
+def throughput(num, elapsed_sec, suffix='', divisor=1000) -> str:
     """
+    Returns throughput in different format depending if rate is higher or lower than 1
+
     >>> throughput(3.333, 1)
     '3.33/s'
     >>> throughput(2048, 1, suffix='Bytes', divisor=1024)
     '2.00kBytes/s'
+    >>> throughput(4, 250, suffix='subtask')
+    '1.0\xa0minutes/subtask'
     """
     rate = num / elapsed_sec
-    rate_str = format_sizeof(rate, suffix=suffix, divisor=divisor)
-    return f'{rate_str}/s'
+
+    if rate > 1:
+        rate_str = format_sizeof(rate, suffix=suffix, divisor=divisor)
+        return f'{rate_str}/s'
+
+    else:
+        duration_str = human_timedelta(1 / rate)
+        return f'{duration_str}/{suffix}'
