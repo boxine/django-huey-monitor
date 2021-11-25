@@ -84,7 +84,7 @@ class ProcessInfo:
             # Store information for main task, too:
             ids.append(self.parent_task_id)
             
-            if self.cumulate_w_parent_progress:
+            if self.cumulate2parents:
                 objects.append(
                     TaskProgressModel(
                         task_id=self.parent_task_id,
