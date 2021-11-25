@@ -22,7 +22,7 @@ class ProcessInfo:
                  unit='it',
                  unit_divisor=1000,
                  parent_task_id=None,
-                 cumulate_w_parent_progress=True,
+                 cumulate2parents=True,
                  ):
         """
         Parameters
@@ -33,7 +33,7 @@ class ProcessInfo:
         unit: str, optional: String that will be used to define the unit of each iteration
         unit_divisor: int, optional
         parent_task_id: int, optional: Huey Task ID if a parent Tasks exists.
-        cumulate_w_parent_progress: bool, optional: option to cumulate progress to the parent task progress if parent_task_id is provided
+        cumulate2parents: bool, optional: option to cumulate progress to the parent task progress if parent_task_id is provided
         """
         assert isinstance(task, Task), f'No task given: {task!r} (Hint: use "context=True")'
         self.task = task
@@ -42,7 +42,7 @@ class ProcessInfo:
         self.unit = unit
         self.unit_divisor = unit_divisor
         self.parent_task_id = parent_task_id
-        self.cumulate_w_parent_progress = cumulate_w_parent_progress
+        self.cumulate2parents = cumulate2parents
 
         if len(self.desc) > 64:
             # We call .update() that will not validate the data, so a overlong
