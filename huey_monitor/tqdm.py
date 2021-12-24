@@ -33,7 +33,7 @@ class ProcessInfo:
         unit: str, optional: String that will be used to define the unit of each iteration
         unit_divisor: int, optional
         parent_task_id: int, optional: Huey Task ID if a parent Tasks exists.
-        cumulate2parents: bool, optional: option to cumulate progress to the parent task progress 
+        cumulate2parents: bool, optional: option to cumulate progress to the parent task progress
             Note: parent_task_id must be provided to cumulate progress to the parent task progress
         """
         assert isinstance(task, Task), f'No task given: {task!r} (Hint: use "context=True")'
@@ -84,7 +84,7 @@ class ProcessInfo:
         if self.parent_task_id:
             # Store information for main task, too:
             ids.append(self.parent_task_id)
-            
+
             if self.cumulate2parents:
                 objects.append(
                     TaskProgressModel(
