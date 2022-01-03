@@ -98,7 +98,7 @@ class TaskModelAdmin(admin.ModelAdmin):
     ordering = ('-update_dt',)
     list_display_links = None
     date_hierarchy = 'create_dt'
-    list_filter = ('state__hostname', 'name', 'state__signal_name')
+    list_filter = ('finished', 'state__signal_name', 'name', 'state__hostname')
     search_fields = ('name', 'state__exception_line', 'state__exception')
     fieldsets = (
         (_('Meta'), {

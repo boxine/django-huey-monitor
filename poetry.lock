@@ -612,6 +612,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "model-bakery"
+version = "1.4.0"
+description = "Smart object creation facility for Django."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+django = ">=2.2"
+
+[[package]]
 name = "msgpack"
 version = "1.0.3"
 description = "MessagePack (de)serializer."
@@ -1299,7 +1310,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4.0.0"
-content-hash = "a80834bf613fea77ced73d01437720872c580850dd9ee566869a9da9137f14af"
+content-hash = "9c09256d0cde83edbbb1ef28792a6044b7c78ff9d4143e825cdd4a3ff0933aee"
 
 [metadata.files]
 asgiref = [
@@ -1610,6 +1621,10 @@ lockfile = [
 mccabe = [
     {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},
     {file = "mccabe-0.6.1.tar.gz", hash = "sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f"},
+]
+model-bakery = [
+    {file = "model_bakery-1.4.0-py2.py3-none-any.whl", hash = "sha256:a89befaae667380f5e2352981d45fed36747941f5c3e9dffa962fc6ba8d661d1"},
+    {file = "model_bakery-1.4.0.tar.gz", hash = "sha256:c29fb821c81cda2c37dfbdcb1dd2218cda179ecb96c6edb6cd9cdaa146706d92"},
 ]
 msgpack = [
     {file = "msgpack-1.0.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:96acc674bb9c9be63fa8b6dabc3248fdc575c4adc005c440ad02f87ca7edd079"},
