@@ -3,9 +3,10 @@ from huey.api import Result
 
 from huey_monitor.models import SignalInfoModel, TaskModel
 from huey_monitor_tests.test_app.tasks import main_task
+from huey_monitor_tests.tests.utils import ClearCacheMixin
 
 
-class TasksTestCase(TestCase):
+class TasksTestCase(ClearCacheMixin, TestCase):
 
     def test_main_sub_task(self):
         assert TaskModel.objects.count() == 0

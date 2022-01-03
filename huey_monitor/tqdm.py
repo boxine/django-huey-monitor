@@ -1,10 +1,11 @@
 import logging
+import warnings
 
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 from huey.api import Task
 
-from huey_monitor.models import TaskModel, TaskProgressModel
+from huey_monitor.models import TaskModel
+from huey_monitor.progress_cache import inc_task_progress
 
 
 logger = logging.getLogger(__name__)
@@ -15,15 +16,17 @@ class ProcessInfo:
     Simple helper inspired by tqdm ;)
     """
 
-    def __init__(self,
-                 task, *,
-                 desc=None,
-                 total=None,
-                 unit='it',
-                 unit_divisor=1000,
-                 parent_task_id=None,
-                 cumulate2parents=True,  # deprecated see #57
-                 ):
+    def __init__(
+        self,
+        task,
+        *,
+        desc=None,
+        total=None,
+        unit='it',
+        unit_divisor=1000,
+        parent_task_id=None,
+        cumulate2parents=None,  # deprecated see #57
+    ):
         """
         Parameters
         ----------
@@ -33,10 +36,6 @@ class ProcessInfo:
         unit: str, optional: String that will be used to define the unit of each iteration
         unit_divisor: int, optional
         parent_task_id: int, optional: Huey Task ID if a parent Tasks exists.
-        cumulate2parents: bool, optional: option to cumulate progress to the parent task progress
-            Note: parent_task_id must be provided to cumulate progress to the parent task progress
-                  this option will be removed in the future, see:
-                  https://github.com/boxine/django-huey-monitor/discussions/57
         """
         assert isinstance(task, Task), f'No task given: {task!r} (Hint: use "context=True")'
         self.task = task
@@ -45,7 +44,12 @@ class ProcessInfo:
         self.unit = unit
         self.unit_divisor = unit_divisor
         self.parent_task_id = parent_task_id
-        self.cumulate2parents = cumulate2parents
+
+        if cumulate2parents is not None:
+            warnings.warn(
+                '"cumulate2parents" argument will be remove in the future!',
+                PendingDeprecationWarning,
+            )
 
         if len(self.desc) > 64:
             # We call .update() that will not validate the data, so a overlong
@@ -69,38 +73,10 @@ class ProcessInfo:
 
     def update(self, n=1):
         """
-        Create a TaskProgressModel instance to main and sub tasks
-        to store the progress information.
+        Store the progress information
         """
-        self.total_progress += n
-
-        now = timezone.now()
-        ids = [self.task.id]
-        main_progress, _ = TaskProgressModel.objects.get_or_create(
-            task_id=self.task.id, defaults=dict(create_dt=now)
-        )
-        objects = [main_progress]
-
-        if self.parent_task_id:
-            # Store information for main task, too:
-            ids.append(self.parent_task_id)
-
-            if self.cumulate2parents:
-                parent_progess, _ = TaskProgressModel.objects.get_or_create(
-                    task_id=self.parent_task_id, defaults=dict(create_dt=now)
-                )
-                objects.append(parent_progess)
-
-        for obj in objects:
-            if obj.progress_count:
-                obj.progress_count += n
-            else:
-                obj.progress_count = n
-            obj.save(update_fields=('progress_count',))
-
-        # Update the last change date times:
-        TaskModel.objects.filter(task_id__in=ids).update(
-            update_dt=now
+        self.total_progress = inc_task_progress(
+            task_id=self.task.id, progress_count=n, cumulate2parents=self.cumulate2parents
         )
 
     def __str__(self):

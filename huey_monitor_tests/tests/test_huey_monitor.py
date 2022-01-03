@@ -5,9 +5,10 @@ from django.test import TestCase
 
 from huey_monitor.models import SignalInfoModel, TaskModel
 from huey_monitor_tests.test_app.tasks import delay_task, raise_error_task
+from huey_monitor_tests.tests.utils import ClearCacheMixin
 
 
-class HueyMonitorTestCase(HtmlAssertionMixin, TestCase):
+class HueyMonitorTestCase(ClearCacheMixin, HtmlAssertionMixin, TestCase):
 
     @classmethod
     def setUpTestData(cls):
