@@ -187,8 +187,10 @@ You must change your Django settings and replace the app name:
 
 ## History
 
-* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.4.3...master)
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.4.4...master)
   * _tbc_
+* [v0.4.4 - 07.01.2022](https://github.com/boxine/django-huey-monitor/compare/v0.4.3...v0.4.4)
+  * Add missing `huey_monitor.css` file
 * [v0.4.3 - 07.01.2022](https://github.com/boxine/django-huey-monitor/compare/v0.4.2...v0.4.3)
   * Add temporary `cumulate2parents` flag to `ProcessInfo` ([contributed by formacube](https://github.com/boxine/django-huey-monitor/pull/44))
 * [v0.4.2 - 25.08.2020](https://github.com/boxine/django-huey-monitor/compare/v0.4.1...v0.4.2)
