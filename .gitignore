@@ -12,7 +12,6 @@ htmlcov
 static
 volumes
 
-poetry.lock
 *.xml
 *.log
 *.sqlite*

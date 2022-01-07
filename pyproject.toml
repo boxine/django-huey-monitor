@@ -55,7 +55,10 @@ pytest-django = "*"
 coveralls = "*"
 isort = "*"
 flake8 = "*"
-flynt = "*"
+
+# See: https://github.com/ikamensh/flynt/issues/119
+flynt = "!=0.71,!=0.72,!=0.73,!=0.74,!=0.75"
+
 autopep8 = "*"
 pyupgrade = "*"
 tox-poetry-installer = {extras = ["poetry"], version = "*"}  # https://github.com/enpaul/tox-poetry-installer
