@@ -1,0 +1,7 @@
+table.huey_monitor {
+    width:100%
+}
+td.exception_info {
+    overflow:scroll;
+    max-width: 45em;
+}

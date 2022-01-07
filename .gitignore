@@ -10,6 +10,7 @@ __pycache__
 
 htmlcov
 static
+!huey_monitor/static
 volumes
 
 *.xml
