@@ -21,7 +21,8 @@ class ProcessInfo:
                  total=None,
                  unit='it',
                  unit_divisor=1000,
-                 parent_task_id=None
+                 parent_task_id=None,
+                 cumulate2parents=True,  # deprecated see #57
                  ):
         """
         Parameters
@@ -32,6 +33,10 @@ class ProcessInfo:
         unit: str, optional: String that will be used to define the unit of each iteration
         unit_divisor: int, optional
         parent_task_id: int, optional: Huey Task ID if a parent Tasks exists.
+        cumulate2parents: bool, optional: option to cumulate progress to the parent task progress
+            Note: parent_task_id must be provided to cumulate progress to the parent task progress
+                  this option will be removed in the future, see:
+                  https://github.com/boxine/django-huey-monitor/discussions/57
         """
         assert isinstance(task, Task), f'No task given: {task!r} (Hint: use "context=True")'
         self.task = task
@@ -40,6 +45,7 @@ class ProcessInfo:
         self.unit = unit
         self.unit_divisor = unit_divisor
         self.parent_task_id = parent_task_id
+        self.cumulate2parents = cumulate2parents
 
         if len(self.desc) > 64:
             # We call .update() that will not validate the data, so a overlong
@@ -80,13 +86,15 @@ class ProcessInfo:
         if self.parent_task_id:
             # Store information for main task, too:
             ids.append(self.parent_task_id)
-            objects.append(
-                TaskProgressModel(
-                    task_id=self.parent_task_id,
-                    progress_count=n,
-                    create_dt=now
+
+            if self.cumulate2parents:
+                objects.append(
+                    TaskProgressModel(
+                        task_id=self.parent_task_id,
+                        progress_count=n,
+                        create_dt=now
+                    )
                 )
-            )
 
         TaskProgressModel.objects.bulk_create(objects)
 
