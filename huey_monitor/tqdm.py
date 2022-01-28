@@ -76,27 +76,27 @@ class ProcessInfo:
 
         now = timezone.now()
         ids = [self.task.id]
-        objects = [
-            TaskProgressModel(
-                task_id=self.task.id,
-                progress_count=n,
-                create_dt=now
-            )
-        ]
+        main_progress, _ = TaskProgressModel.objects.get_or_create(
+            task_id=self.task.id, defaults=dict(create_dt=now)
+        )
+        objects = [main_progress]
+
         if self.parent_task_id:
             # Store information for main task, too:
             ids.append(self.parent_task_id)
 
             if self.cumulate2parents:
-                objects.append(
-                    TaskProgressModel(
-                        task_id=self.parent_task_id,
-                        progress_count=n,
-                        create_dt=now
-                    )
+                parent_progess, _ = TaskProgressModel.objects.get_or_create(
+                    task_id=self.parent_task_id, defaults=dict(create_dt=now)
                 )
+                objects.append(parent_progess)
 
-        TaskProgressModel.objects.bulk_create(objects)
+        for obj in objects:
+            if obj.progress_count:
+                obj.progress_count += n
+            else:
+                obj.progress_count = n
+            obj.save(update_fields=('progress_count',))
 
         # Update the last change date times:
         TaskModel.objects.filter(task_id__in=ids).update(
