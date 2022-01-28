@@ -9,4 +9,4 @@ if DJANGO_VERSION < (3, 2):
     default_app_config = 'huey_monitor.apps.HueyMonitorConfig'
 
 
-__version__ = '0.4.4'
+__version__ = '0.4.5'
