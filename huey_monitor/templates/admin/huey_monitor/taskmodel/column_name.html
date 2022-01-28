@@ -1,10 +1,10 @@
 
-<strong><a href="{{ main_task.admin_link }}">{{ main_task.name }}</a></strong>
+<strong><a href="{{ main_task.admin_link }}">{% firstof main_task.desc main_task.name %}</a></strong>
 {% if sub_tasks %}
 <ul style="white-space: nowrap;">
     {% for sub_task in sub_tasks %}
         <li>
-            <a href="{{ sub_task.admin_link }}">{{ sub_task.name }}</a>
+            <a href="{{ sub_task.admin_link }}">{% firstof sub_task.desc sub_task.name %}</a>
             {{ sub_task.state|default_if_none:"-"|truncatechars:40 }}
             {{ sub_task.human_progress_string }}
         </li>
