@@ -2,7 +2,7 @@
 
 {% if main_task %}
 <p>
-    <a href="{{ main_task.admin_link }}">{{ main_task.name }}</a>
+    <a href="{{ main_task.admin_link }}">{% firstof main_task.desc main_task.name %}</a>
     {{ main_task.state|default_if_none:"" }}
     {{ main_task.human_progress_string }}
 </p>
@@ -24,7 +24,7 @@
     {% for sub_task in sub_tasks %}
         <tr>
             <td>
-                <a href="{{ sub_task.admin_link }}">{{ sub_task.name }}</a>
+                <a href="{{ sub_task.admin_link }}">{% firstof sub_task.desc sub_task.name %}</a>
             </td>
             <td>{{ sub_task.state|default_if_none:"-" }}</td>
             <td>{{ sub_task.human_progress_string }}</td>
