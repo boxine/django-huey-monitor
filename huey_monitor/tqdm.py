@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from huey.api import Task
 
-from huey_monitor.models import TaskModel, TaskProgressModel
+from huey_monitor.models import TaskModel
 
 
 logger = logging.getLogger(__name__)
@@ -45,7 +45,6 @@ class ProcessInfo:
         self.unit = unit
         self.unit_divisor = unit_divisor
         self.parent_task_id = parent_task_id
-        self.cumulate2parents = cumulate2parents
 
         if len(self.desc) > 64:
             # We call .update() that will not validate the data, so a overlong
@@ -59,8 +58,10 @@ class ProcessInfo:
         TaskModel.objects.filter(task_id=task.id).update(
             desc=self.desc,
             total=self.total,
+            progress_count=0,
             unit=self.unit,
             unit_divisor=self.unit_divisor,
+            cumulate_progress=cumulate2parents,
         )
 
         self.total_progress = 0
@@ -69,38 +70,15 @@ class ProcessInfo:
 
     def update(self, n=1):
         """
-        Create a TaskProgressModel instance to main and sub tasks
-        to store the progress information.
+        Update TaskModel progress information.
+        Note: We will not store cumulate progress information, now.
+              This will be done, if task ends in signal handler!
         """
         self.total_progress += n
 
-        now = timezone.now()
-        ids = [self.task.id]
-        main_progress, _ = TaskProgressModel.objects.get_or_create(
-            task_id=self.task.id, defaults=dict(create_dt=now)
-        )
-        objects = [main_progress]
-
-        if self.parent_task_id:
-            # Store information for main task, too:
-            ids.append(self.parent_task_id)
-
-            if self.cumulate2parents:
-                parent_progess, _ = TaskProgressModel.objects.get_or_create(
-                    task_id=self.parent_task_id, defaults=dict(create_dt=now)
-                )
-                objects.append(parent_progess)
-
-        for obj in objects:
-            if obj.progress_count:
-                obj.progress_count += n
-            else:
-                obj.progress_count = n
-            obj.save(update_fields=('progress_count',))
-
         # Update the last change date times:
-        TaskModel.objects.filter(task_id__in=ids).update(
-            update_dt=now
+        TaskModel.objects.filter(task_id=self.task.id).update(
+            update_dt=timezone.now(), progress_count=self.total_progress
         )
 
     def __str__(self):

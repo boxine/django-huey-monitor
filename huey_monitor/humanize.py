@@ -64,6 +64,10 @@ def throughput(num, elapsed_sec, suffix='', divisor=1000) -> str:
     >>> throughput(4, 250, suffix='subtask')
     '1.0\xa0minutes/subtask'
     """
+    if num == 0:
+        if suffix:
+            return f'0/{suffix}'
+        return '0'
     rate = num / elapsed_sec
 
     if rate > 1:

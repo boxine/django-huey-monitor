@@ -8,8 +8,10 @@ import uuid
 from functools import lru_cache
 
 from django.db import transaction
+from django.db.models import Sum
 from huey.contrib.djhuey import on_startup, signal
 
+from huey_monitor.constants import ENDED_HUEY_SIGNALS
 from huey_monitor.models import SignalInfoModel, TaskModel
 
 
@@ -21,13 +23,39 @@ def get_hostname():
     return socket.gethostname()
 
 
+def update_task_instance(instance, last_signal, task_finished):
+    instance.state_id = last_signal.pk
+    update_fields = ['state_id']
+    if task_finished:
+        instance.finished = True
+        update_fields.append('finished')
+
+        if instance.cumulate_progress:
+            # Progress of the sub tasks should be added up and saved in the parent task
+            if instance.parent_task_id is None:
+                # This is the main task -> collect process count
+                qs = TaskModel.objects.filter(parent_task_id=instance.task_id).aggregate(
+                    Sum('progress_count')
+                )
+                progress_count = qs['progress_count__sum']
+                if progress_count is not None:
+                    instance.progress_count = progress_count
+                    update_fields.append('progress_count')
+
+    instance.save(update_fields=update_fields)
+
+
 @signal()
 def store_signals(signal, task, exc=None):
     """
     Store all Huey signals.
     """
     task_id = uuid.UUID(task.id)
-    logger.info('Store Task %s signal %r', task_id, signal)
+
+    # Task no longer waits or run?
+    task_finished = signal in ENDED_HUEY_SIGNALS
+
+    logger.info('Store Task %s signal %r (finished: %s)', task_id, signal, task_finished)
 
     signal_kwargs = {
         # TODO: move parts into huey_monitor.models.SignalInfoManager
@@ -50,11 +78,16 @@ def store_signals(signal, task, exc=None):
         )
 
         signal_kwargs['task'] = task_model_instance
+        if task_model_instance.progress_count is not None:
+            signal_kwargs['progress_count'] = task_model_instance.progress_count
 
         last_signal = SignalInfoModel.objects.create(**signal_kwargs)
 
-        task_model_instance.state_id = last_signal.pk
-        task_model_instance.save(update_fields=('state_id',))
+        update_task_instance(
+            instance=task_model_instance,
+            last_signal=last_signal,
+            task_finished=task_finished,
+        )
 
 
 @on_startup()
@@ -84,6 +117,10 @@ def startup_handler():
                 thread=threading.current_thread().name,
                 task_id=task_model_instance.pk,
                 signal_name='unknown',
+                progress_count=task_model_instance.progress_count,
             )
-            task_model_instance.state_id = last_signal.pk
-            task_model_instance.save(update_fields=('state_id',))
+            update_task_instance(
+                instance=task_model_instance,
+                last_signal=last_signal,
+                task_finished=True,
+            )

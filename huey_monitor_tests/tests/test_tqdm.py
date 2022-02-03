@@ -11,7 +11,7 @@ from django.utils import timezone
 from huey.api import Result, Task
 
 import huey_monitor
-from huey_monitor.models import SignalInfoModel, TaskModel, TaskProgressModel
+from huey_monitor.models import SignalInfoModel, TaskModel
 from huey_monitor.tqdm import ProcessInfo
 from huey_monitor_tests.test_app.tasks import linear_processing_task, parallel_task
 
@@ -34,9 +34,7 @@ class SleepMock:
         executing_dt = instance.executing_dt
         assert executing_dt == parse_dt('2000-01-01T00:00:02+0000')
 
-        progress_count, elapsed_sec = instance.progress_info
-
-        self.progress_info.append([self.count, elapsed_sec, str(instance)])
+        self.progress_info.append([self.count, instance.elapsed_sec, str(instance)])
 
         self.count += 1
 
@@ -58,17 +56,17 @@ class ProcessInfoTestCase(TestCase):
 
         info = sleep_mock.progress_info
         assert info == [
-            [0, None, 'Foo Bar: executing (Main task)'],
+            [0, 1.0, 'Foo Bar: 0/10it 0% 0/it (Main task)'],
             [1, 2.0, 'Foo Bar: 1/10it 10% 2.0\xa0seconds/it (Main task)'],
-            [2, 4.0, 'Foo Bar: 2/10it 20% 2.0\xa0seconds/it (Main task)'],
-            [3, 5.0, 'Foo Bar: 3/10it 30% 1.7\xa0seconds/it (Main task)'],
-            [4, 6.0, 'Foo Bar: 4/10it 40% 1.5\xa0seconds/it (Main task)'],
-            [5, 7.0, 'Foo Bar: 5/10it 50% 1.4\xa0seconds/it (Main task)'],
-            [6, 8.0, 'Foo Bar: 6/10it 60% 1.3\xa0seconds/it (Main task)'],
-            [7, 9.0, 'Foo Bar: 7/10it 70% 1.3\xa0seconds/it (Main task)'],
-            [8, 10.0, 'Foo Bar: 8/10it 80% 1.2\xa0seconds/it (Main task)'],
-            [9, 11.0, 'Foo Bar: 9/10it 90% 1.2\xa0seconds/it (Main task)'],
-            [10, 14.0, 'Foo Bar: 10/10it 100% 1.4\xa0seconds/it (Main task)'],
+            [2, 3.0, 'Foo Bar: 2/10it 20% 1.5\xa0seconds/it (Main task)'],
+            [3, 4.0, 'Foo Bar: 3/10it 30% 1.3\xa0seconds/it (Main task)'],
+            [4, 5.0, 'Foo Bar: 4/10it 40% 1.2\xa0seconds/it (Main task)'],
+            [5, 6.0, 'Foo Bar: 5/10it 50% 1.2\xa0seconds/it (Main task)'],
+            [6, 7.0, 'Foo Bar: 6/10it 60% 1.2\xa0seconds/it (Main task)'],
+            [7, 8.0, 'Foo Bar: 7/10it 70% 1.1\xa0seconds/it (Main task)'],
+            [8, 9.0, 'Foo Bar: 8/10it 80% 1.1\xa0seconds/it (Main task)'],
+            [9, 10.0, 'Foo Bar: 9/10it 90% 1.1\xa0seconds/it (Main task)'],
+            [10, 13.0, 'Foo Bar: 10/10it 100% 1.3\xa0seconds/it finished (Main task)'],
         ]
 
     def test_progress_info_without_desc(self):
@@ -84,10 +82,10 @@ class ProcessInfoTestCase(TestCase):
 
         info = sleep_mock.progress_info
         assert info == [
-            [0, None, 'linear_processing_task: executing (Main task)'],
+            [0, 1.0, 'linear_processing_task: 0/3it 0% 0/it (Main task)'],
             [1, 2.0, 'linear_processing_task: 1/3it 33% 2.0\xa0seconds/it (Main task)'],
-            [2, 4.0, 'linear_processing_task: 2/3it 67% 2.0\xa0seconds/it (Main task)'],
-            [3, 7.0, 'linear_processing_task: 3/3it 100% 2.3\xa0seconds/it (Main task)'],
+            [2, 3.0, 'linear_processing_task: 2/3it 67% 1.5\xa0seconds/it (Main task)'],
+            [3, 6.0, 'linear_processing_task: 3/3it 100% 2.0\xa0seconds/it finished (Main task)'],
         ]
 
     def test_progress_info_without_total(self):
@@ -103,15 +101,14 @@ class ProcessInfoTestCase(TestCase):
 
         info = sleep_mock.progress_info
         assert info == [
-            [0, None, 'Without total: executing (Main task)'],
+            [0, 1.0, 'Without total: 0it 0/it (Main task)'],
             [1, 2.0, 'Without total: 1it 2.0\xa0seconds/it (Main task)'],
-            [2, 4.0, 'Without total: 2it 2.0\xa0seconds/it (Main task)'],
-            [3, 7.0, 'Without total: 3it 2.3\xa0seconds/it (Main task)'],
+            [2, 3.0, 'Without total: 2it 1.5\xa0seconds/it (Main task)'],
+            [3, 6.0, 'Without total: 3it 2.0\xa0seconds/it finished (Main task)'],
         ]
 
     def test_parallel_task(self):
         assert TaskModel.objects.count() == 0
-        assert TaskProgressModel.objects.count() == 0
 
         class TimeSleepNoop:
             def __call__(self, *args, **kwargs):
@@ -126,15 +123,16 @@ class ProcessInfoTestCase(TestCase):
             )
 
         assert TaskModel.objects.count() == 3
-        assert TaskProgressModel.objects.count()
 
         assert isinstance(task_result, Result)
         main_task_id = task_result.task.id
 
         main_task_instance = TaskModel.objects.get(pk=main_task_id)
-        assert main_task_instance.human_progress_string() == '10/10it 100% 2.8\xa0seconds/it'
-        assert (
-            str(main_task_instance) == 'parallel_task: 10/10it 100% 2.8\xa0seconds/it (Main task)'
+        assert main_task_instance.human_progress_string() == (
+            '10/10it 100% 2.5 seconds/it finished'
+        )
+        assert str(main_task_instance) == (
+            'parallel_task: 10/10it 100% 2.5 seconds/it finished (Main task)'
         )
 
         sub_tasks = TaskModel.objects.filter(parent_task=main_task_instance).order_by('update_dt')
@@ -147,26 +145,16 @@ class ProcessInfoTestCase(TestCase):
         # Note: Huey is in immediate mode, so the tasks executes synchronously!
 
         sub_tasks1 = sub_tasks[0]
-        assert sub_tasks1.human_progress_string() == '5/5it 100% 2.2\xa0seconds/it'
+        assert sub_tasks1.human_progress_string() == '5/5it 100% 1.8 seconds/it finished'
         assert str(sub_tasks1) == (
-            'parallel_sub_task: 5/5it 100% 2.2\xa0seconds/it (Sub task of parallel_task)'
+            'parallel_sub_task: 5/5it 100% 1.8 seconds/it finished (Sub task of parallel_task)'
         )
-        progress = [
-            (entry.create_dt.second, entry.human_progress_count())
-            for entry in TaskProgressModel.objects.filter(task=sub_tasks1).order_by('create_dt')
-        ]
-        assert progress == [(9, '5.00it')]
 
         sub_tasks2 = sub_tasks[1]
-        assert sub_tasks2.human_progress_string() == '5/5it 100% 2.0\xa0seconds/it'
+        assert sub_tasks2.human_progress_string() == '5/5it 100% 1.8 seconds/it finished'
         assert str(sub_tasks2) == (
-            'parallel_sub_task: 5/5it 100% 2.0\xa0seconds/it (Sub task of parallel_task)'
+            'parallel_sub_task: 5/5it 100% 1.8 seconds/it finished (Sub task of parallel_task)'
         )
-        progress = [
-            (entry.create_dt.second, entry.human_progress_count())
-            for entry in TaskProgressModel.objects.filter(task=sub_tasks2).order_by('create_dt')
-        ]
-        assert progress == [(22, '5.00it')]
 
     def test_process_description_overlong(self):
         TaskModel.objects.create(task_id='00000000-0000-0000-0000-000000000001')

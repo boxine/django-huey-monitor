@@ -3,8 +3,8 @@ import uuid
 
 from bx_django_utils.models.timetracking import TimetrackingBaseModel
 from django.db import models
-from django.db.models import Sum
 from django.urls import reverse
+from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from huey.signals import SIGNAL_EXECUTING
 
@@ -59,15 +59,39 @@ class TaskModel(TimetrackingBaseModel):
         verbose_name=_('State'),
         help_text=_('Last Signal information'),
     )
+    finished = models.BooleanField(
+        default=False,
+        verbose_name=_('Finished'),
+        help_text=_(
+            'Indicates that this Task no longer waits or run.'
+            ' (It does not mean that execution was successfully completed.)'
+        ),
+    )
 
     desc = models.CharField(
-        max_length=64, default='',
+        max_length=64,
+        default='',
+        blank=True,
         verbose_name=_('Description'),
         help_text=_('Prefix for progress information'),
     )
     total = models.PositiveIntegerField(
         null=True, blank=True,
         help_text=_('The number of expected iterations')
+    )
+    progress_count = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_('Progress Count'),
+        help_text=_('Number of units processed (If provided)'),
+    )
+    cumulate_progress = models.BooleanField(
+        default=True,
+        verbose_name=_('Cumulate Progress?'),
+        help_text=_(
+            'Should the progress of the sub tasks be added up and saved in the parent task?'
+            ' (Will be done after the task has ended)'
+        ),
     )
     unit = models.CharField(
         max_length=64,
@@ -89,56 +113,48 @@ class TaskModel(TimetrackingBaseModel):
             return executing_signal.create_dt
 
     @cached_property
-    def progress_info(self):
-        progress_count = TaskProgressModel.objects.get_progress_info(task_id=self.task_id)
-        if progress_count and self.executing_dt:
+    def elapsed_sec(self):
+        if self.progress_count is not None:  # tqdm is used
             dt_diff = self.update_dt - self.executing_dt
-            elapsed_sec = dt_diff.total_seconds()
-        else:
-            elapsed_sec = None
-        return progress_count, elapsed_sec
+            return dt_diff.total_seconds()
 
     def human_percentage(self):
-        progress_count, elapsed_sec = self.progress_info
-        if progress_count and self.total is not None:
-            return percentage(num=progress_count, total=self.total)
+        if self.progress_count is not None and self.total is not None:
+            return percentage(num=self.progress_count, total=self.total)
     human_percentage.short_description = _('percentage')
 
     def human_progress(self):
-        progress_count, elapsed_sec = self.progress_info
-        if progress_count:
+        if self.progress_count is not None:  # tqdm is used
             return format_sizeof(
-                num=progress_count,
-                suffix=self.unit,
-                divisor=self.unit_divisor
+                num=self.progress_count, suffix=self.unit, divisor=self.unit_divisor
             )
     human_progress.short_description = _('progress')
 
     def human_throughput(self):
-        progress_count, elapsed_sec = self.progress_info
-        if progress_count and elapsed_sec:
+        if self.progress_count is not None:  # tqdm is used
             return throughput(
-                num=progress_count,
-                elapsed_sec=elapsed_sec,
+                num=self.progress_count,
+                elapsed_sec=self.elapsed_sec,
                 suffix=self.unit,
                 divisor=self.unit_divisor
             )
     human_throughput.short_description = _('throughput')
 
     def human_progress_string(self):
-        progress_count, elapsed_sec = self.progress_info
-
         parts = []
-        if progress_count is None or elapsed_sec is None:
-            return ''
+        if self.progress_count is None:  # tqdm is not used
+            pass
         elif self.total:
-            parts.append(f'{progress_count}/{self.total}{self.unit}')
+            parts.append(f'{self.progress_count}/{self.total}{self.unit}')
             parts.append(self.human_percentage())
             parts.append(self.human_throughput())
         else:
             # Progress info without total number
-            parts.append(f'{progress_count}{self.unit}')
+            parts.append(f'{self.progress_count}{self.unit}')
             parts.append(self.human_throughput())
+
+        if self.finished:
+            parts.append(gettext('finished'))
 
         return ' '.join(parts)
     human_progress_string.short_description = _('Progress')
@@ -147,8 +163,7 @@ class TaskModel(TimetrackingBaseModel):
         """
         Used in admin: Display the unit only if process info used.
         """
-        progress_count, elapsed_sec = self.progress_info
-        if progress_count or elapsed_sec:
+        if self.progress_count is not None:  # tqdm is used
             return self.unit
     human_unit.short_description = _('Unit')
 
@@ -226,6 +241,12 @@ class SignalInfoModel(models.Model):
         verbose_name=_('Exception'),
         help_text=_('Full information of a exception'),
     )
+    progress_count = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_('Progress Count'),
+        help_text=_('Progress (if any) at the time of creation.'),
+    )
     create_dt = models.DateTimeField(
         auto_now_add=True,
         verbose_name=_('Create date'),
@@ -244,61 +265,3 @@ class SignalInfoModel(models.Model):
     class Meta:
         verbose_name = _('Task Signal')
         verbose_name_plural = _('Task Signals')
-
-
-class TaskProgressManager(models.Manager):
-    def get_progress_info(self, task_id):
-        qs = self.all().filter(
-            task_id=task_id
-        ).aggregate(
-            Sum('progress_count'),
-        )
-        progress_count = qs['progress_count__sum'] or 0
-        return progress_count
-
-
-class TaskProgressModel(models.Model):
-    objects = TaskProgressManager()
-
-    id = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False,
-    )
-
-    task = models.ForeignKey(
-        'huey_monitor.TaskModel',
-        on_delete=models.CASCADE,
-        related_name='progress',
-        verbose_name=_('Task'),
-        help_text=_('The Task instance for this processed info entry.'),
-    )
-    progress_count = models.PositiveIntegerField(
-        null=True, blank=True,
-        verbose_name=_('Progress Count'),
-        help_text=_('Number of units processed in current update.'),
-    )
-    create_dt = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_('Create date'),
-        help_text=_('(will be set automatically)')
-    )
-
-    def human_progress_count(self):
-        if self.progress_count:
-            return format_sizeof(
-                num=self.progress_count,
-                suffix=self.task.unit,
-                divisor=self.task.unit_divisor
-            )
-
-    def admin_link(self):
-        url = reverse('admin:huey_monitor_taskprogressmodel_change', args=[self.pk])
-        return url
-
-    def __str__(self):
-        return f'{self.task.name} {self.human_progress_count()}'
-
-    class Meta:
-        verbose_name = _('Task Progress')
-        verbose_name_plural = _('Task Progress')
