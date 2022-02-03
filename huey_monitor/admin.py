@@ -82,6 +82,7 @@ class TaskModelAdmin(admin.ModelAdmin):
         'human_update_dt',
         'column_name',
         'state',
+        'name',
         'total',
         'human_unit',
         'human_percentage',
@@ -97,6 +98,7 @@ class TaskModelAdmin(admin.ModelAdmin):
     )
     ordering = ('-update_dt',)
     list_display_links = None
+    list_select_related = ('state',)
     date_hierarchy = 'create_dt'
     list_filter = ('state__hostname', 'name', 'state__signal_name')
     search_fields = ('name', 'state__exception_line', 'state__exception')
@@ -110,6 +112,7 @@ class TaskModelAdmin(admin.ModelAdmin):
         (_('Task Information'), {
             'fields': (
                 'name',
+                'desc',
                 'state',
                 'human_progress_string',
                 'signals'
