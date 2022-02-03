@@ -72,7 +72,7 @@ build-backend = "poetry.masonry.api"
 [tool.darker]
 src = ['.']
 revision = "origin/master..."
-line_length = 120
+line_length = 100
 verbose = true
 skip_string_normalization = true
 diff = false
@@ -101,7 +101,7 @@ omit=[".*"]
 # https://docs.pytest.org/en/latest/customize.html#pyproject-toml
 minversion = "6.0"
 DJANGO_SETTINGS_MODULE="huey_monitor_tests.test_project.settings.tests"
-norecursedirs = ".* __pycache__ coverage* dist htmlcov volumes"
+norecursedirs = ".* migrations __pycache__ coverage* dist htmlcov volumes"
 # sometimes helpfull "addopts" arguments:
 #    -vv
 #    --verbose
