@@ -100,7 +100,7 @@ class TaskModelAdmin(admin.ModelAdmin):
     list_display_links = None
     list_select_related = ('state',)
     date_hierarchy = 'create_dt'
-    list_filter = ('state__hostname', 'name', 'state__signal_name')
+    list_filter = ('name', 'state__signal_name', 'state__hostname')
     search_fields = ('name', 'state__exception_line', 'state__exception')
     fieldsets = (
         (_('Meta'), {
@@ -141,7 +141,7 @@ class SignalInfoModelAdmin(admin.ModelAdmin):
     list_display_links = ('task_name',)
     ordering = ('-create_dt',)
     date_hierarchy = 'create_dt'
-    list_filter = ('hostname', 'task__name', 'signal_name')
+    list_filter = ('task__name', 'signal_name', 'hostname')
     search_fields = ('task__name', 'exception_line', 'exception')
 
     def has_change_permission(self, request, obj=None):
