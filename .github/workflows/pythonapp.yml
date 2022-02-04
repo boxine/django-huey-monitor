@@ -55,8 +55,3 @@ jobs:
 
     - name: 'Upload coverage report'
       run: bash <(curl -s https://codecov.io/bash)
-
-    - name: 'Run linters'
-      if: matrix.python-version == '3.8'
-      run: |
-        make lint
