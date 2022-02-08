@@ -82,7 +82,6 @@ class TaskModelAdmin(admin.ModelAdmin):
         'human_update_dt',
         'column_name',
         'state',
-        'name',
         'total',
         'human_unit',
         'human_percentage',
@@ -103,26 +102,22 @@ class TaskModelAdmin(admin.ModelAdmin):
     list_filter = ('name', 'state__signal_name', 'state__hostname')
     search_fields = ('name', 'state__exception_line', 'state__exception')
     fieldsets = (
-        (_('Meta'), {
-            'fields': (
-                'task_id',
-                'create_dt', 'update_dt'
-            )
-        }),
-        (_('Task Information'), {
-            'fields': (
-                'name',
-                'desc',
-                'state',
-                'human_progress_string',
-                'signals'
-            )
-        }),
-        (_('Hierarchy'), {
-            'fields': (
-                'task_hierarchy_info',
-            )
-        }),
+        (_('Meta'), {'fields': ('task_id', 'create_dt', 'update_dt')}),
+        (
+            _('Task Information'),
+            {
+                'fields': (
+                    'name',
+                    'desc',
+                    'state',
+                    'progress_count',
+                    'cumulate_progress',
+                    'human_progress_string',
+                    'signals',
+                )
+            },
+        ),
+        (_('Hierarchy'), {'fields': ('task_hierarchy_info',)}),
     )
 
     class Media:
@@ -136,7 +131,15 @@ class SignalInfoModelAdmin(admin.ModelAdmin):
     def task_name(self, obj):
         return obj.task.name
 
-    list_display = ('create_dt', 'task_name', '__str__', 'hostname', 'pid', 'thread')
+    list_display = (
+        'create_dt',
+        'task_name',
+        '__str__',
+        'progress_count',
+        'hostname',
+        'pid',
+        'thread',
+    )
     readonly_fields = ('create_dt',)
     list_display_links = ('task_name',)
     ordering = ('-create_dt',)

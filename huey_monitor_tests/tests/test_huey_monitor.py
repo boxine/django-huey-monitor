@@ -46,7 +46,7 @@ class HueyMonitorTestCase(HtmlAssertionMixin, TestCase):
 
         title = 'View Task | Django site admin'
         if DJANGO_VERSION >= (3, 2):
-            title = f'delay_task: complete (Main task) | {title}'
+            title = f'delay_task: finished (Main task) | {title}'
 
         self.assert_html_parts(response, parts=(
             f'<title>{title}</title>',
