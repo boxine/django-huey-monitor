@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from huey.api import Task
 
+from huey_monitor.constants import TASK_MODEL_DESC_MAX_LENGTH
 from huey_monitor.models import TaskModel
 
 
@@ -46,7 +47,7 @@ class ProcessInfo:
         self.unit_divisor = unit_divisor
         self.parent_task_id = parent_task_id
 
-        if len(self.desc) > 64:
+        if len(self.desc) > TASK_MODEL_DESC_MAX_LENGTH:
             # We call .update() that will not validate the data, so a overlong
             # description will raise a database error and maybe a user doesn't know
             # what's happen ;)

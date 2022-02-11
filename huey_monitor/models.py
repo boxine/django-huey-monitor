@@ -8,6 +8,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from huey.signals import SIGNAL_EXECUTING
 
+from huey_monitor.constants import TASK_MODEL_DESC_MAX_LENGTH
 from huey_monitor.humanize import format_sizeof, percentage, throughput
 
 
@@ -69,7 +70,7 @@ class TaskModel(TimetrackingBaseModel):
     )
 
     desc = models.CharField(
-        max_length=64,
+        max_length=TASK_MODEL_DESC_MAX_LENGTH,
         default='',
         blank=True,
         verbose_name=_('Description'),
@@ -234,6 +235,7 @@ class SignalInfoModel(models.Model):
     )
     exception_line = models.TextField(
         max_length=128,
+        blank=True,
         verbose_name=_('Exception Line'),
     )
     exception = models.TextField(
