@@ -11,6 +11,7 @@ from django.utils import timezone
 from huey.api import Result, Task
 
 import huey_monitor
+from huey_monitor.constants import TASK_MODEL_DESC_MAX_LENGTH
 from huey_monitor.models import SignalInfoModel, TaskModel
 from huey_monitor.tqdm import ProcessInfo
 from huey_monitor_tests.test_app.tasks import linear_processing_task, parallel_task
@@ -161,7 +162,11 @@ class ProcessInfoTestCase(TestCase):
 
         # Test with current max length:
         max_length = TaskModel._meta.get_field('desc').max_length
-        assert max_length == 64
+        assert max_length == TASK_MODEL_DESC_MAX_LENGTH
+        assert max_length == 128
+
+        max_length_txt = 'X' * max_length
+        overlong_txt = 'Y' * (max_length + 1)
 
         task = Task(id='00000000-0000-0000-0000-000000000001')
 
@@ -169,20 +174,16 @@ class ProcessInfoTestCase(TestCase):
         with self.assertLogs('huey_monitor.tqdm') as logs:
             ProcessInfo(task, desc='X' * max_length)
             instance = TaskModel.objects.get()
-            assert instance.desc == 'X' * max_length
+            assert instance.desc == max_length_txt
 
         assert logs.output == [
             (
                 'INFO:huey_monitor.tqdm:Init TaskModel Task'
-                ' - XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-                ' 0/Noneit (divisor: 1000)'
+                f' - {max_length_txt} 0/Noneit (divisor: 1000)'
             )
         ]
 
         # Overlong description should be cut:
-        msg = (
-            '["Process info description overlong:'
-            ' \'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\'"]'
-        )
+        msg = f'["Process info description overlong: \'{overlong_txt}\'"]'
         with self.assertRaisesMessage(ValidationError, msg):
-            ProcessInfo(task, desc='Y' * (max_length + 1), total=999)
+            ProcessInfo(task, desc=overlong_txt, total=999)

@@ -14,3 +14,5 @@ ENDED_HUEY_SIGNALS = (
     _huey_signals.SIGNAL_REVOKED,
     _huey_signals.SIGNAL_INTERRUPTED,
 )
+
+TASK_MODEL_DESC_MAX_LENGTH = 128
