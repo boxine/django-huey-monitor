@@ -24,9 +24,6 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: 'fetch master'
-      run: |
-        git fetch origin master
     - name: 'Set up Python ${{ matrix.python-version }}'
       uses: actions/setup-python@v2
       with:

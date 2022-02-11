@@ -30,10 +30,8 @@ class HueyMonitorTestCase(HtmlAssertionMixin, TestCase):
         signals = list(SignalInfoModel.objects.order_by('create_dt').values_list(
             'task_id', 'signal_name', 'exception_line'
         ))
-        assert signals == [
-            (task_model_instance.pk, 'executing', ''),
-            (task_model_instance.pk, 'complete', ''),
-        ]
+        assert signals == [(task_model_instance.pk, 'executing', ''),
+        (task_model_instance.pk, 'complete', '')]
 
         assert task_model_instance.state.signal_name == 'complete'
         url = f'/admin/huey_monitor/taskmodel/{task_model_instance.pk}/change/'
