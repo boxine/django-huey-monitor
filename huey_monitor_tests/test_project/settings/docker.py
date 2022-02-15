@@ -23,3 +23,17 @@ DATABASES = {
         'CONN_MAX_AGE': 600,
     },
 }
+
+
+# Django debug toolbar
+
+
+def always_show_toolbar(request):
+    return True
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_COLLAPSED': True,
+    'SHOW_TEMPLATE_CONTEXT': True,
+    'SHOW_TOOLBAR_CALLBACK': always_show_toolbar,
+}
