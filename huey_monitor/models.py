@@ -197,6 +197,7 @@ class TaskModel(TimetrackingBaseModel):
     class Meta:
         verbose_name = _('Task')
         verbose_name_plural = _('Tasks')
+        ordering = ['-create_dt']
 
 
 class SignalInfoModel(models.Model):
