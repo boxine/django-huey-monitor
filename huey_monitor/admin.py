@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from huey_monitor.models import SignalInfoModel, TaskModel
+from huey_monitor.constants import ISSUE_HUEY_SIGNALS
 
 
 class TaskModelChangeList(ChangeList):
@@ -59,6 +60,19 @@ class TaskModelAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         return False
 
+    def status(self, obj):
+        """
+        displaying progression for parent_tasks if execution is on-going
+        (format: f'{obj.progress_count}/{obj.total}')
+        or last_signal
+        """
+        if not obj.state in ISSUE_HUEY_SIGNALS:
+            if obj.total and obj.progress_count:
+                if obj.total > obj.progress_count:
+                    return f'{obj.progress_count}/{obj.total}'
+        
+        return obj.state
+
     def signals(self, obj):
         signals = SignalInfoModel.objects.filter(task_id=obj.pk).order_by('-create_dt')
         context = {
@@ -81,7 +95,7 @@ class TaskModelAdmin(admin.ModelAdmin):
     list_display = (
         'human_update_dt',
         'column_name',
-        'state',
+        'status',
         'total',
         'human_unit',
         'human_percentage',
@@ -91,6 +105,7 @@ class TaskModelAdmin(admin.ModelAdmin):
     )
     readonly_fields = (
         'task_id', 'signals', 'create_dt', 'update_dt',
+        'status',
         'human_percentage',
         'human_progress',
         'human_throughput',
