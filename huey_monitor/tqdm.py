@@ -51,9 +51,10 @@ class ProcessInfo:
             # We call .update() that will not validate the data, so a overlong
             # description will raise a database error and maybe a user doesn't know
             # what's happen ;)
-            raise ValidationError(
-                'Process info description overlong: %(desc)r',
-                params={'desc': self.desc},
+            logger.warning(
+                "Process info description '%(desc)r' has been cropped to maximum authorized value (%(max_length)r)",
+                params={'desc': self.desc, 'max_length': TASK_MODEL_DESC_MAX_LENGTH,},
+            self.desc = self.desc[:TASK_MODEL_DESC_MAX_LENGTH]
             )
 
         TaskModel.objects.filter(task_id=task.id).update(
