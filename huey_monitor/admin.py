@@ -24,7 +24,7 @@ class TaskModelAdmin(admin.ModelAdmin):
         return TaskModelChangeList
 
     def column_name(self, obj):
-        qs = TaskModel.objects.filter(parent_task_id=obj.pk)
+        qs = TaskModel.objects.filter(parent_task_id=obj.pk).order_by('-create_dt')
         context = {
             'main_task': obj,
             'sub_tasks': qs
