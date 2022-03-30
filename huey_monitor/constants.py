@@ -6,16 +6,13 @@ from huey import signals as _huey_signals
 # It does not mean that execution was successfully completed!
 #
 # Collect these Huey signals here:
-ISSUE_HUEY_SIGNALS = [
+ENDED_HUEY_SIGNALS = (
     _huey_signals.SIGNAL_CANCELED,
+    _huey_signals.SIGNAL_COMPLETE,
     _huey_signals.SIGNAL_ERROR,
     _huey_signals.SIGNAL_EXPIRED,
     _huey_signals.SIGNAL_REVOKED,
     _huey_signals.SIGNAL_INTERRUPTED,
-]
-
-ENDED_HUEY_SIGNALS = ISSUE_HUEY_SIGNALS + [
-    _huey_signals.SIGNAL_COMPLETE,
-]
+)
 
 TASK_MODEL_DESC_MAX_LENGTH = 128
