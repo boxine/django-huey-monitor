@@ -167,6 +167,7 @@ class ProcessInfoTestCase(TestCase):
 
         max_length_txt = 'X' * max_length
         overlong_txt = 'Y' * (max_length + 1)
+        cropped_overlong_txt = 'Y' * max_length
 
         task = Task(id='00000000-0000-0000-0000-000000000001')
 
@@ -187,11 +188,11 @@ class ProcessInfoTestCase(TestCase):
         with self.assertLogs('huey_monitor.tqdm') as logs:
             ProcessInfo(task, desc=overlong_txt, total=999)
             instance = TaskModel.objects.get()
-            assert instance.desc == max_length_txt
+            assert instance.desc == cropped_overlong_txt
 
         assert logs.output == [
             (
                 'INFO:huey_monitor.tqdm:Init TaskModel Task'
-                f' - {max_length_txt} 0/999 (divisor: 1000)'
+                f' - {cropped_overlong_txt} 0/999 (divisor: 1000)'
             )
         ]
