@@ -96,12 +96,8 @@ class ProcessInfo:
         as well as update_dt
         """
         assert self.parent_task_id
-
-        TaskModel.objects.filter(task_id=self.parent_task_id).update(
-            update_dt=timezone.now(), progress_count=F('progress_count') + n
-        )
+        update_task_progress(self.parent_task_id, n)
         
-
     def make_complete(self):
         """
         Update TaskModel.total based on TaskModel.progress_count 
@@ -115,19 +111,19 @@ class ProcessInfo:
         
 
 def make_task_complete(task_id):
-        """
-        Update the TaskModel.total corresponding to a given Huey task to match its current progress_count 
-        Used to mark task with unkown number of steps complete
-        """
-        TaskModel.objects.filter(task_id=task_id).update(
-            update_dt=timezone.now(), total=F('progress_count')
-        )
+    """
+    Update the TaskModel.total corresponding to a given Huey task to match its current progress_count 
+    Used to mark task with unkown number of steps complete
+    """
+    TaskModel.objects.filter(task_id=task_id).update(
+        update_dt=timezone.now(), total=F('progress_count')
+    )
 
 def update_task_progress(task_id, n=1):
-        """
-        Increment the TaskModel.progress_count corresponding to a given Huey task 
-        and update update_dt
-        """
-        TaskModel.objects.filter(task_id=task_id).update(
-            update_dt=timezone.now(), progress_count=F('progress_count') + n
-        )
+    """
+    Increment the TaskModel.progress_count corresponding to a given Huey task 
+    and update update_dt
+    """
+    TaskModel.objects.filter(task_id=task_id).update(
+        update_dt=timezone.now(), progress_count=F('progress_count') + n
+    )
