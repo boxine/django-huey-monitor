@@ -184,6 +184,14 @@ class ProcessInfoTestCase(TestCase):
         ]
 
         # Overlong description should be cut:
-        msg = f'["Process info description overlong: \'{overlong_txt}\'"]'
-        with self.assertRaisesMessage(ValidationError, msg):
+        with self.assertLogs('huey_monitor.tqdm') as logs:
             ProcessInfo(task, desc=overlong_txt, total=999)
+            instance = TaskModel.objects.get()
+            assert instance.desc == max_length_txt
+
+        assert logs.output == [
+            (
+                'INFO:huey_monitor.tqdm:Init TaskModel Task'
+                f' - {max_length_txt} 0/999 (divisor: 1000)'
+            )
+        ]
