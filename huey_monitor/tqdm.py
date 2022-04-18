@@ -52,8 +52,8 @@ class ProcessInfo:
             # description will raise a database error and maybe a user doesn't know
             # what's happen ;)
             logger.warning(
-                "Process info description '%(desc)r' has been cropped to maximum authorized value (%(max_length)r)",
-                params={'desc': self.desc, 'max_length': TASK_MODEL_DESC_MAX_LENGTH,}
+                "Process info description %r has been cropped to maximum authorized value (%r)",
+                self.desc, TASK_MODEL_DESC_MAX_LENGTH
             )
             self.desc = self.desc[:TASK_MODEL_DESC_MAX_LENGTH]
 
