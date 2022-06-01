@@ -159,10 +159,11 @@ without docker:
 
 ### Version compatibility
 
-| huey-monitor    | Django           | Python
-|-----------------|------------------|------------------
-| >v0.5.0         | v2.2, v3.1, v3.2 | v3.7, v3.8, v3.9
-| <=v0.4.0        | v2.2, v3.0, v3.1 | v3.7, v3.8, v3.9
+| huey-monitor | Django           | Python
+|--------------|------------------|------------------------
+| >v0.6.0      | v3.2, v4.0       | v3.8, v3.9, v3.10
+| >v0.5.0      | v2.2, v3.1, v3.2 | v3.7, v3.8, v3.9
+| <=v0.4.0     | v2.2, v3.0, v3.1 | v3.7, v3.8, v3.9
 
 
 ### v0.5.0
@@ -188,6 +189,7 @@ You must change your Django settings and replace the app name:
 ## History
 
 * [dev](https://github.com/boxine/django-huey-monitor/compare/v0.5.0...master)
+  * Test against Django v3.2, v4.0 and Python v3.8 - v3.10
   * _tbc_
 * [v0.5.0 - 10.02.2022](https://github.com/boxine/django-huey-monitor/compare/v0.4.6...v0.5.0)
   * Refactor models: Remove `TaskProgressModel` and store progress information into `TaskModel`
