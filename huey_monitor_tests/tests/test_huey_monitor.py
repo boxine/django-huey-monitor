@@ -98,3 +98,18 @@ class HueyMonitorTestCase(HtmlAssertionMixin, TestCase):
             'Traceback (most recent call last):',
             'AssertionError: This is a test exception',
         ))
+
+    def test_admin_flush_locks_view(self):
+        flush_locks_url = '/admin/huey_monitor/taskmodel/flush_locks/'
+        response = self.client.get(flush_locks_url)
+        self.assertRedirects(
+            response, expected_url='/admin/login/?next=/admin/huey_monitor/taskmodel/flush_locks/'
+        )
+        self.assert_messages(response, expected_messages=[])
+
+        self.client.force_login(self.superuser)
+        response = self.client.get(flush_locks_url)
+        self.assertRedirects(response, expected_url='/admin/huey_monitor/taskmodel/')
+        self.assert_messages(
+            response, expected_messages=['No tasks locks exists, nothing to flush, ok.']
+        )

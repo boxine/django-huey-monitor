@@ -1,9 +1,12 @@
 from bx_django_utils.templatetags.humanize_time import human_duration
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin.views.main import ChangeList
+from django.shortcuts import redirect
 from django.template.loader import render_to_string
+from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from huey.contrib.djhuey import HUEY
 
 from huey_monitor.models import SignalInfoModel, TaskModel
 
@@ -77,6 +80,29 @@ class TaskModelAdmin(admin.ModelAdmin):
             end_dt = obj.state.create_dt
 
         return human_duration(obj.create_dt, end_dt)
+
+    def changelist_url(self):
+        info = (self.admin_site.name, self.model._meta.app_label, self.model._meta.model_name)
+        url_name = '%s:%s_%s_changelist' % info
+        return reverse(url_name, current_app=self.admin_site.name)
+
+    def flush_locks_view(self, request):
+        flushed = HUEY.flush_locks()
+        if not flushed:
+            messages.info(request, 'No tasks locks exists, nothing to flush, ok.')
+        else:
+            messages.success(request, f'Flush task locks: {", ".join(sorted(flushed))}')
+        return redirect(self.changelist_url())
+
+    def get_urls(self):
+        urls = [
+            path(
+                'flush_locks/',
+                self.admin_site.admin_view(self.flush_locks_view),
+                name='flush_locks',
+            ),
+        ] + super().get_urls()
+        return urls
 
     list_display = (
         'human_update_dt',
