@@ -2,6 +2,8 @@ import logging
 
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.db.models import F
+
 from huey.api import Task
 
 from huey_monitor.constants import TASK_MODEL_DESC_MAX_LENGTH
@@ -87,3 +89,41 @@ class ProcessInfo:
             f'{self.task.name} - {self.desc} {self.total_progress}/{self.total}{self.unit}'
             f' (divisor: {self.unit_divisor})'
         )
+    
+    def update_parent_progress(self, n=1):
+        """
+        Increment the parent TaskModel progress information
+        as well as update_dt
+        """
+        assert self.parent_task_id
+        update_task_progress(self.parent_task_id, n)
+        
+    def make_complete(self):
+        """
+        Update TaskModel.total based on TaskModel.progress_count 
+        to mark task with unkown number of steps complete
+        """
+
+        TaskModel.objects.filter(task_id=self.task.id).update(
+            total=self.total_progress
+        )
+        self.total = self.total_progress
+        
+
+def make_task_complete(task_id):
+    """
+    Update the TaskModel.total corresponding to a given Huey task to match its current progress_count 
+    Used to mark task with unkown number of steps complete
+    """
+    TaskModel.objects.filter(task_id=task_id).update(
+        update_dt=timezone.now(), total=F('progress_count')
+    )
+
+def update_task_progress(task_id, n=1):
+    """
+    Increment the TaskModel.progress_count corresponding to a given Huey task 
+    and update update_dt
+    """
+    TaskModel.objects.filter(task_id=task_id).update(
+        update_dt=timezone.now(), progress_count=F('progress_count') + n
+    )
