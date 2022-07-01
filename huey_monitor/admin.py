@@ -1,5 +1,6 @@
 from bx_django_utils.templatetags.humanize_time import human_duration
 from django.contrib import admin, messages
+from django.contrib.admin import SimpleListFilter
 from django.contrib.admin.views.main import ChangeList
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
@@ -10,6 +11,28 @@ from huey.contrib.djhuey import HUEY
 
 from huey_monitor.models import SignalInfoModel, TaskModel
 
+class MainTask_Filter(SimpleListFilter):
+    """
+    adding possibility to display only main tasks in the TaskModelAdmin change_list
+    (not displaying subtasks)
+    """
+    title = 'task type'    # filter label for displaying "By ..."
+
+    # Parameter for the filter that will be used in the URL query:
+    # <my_url>/?<parameter_name>=<lookup_value>
+    parameter_name = 'is_maintask'
+
+    # change the default_value to have querysets filtered by default:
+    default_value = None
+
+    def lookups(self, request, model_admin):
+        return [
+            (True, 'only main tasks'),
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() == True:
+            return queryset.filter(parent_task__isnull=True)
 
 class TaskModelChangeList(ChangeList):
     def get_queryset(self, request):
@@ -23,11 +46,21 @@ class TaskModelChangeList(ChangeList):
 
 @admin.register(TaskModel)
 class TaskModelAdmin(admin.ModelAdmin):
+    request_parameters={} # for storing the request GET parameters
+    
+    def changelist_view(self, request, *args, **kwargs):
+        self.request_parameters = request.GET
+        return super().changelist_view(request, *args, **kwargs)
+    
     def get_changelist(self, request, **kwargs):
         return TaskModelChangeList
 
     def column_name(self, obj):
-        qs = TaskModel.objects.filter(parent_task_id=obj.pk).order_by('-create_dt')
+        if 'is_maintask' in self.request_parameters:
+            qs = self.model.objects.none() 
+        else:
+            qs = self.model.objects.filter(parent_task_id=obj.pk).order_by('-create_dt')
+
         context = {
             'main_task': obj,
             'sub_tasks': qs
@@ -125,7 +158,7 @@ class TaskModelAdmin(admin.ModelAdmin):
     list_display_links = None
     list_select_related = ('state',)
     date_hierarchy = 'create_dt'
-    list_filter = ('name', 'state__signal_name', 'state__hostname')
+    list_filter = (MainTask_Filter, 'name', 'state__signal_name', 'state__hostname')
     search_fields = ('name', 'state__exception_line', 'state__exception')
     fieldsets = (
         (_('Meta'), {'fields': ('task_id', 'create_dt', 'update_dt')}),
