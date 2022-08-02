@@ -2,6 +2,7 @@ import logging
 
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.utils.text import Truncator
 from huey.api import Task
 
 from huey_monitor.constants import TASK_MODEL_DESC_MAX_LENGTH
@@ -50,10 +51,12 @@ class ProcessInfo:
         if len(self.desc) > TASK_MODEL_DESC_MAX_LENGTH:
             # We call .update() that will not validate the data, so a overlong
             # description will raise a database error and maybe a user doesn't know
-            # what's happen ;)
-            raise ValidationError(
-                'Process info description overlong: %(desc)r',
-                params={'desc': self.desc},
+            # what's happen -> Just crop it.
+            self.desc = Truncator(self.desc).chars(TASK_MODEL_DESC_MAX_LENGTH)
+            logger.warning(
+                'Process info description %r has been cropped maximum allowed %i characters',
+                self.desc,
+                TASK_MODEL_DESC_MAX_LENGTH,
             )
 
         TaskModel.objects.filter(task_id=task.id).update(

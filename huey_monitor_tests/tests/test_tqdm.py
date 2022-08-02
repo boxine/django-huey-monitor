@@ -1,4 +1,5 @@
 import datetime
+import logging
 import time
 from pathlib import Path
 from unittest import mock
@@ -162,8 +163,7 @@ class ProcessInfoTestCase(TestCase):
 
         # Test with current max length:
         max_length = TaskModel._meta.get_field('desc').max_length
-        assert max_length == TASK_MODEL_DESC_MAX_LENGTH
-        assert max_length == 128
+        assert max_length == TASK_MODEL_DESC_MAX_LENGTH == 128
 
         max_length_txt = 'X' * max_length
         overlong_txt = 'Y' * (max_length + 1)
@@ -183,7 +183,12 @@ class ProcessInfoTestCase(TestCase):
             )
         ]
 
-        # Overlong description should be cut:
-        msg = f'["Process info description overlong: \'{overlong_txt}\'"]'
-        with self.assertRaisesMessage(ValidationError, msg):
+        # Overlong description will be cut:
+        with self.assertLogs('huey_monitor.tqdm', level=logging.WARNING) as logs:
             ProcessInfo(task, desc=overlong_txt, total=999)
+            instance = TaskModel.objects.get()
+            assert len(instance.desc) == TASK_MODEL_DESC_MAX_LENGTH == 128
+
+        assert len(logs.output) == 1
+        log_line = logs.output[0]
+        assert "YYYYY…' has been cropped maximum allowed 128 characters" in log_line
