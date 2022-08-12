@@ -5,6 +5,12 @@ Django based tool for monitoring [huey task queue](https://github.com/coleifer/h
 Current implementation will just store all Huey task signals into the database
 and display them in the Django admin.
 
+[![pytest](https://github.com/boxine/django-huey-monitor/actions/workflows/pythonapp.yml/badge.svg?branch=master)](https://github.com/boxine/django-huey-monitor/actions/workflows/pythonapp.yml) [![Coverage Status on codecov.io](https://codecov.io/gh/boxine/django-huey-monitor/branch/master/graph/badge.svg)](https://codecov.io/gh/boxine/django-huey-monitor)
+
+[![django-huey-monitor @ PyPi](https://img.shields.io/pypi/v/django-huey-monitor?label=django-huey-monitor%20%40%20PyPi)](https://pypi.org/project/django-huey-monitor/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/django-huey-monitor)](https://gitlab.com/boxine/django-huey-monitor/-/blob/main/pyproject.toml)
+[![License GPL](https://img.shields.io/pypi/l/django-huey-monitor)](https://gitlab.com/boxine/django-huey-monitor/-/blob/main/LICENSE)
+
 
 ## Quickstart
 
