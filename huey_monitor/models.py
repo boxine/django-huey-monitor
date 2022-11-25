@@ -43,7 +43,7 @@ class TaskModel(TimetrackingBaseModel):
         to='self',
         null=True, blank=True,
         editable=False,
-        related_name='+',
+        related_name='sub_tasks',
         on_delete=models.CASCADE,
         verbose_name=_('Parent Task'),
         help_text=_('Only set if this task is a sub task started from his parent.'),
@@ -106,6 +106,8 @@ class TaskModel(TimetrackingBaseModel):
 
     @cached_property
     def executing_dt(self):
+        if hasattr(self, "_executing_dt"):
+            return self._executing_dt
         executing_signal = SignalInfoModel.objects.filter(
             task_id=self.task_id,
             signal_name=SIGNAL_EXECUTING

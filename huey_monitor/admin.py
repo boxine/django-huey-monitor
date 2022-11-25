@@ -1,12 +1,14 @@
 from bx_django_utils.templatetags.humanize_time import human_duration
 from django.contrib import admin, messages
 from django.contrib.admin.views.main import ChangeList
+from django.db.models import OuterRef, Prefetch
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from huey.contrib.djhuey import HUEY
+from huey.signals import SIGNAL_EXECUTING
 
 from huey_monitor.models import SignalInfoModel, TaskModel
 
@@ -17,7 +19,21 @@ class TaskModelChangeList(ChangeList):
         List only the main-tasks (sub-tasks will be inlined)
         """
         qs = super().get_queryset(request)
-        qs = qs.filter(parent_task__isnull=True)
+        executing_dt = SignalInfoModel.objects.filter(
+            task_id=OuterRef("task_id"), signal_name=SIGNAL_EXECUTING
+        ).values('create_dt')[:1]
+        qs = (
+            qs.filter(parent_task__isnull=True)
+            .prefetch_related(
+                Prefetch(
+                    "sub_tasks",
+                    queryset=TaskModel.objects.select_related("state")
+                    .annotate(_executing_dt=executing_dt)
+                    .order_by('-create_dt'),
+                )
+            )
+            .annotate(_executing_dt=executing_dt)
+        )
         return qs
 
 
@@ -27,11 +43,7 @@ class TaskModelAdmin(admin.ModelAdmin):
         return TaskModelChangeList
 
     def column_name(self, obj):
-        qs = TaskModel.objects.filter(parent_task_id=obj.pk).order_by('-create_dt')
-        context = {
-            'main_task': obj,
-            'sub_tasks': qs
-        }
+        context = {'main_task': obj, 'sub_tasks': obj.sub_tasks.all()}
         return render_to_string(
             template_name='admin/huey_monitor/taskmodel/column_name.html',
             context=context,
@@ -168,6 +180,7 @@ class SignalInfoModelAdmin(admin.ModelAdmin):
     )
     readonly_fields = ('create_dt',)
     list_display_links = ('task_name',)
+    list_select_related = ('task',)
     ordering = ('-create_dt',)
     date_hierarchy = 'create_dt'
     list_filter = ('task__name', 'signal_name', 'hostname')
