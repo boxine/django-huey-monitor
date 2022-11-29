@@ -68,6 +68,12 @@ class ProcessInfo:
             cumulate_progress=cumulate2parents,
         )
 
+        if parent_task_id:
+            TaskModel.objects.set_parent_task(
+                main_task_id=parent_task_id,
+                sub_task_id=task.id,
+            )
+            
         self.total_progress = 0
 
         logger.info('Init TaskModel %s', self)
