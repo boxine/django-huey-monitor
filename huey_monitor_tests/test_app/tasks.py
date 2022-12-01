@@ -87,15 +87,10 @@ def parallel_sub_task(task, parent_task_id, item_chunk, **info_kwargs):
     """
     Useless example: Just calculate the SHA256 hash from all files
     """
-    # Save relationship between the main and sub tasks:
-    TaskModel.objects.set_parent_task(
-        main_task_id=parent_task_id,
-        sub_task_id=task.id
-    )
-
     total_items = len(item_chunk)
 
-    # Init progress information of this sub task:
+    # Init progress information of this sub task
+    # and save relationship between the main and sub tasks:
     process_info = ProcessInfo(
         task, total=total_items, parent_task_id=parent_task_id, **info_kwargs
     )
