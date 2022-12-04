@@ -106,8 +106,6 @@ class TaskModel(TimetrackingBaseModel):
 
     @cached_property
     def executing_dt(self):
-        if hasattr(self, "_executing_dt"):
-            return self._executing_dt
         executing_signal = SignalInfoModel.objects.filter(
             task_id=self.task_id,
             signal_name=SIGNAL_EXECUTING

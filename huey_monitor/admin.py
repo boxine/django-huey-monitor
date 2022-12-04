@@ -28,11 +28,11 @@ class TaskModelChangeList(ChangeList):
                 Prefetch(
                     "sub_tasks",
                     queryset=TaskModel.objects.select_related("state")
-                    .annotate(_executing_dt=executing_dt)
+                    .annotate(executing_dt=executing_dt)
                     .order_by('-create_dt'),
                 )
             )
-            .annotate(_executing_dt=executing_dt)
+            .annotate(executing_dt=executing_dt)
         )
         return qs
 
