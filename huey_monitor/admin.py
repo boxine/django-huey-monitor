@@ -43,7 +43,11 @@ class TaskModelAdmin(admin.ModelAdmin):
         return TaskModelChangeList
 
     def column_name(self, obj):
-        context = {'main_task': obj, 'sub_tasks': obj.sub_tasks.all()}
+        qs = obj.sub_tasks.all()
+        context = {
+            'main_task': obj, 
+            'sub_tasks': qs
+        }
         return render_to_string(
             template_name='admin/huey_monitor/taskmodel/column_name.html',
             context=context,
