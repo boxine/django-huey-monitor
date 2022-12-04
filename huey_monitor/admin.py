@@ -184,7 +184,6 @@ class SignalInfoModelAdmin(admin.ModelAdmin):
     )
     readonly_fields = ('create_dt',)
     list_display_links = ('task_name',)
-    list_select_related = ('task',)
     ordering = ('-create_dt',)
     date_hierarchy = 'create_dt'
     list_filter = ('task__name', 'signal_name', 'hostname')
@@ -192,3 +191,6 @@ class SignalInfoModelAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         return False
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("task")
