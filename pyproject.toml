@@ -135,7 +135,7 @@ passenv = *
 deps =
     django3.2: django>=3.2,<3.3
     django4.0: django>=4.0,<4.1
-whitelist_externals =
+allowlist_externals =
     poetry
 commands =
     python --version
