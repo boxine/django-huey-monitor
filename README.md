@@ -196,6 +196,7 @@ You must change your Django settings and replace the app name:
 
 * [dev](https://github.com/boxine/django-huey-monitor/compare/v0.5.0...master)
   * Test against Django v3.2, v4.0 and Python v3.8 - v3.10
+  * Optimize Admin change list ([contributed by henribru](https://github.com/boxine/django-huey-monitor/pull/110))
   * _tbc_
 * [v0.5.0 - 10.02.2022](https://github.com/boxine/django-huey-monitor/compare/v0.4.6...v0.5.0)
   * Refactor models: Remove `TaskProgressModel` and store progress information into `TaskModel`
