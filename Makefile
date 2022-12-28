@@ -57,8 +57,8 @@ clean: ## Remove created files from the test project (e.g.: SQlite, static files
 
 build: ## Update/Build docker services
 	$(MAKE) update
-	./compose.sh pull
-	./compose.sh build --pull
+	./compose.sh pull --parallel
+	./compose.sh build --pull --parallel
 
 up: build ## Start docker containers
 	./compose.sh up -d
