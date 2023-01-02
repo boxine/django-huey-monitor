@@ -43,7 +43,7 @@ class TaskModel(TimetrackingBaseModel):
         to='self',
         null=True, blank=True,
         editable=False,
-        related_name='+',
+        related_name='sub_tasks',
         on_delete=models.CASCADE,
         verbose_name=_('Parent Task'),
         help_text=_('Only set if this task is a sub task started from his parent.'),
