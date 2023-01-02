@@ -18,8 +18,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macOS-latest] # TODO: windows-latest
-        python-version: ["3.10", "3.9", "3.8"]
-        django: ["3.2", "4.0"]
+        python-version: ["3.11", "3.10", "3.9"]
+        django: ["3.2", "4.0", "4.1"]
     steps:
     - uses: actions/checkout@v2
       with:

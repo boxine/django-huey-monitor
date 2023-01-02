@@ -17,9 +17,9 @@ classifiers = [
     "Intended Audience :: End Users/Desktop",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3 :: Only",
     'Framework :: Django',
     "Topic :: Database :: Front-Ends",
@@ -34,7 +34,7 @@ include = ['LICENSE', 'README.md']
 readme='README.md'
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4.0.0"  # Enforce 3.8 in the future
+python = ">=3.8,<4.0.0"  # Enforce 3.9 in the future
 django = "*"
 huey = "*"
 bx_py_utils = "*"  # https://github.com/boxine/bx_py_utils
@@ -127,7 +127,7 @@ addopts = """
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py{38,39,310}-django{3.2,4.0}
+envlist = py{39,310,311}-django{3.2,4.0,4.1}
 skip_missing_interpreters = True
 
 [testenv]
@@ -135,6 +135,7 @@ passenv = *
 deps =
     django3.2: django>=3.2,<3.3
     django4.0: django>=4.0,<4.1
+    django4.1: django>=4.1,<4.2
 allowlist_externals =
     poetry
 commands =
