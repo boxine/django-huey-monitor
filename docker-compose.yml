@@ -32,7 +32,7 @@ services:
             resources:
                 limits:
                     cpus: '0.50'
-                    memory: 100M
+                    memory: 512M
         restart: "no"
         hostname: huey1
         env_file: ./docker/common.env
@@ -47,6 +47,8 @@ services:
             - ./volumes/django/static/:/static/:rw
             # Use files, served by django:
             - ./volumes/django/media/:/media/:rw
+            # e.g.: pip cache must be the same value as $XDG_CACHE_HOME !
+            - ./volumes/cache/:/pipcache/:rw
         entrypoint: /django/docker/huey/entrypoint.sh
 
     huey2:
@@ -57,7 +59,7 @@ services:
             resources:
                 limits:
                     cpus: '0.50'
-                    memory: 100M
+                    memory: 512M
         restart: "no"
         hostname: huey2
         env_file: ./docker/common.env
@@ -72,6 +74,8 @@ services:
             - ./volumes/django/static/:/static/:rw
             # Use files, served by django:
             - ./volumes/django/media/:/media/:rw
+            # e.g.: pip cache must be the same value as $XDG_CACHE_HOME !
+            - ./volumes/cache/:/pipcache/:rw
         entrypoint: /django/docker/huey/entrypoint.sh
 
     huey3:
@@ -82,7 +86,7 @@ services:
             resources:
                 limits:
                     cpus: '0.50'
-                    memory: 100M
+                    memory: 512M
         restart: "no"
         hostname: huey3
         env_file: ./docker/common.env
@@ -97,10 +101,13 @@ services:
             - ./volumes/django/static/:/static/:rw
             # Use files, served by django:
             - ./volumes/django/media/:/media/:rw
+            # e.g.: pip cache must be the same value as $XDG_CACHE_HOME !
+            - ./volumes/cache/:/pipcache/:rw
         entrypoint: /django/docker/huey/entrypoint.sh
 
     postgres:
-        image: postgres:11-alpine
+        # https://hub.docker.com/_/postgres
+        image: postgres:15-alpine
         restart: "no"
         hostname: postgres
         ports:
@@ -113,7 +120,8 @@ services:
             - ./volumes/postgresql/data/:/var/lib/postgresql/data/:rw
 
     redis:
-        image: redis:latest
+        # https://hub.docker.com/_/redis
+        image: redis:7-alpine
         restart: "no"
         hostname: redis
         ports:

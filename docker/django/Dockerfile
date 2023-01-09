@@ -1,8 +1,8 @@
 # https://hub.docker.com/_/python
-FROM python:3.9-slim-buster
+FROM python:3.10-slim-buster
 
 # for pip cache:
-ENV XDG_CACHE_HOME=/var/cache
+ENV XDG_CACHE_HOME=/pipcache/.cache
 
 ENV PYTHONUNBUFFERED=1
 
