@@ -2,11 +2,8 @@
     Huey Monitor Django reuseable App
 """
 
-from django import VERSION as DJANGO_VERSION
+from importlib.metadata import version
 
 
-if DJANGO_VERSION < (3, 2):
-    default_app_config = 'huey_monitor.apps.HueyMonitorConfig'
+__version__ = version('django-huey-monitor')
 
-
-__version__ = '0.5.0'
