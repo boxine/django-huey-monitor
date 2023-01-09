@@ -194,10 +194,18 @@ You must change your Django settings and replace the app name:
 
 ## History
 
-* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.5.0...master)
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.6.0...master)
+  * _tbc_
+* [v0.6.0 - 09.01.2023](https://github.com/boxine/django-huey-monitor/compare/v0.5.0...v0.6.0)
   * Test against Django v3.2, v4.0, v4.1 and Python v3.9 - v3.11
   * Optimize Admin change list ([contributed by henribru](https://github.com/boxine/django-huey-monitor/pull/110))
-  * _tbc_
+  * Order sub-tasks chronologically in admin ([contributed by Skrattoune](https://github.com/boxine/django-huey-monitor/pull/90))
+  * displaying progression for parent_tasks ([contributed by Skrattoune](https://github.com/boxine/django-huey-monitor/pull/91))
+  * Delegating set_parent_task to `ProcessInfo.__init__` ([contributed by Skrattoune](https://github.com/boxine/django-huey-monitor/pull/111))
+  * Fix #27 auto crop overlong process info description
+  * NEW #102 Unlock all tasks via change list object tool link
+  * Fix #81 Expand `TaskModel.desc` max. length and make `SignalInfoModel.exception_line` optional
+  * Update docker test setup
 * [v0.5.0 - 10.02.2022](https://github.com/boxine/django-huey-monitor/compare/v0.4.6...v0.5.0)
   * Refactor models: Remove `TaskProgressModel` and store progress information into `TaskModel`
 * [v0.4.6 - 03.02.2022](https://github.com/boxine/django-huey-monitor/compare/v0.4.5...v0.4.6)
