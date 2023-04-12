@@ -5,11 +5,11 @@ Django based tool for monitoring [huey task queue](https://github.com/coleifer/h
 Current implementation will just store all Huey task signals into the database
 and display them in the Django admin.
 
-[![pytest](https://github.com/boxine/django-huey-monitor/actions/workflows/pythonapp.yml/badge.svg?branch=master)](https://github.com/boxine/django-huey-monitor/actions/workflows/pythonapp.yml) [![Coverage Status on codecov.io](https://codecov.io/gh/boxine/django-huey-monitor/branch/master/graph/badge.svg)](https://codecov.io/gh/boxine/django-huey-monitor)
-
+[![tests](https://github.com/boxine/django-huey-monitor//actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/boxine/django-huey-monitor//actions/workflows/tests.yml)
+[![codecov](https://codecov.io/github/jedie/huey_monitor/branch/main/graph/badge.svg)](https://app.codecov.io/github/jedie/huey_monitor)
 [![django-huey-monitor @ PyPi](https://img.shields.io/pypi/v/django-huey-monitor?label=django-huey-monitor%20%40%20PyPi)](https://pypi.org/project/django-huey-monitor/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/django-huey-monitor)](https://gitlab.com/boxine/django-huey-monitor/-/blob/main/pyproject.toml)
-[![License GPL](https://img.shields.io/pypi/l/django-huey-monitor)](https://gitlab.com/boxine/django-huey-monitor/-/blob/main/LICENSE)
+[![Python Versions](https://img.shields.io/pypi/pyversions/django-huey-monitor)](https://github.com/boxine/django-huey-monitor//blob/main/pyproject.toml)
+[![License GPL-3.0-or-later](https://img.shields.io/pypi/l/django-huey-monitor)](https://github.com/boxine/django-huey-monitor//blob/main/LICENSE)
 
 
 ## Quickstart
@@ -119,35 +119,39 @@ To start developing e.g.:
 ```bash
 ~$ git clone https://github.com/boxine/django-huey-monitor.git
 ~$ cd django-huey-monitor
-~/django-huey-monitor$ make
-help                 List all commands
-install-poetry       install or update poetry via pip
-install              install via poetry
-update               Update the dependencies as according to the pyproject.toml file
-lint                 Run code formatters and linter
-fix-code-style       Fix code formatting
-tox-listenvs         List all tox test environments
-tox                  Run pytest via tox with all environments
-pytest               Run pytest
-pytest-ci            Run pytest with CI settings
-publish              Release new version to PyPi
-makemessages         Make and compile locales message files
-clean                Remove created files from the test project (e.g.: SQlite, static files)
-build                Update/Build docker services
-up                   Start docker containers
-down                 Stop all containers
-shell_django         go into a interactive bash shell in Django container
-shell_huey           go into a interactive bash shell in Huey worker container
-logs                 Display and follow docker logs
-reload_django        Reload the Django dev server
-reload_huey          Reload the Huey worker
-restart              Restart the containers
-fire_test_tasks      Call "fire_test_tasks" manage command to create some Huey Tasks
-
-~/django-huey-monitor$ make install-poetry
-~/django-huey-monitor$ make install
+~/django-huey-monitor$ ./manage.py
+~/django-huey-monitor$ make help
 ~/django-huey-monitor$ make up
 ```
+
+Our Makefile contains the following targets:
+
+[comment]: <> (✂✂✂ auto generated make help start ✂✂✂)
+```
+help                           List all commands
+install                        install huey monitor package
+update                         Update the dependencies as according to the pyproject.toml file
+run_dev_server                 Run Django's developer server
+test                           Run unittests
+tox                            Run unittests via tox
+makemessages                   Make and compile locales message files
+clean                          Remove created files from the test project (e.g.: SQlite, static files)
+build                          Update/Build docker services
+up                             Start docker containers
+down                           Stop all containers
+shell_django                   go into a interactive bash shell in Django container
+shell_huey1                    go into a interactive bash shell in Huey worker container 1
+shell_huey2                    go into a interactive bash shell in Huey worker container 2
+shell_huey3                    go into a interactive bash shell in Huey worker container 3
+logs                           Display and follow docker logs
+reload_django                  Reload the Django dev server
+reload_huey                    Reload the Huey worker
+restart                        Restart the containers
+fire_test_tasks                Call "fire_test_tasks" manage command to create some Huey Tasks
+fire_parallel_processing_task  Just fire "parallel processing" Huey Task
+delete_all_tasks_data          Delete all Task/Signal database enties
+```
+[comment]: <> (✂✂✂ auto generated make help end ✂✂✂)
 
 
 It's also possible to run the test setup with SQLite and Huey immediate setup
@@ -156,7 +160,7 @@ without docker:
 ```bash
 ~$ git clone https://github.com/boxine/django-huey-monitor.git
 ~$ cd django-huey-monitor
-~/django-huey-monitor$ ./manage.sh run_testserver
+~/django-huey-monitor$ ./manage.py run_dev_server
 ```
 
 
@@ -165,12 +169,17 @@ without docker:
 
 ### Version compatibility
 
-| huey-monitor | Django           | Python
-|--------------|------------------|------------------------
-| >v0.6.0      | v3.2, v4.0, v4.1 | v3.9, v3.10, v3.11
-| >v0.5.0      | v2.2, v3.1, v3.2 | v3.7, v3.8, v3.9
-| <=v0.4.0     | v2.2, v3.0, v3.1 | v3.7, v3.8, v3.9
+| Huey Monitor | Django           | Python             |
+|--------------|------------------|--------------------|
+| >v0.7.0      | v3.2, v4.1, v4.2 | v3.9, v3.10, v3.11 |
+| >v0.6.0      | v3.2, v4.0, v4.1 | v3.9, v3.10, v3.11 |
+| >v0.5.0      | v2.2, v3.1, v3.2 | v3.7, v3.8, v3.9   |
+| <=v0.4.0     | v2.2, v3.0, v3.1 | v3.7, v3.8, v3.9   |
 
+
+### v0.6.0
+
+We refactor the project setup: Developer must reinit the repository.
 
 ### v0.5.0
 
@@ -195,6 +204,12 @@ You must change your Django settings and replace the app name:
 ## History
 
 * [dev](https://github.com/boxine/django-huey-monitor/compare/v0.6.0...master)
+  * Switch to git `main` branch
+  * Switch from `pytest` to normal `unittests`
+  * Switch from `poetry` to `pip-tools`
+  * Use https://github.com/jedie/manage_django_project for developing
+  * Expand test matrix by remove Django 4.0 and add 4.2
+  * Enhance tox config
   * _tbc_
 * [v0.6.0 - 09.01.2023](https://github.com/boxine/django-huey-monitor/compare/v0.5.0...v0.6.0)
   * Test against Django v3.2, v4.0, v4.1 and Python v3.9 - v3.11

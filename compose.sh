@@ -4,4 +4,4 @@ source docker/common.env
 
 set -ex
 
-exec poetry run docker-compose "$@"
+exec .venv/bin/docker-compose "$@"

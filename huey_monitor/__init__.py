@@ -1,9 +1,8 @@
 """
-    Huey Monitor Django reuseable App
+    Huey Monitor Django
+    ~~~~~~~~~~~~~~~~~~~
+    Django based tool for monitoring huey task queue: https://github.com/coleifer/huey
 """
 
-from importlib.metadata import version
-
-
-__version__ = version('django-huey-monitor')
-
+__version__ = '0.7.0'
+__author__ = 'Jens Diemer <django-huey-monitor@jensdiemer.de>'
