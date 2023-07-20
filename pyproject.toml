@@ -1,81 +1,102 @@
-[tool.poetry]
+[project]
 name = "django-huey-monitor"
-version = "0.6.0"
+dynamic = ["version"]
 description = "Django based tool for monitoring huey task queue: https://github.com/coleifer/huey"
-authors = ["JensDiemer <git@jensdiemer.de>"]
-packages = [
-    { include = "huey_monitor" },
-    { include = "huey_monitor_tests" },
+license = {text = "GPL-3.0-or-later"}
+readme = "README.md"
+authors = [
+    {name = 'Jens Diemer', email = 'django-huey-monitor@jensdiemer.de'}
 ]
-homepage = "https://github.com/boxine/django-huey-monitor/"
-keywords=['huey','django']
-classifiers = [
-    # http://pypi.python.org/pypi?%3Aaction=list_classifiers
-    "Development Status :: 4 - Beta",
-#    "Development Status :: 5 - Production/Stable",
-    "Environment :: Web Environment",
-    "Intended Audience :: End Users/Desktop",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3 :: Only",
-    'Framework :: Django',
-    "Topic :: Database :: Front-Ends",
-    "Topic :: Documentation",
-    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
-    "Topic :: Internet :: WWW/HTTP :: Site Management",
-    "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-    "Operating System :: OS Independent",
+requires-python = ">=3.9,<4" # Keep Python 3.9 until Yunohost contains a newer Python Version ;)
+dependencies = [
+    "huey",  # https://github.com/coleifer/huey
+    "django",
+    "bx_py_utils",  # https://github.com/boxine/bx_py_utils
+    "bx_django_utils",  # https://github.com/boxine/bx_django_utils
 ]
-include = ['LICENSE', 'README.md']
+[project.optional-dependencies]
+dev = [
+    "django-redis",
+    "docker-compose",
+    "psycopg2-binary",
+    "manage_django_project>=0.3.0",  # https://github.com/jedie/manage_django_project
+    "django-debug-toolbar",  # http://django-debug-toolbar.readthedocs.io/en/stable/changes.html
+    "colorlog",  # https://github.com/borntyping/python-colorlog
+    "gunicorn",  # https://github.com/benoimyproject.wsgitc/gunicorn
+    "tblib",   # https://github.com/ionelmc/python-tblib
+    "pip-tools",  # https://github.com/jazzband/pip-tools/
+    "tox",  # https://github.com/tox-dev/tox
+    "coverage",  # https://github.com/nedbat/coveragepy
+    "autopep8",  # https://github.com/hhatto/autopep8
+    "pyupgrade",  # https://github.com/asottile/pyupgrade
+    "flake8",  # https://github.com/pycqa/flake8
+    "pyflakes",  # https://github.com/PyCQA/pyflakes
+    "codespell",  # https://github.com/codespell-project/codespell
+    "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
+    "safety",  # https://github.com/pyupio/safety
+    "mypy",  # https://github.com/python/mypy
+    "twine",  # https://github.com/pypa/twine
 
-readme='README.md'
+    # https://github.com/akaihola/darker
+    # https://github.com/ikamensh/flynt
+    # https://github.com/pycqa/isort
+    # https://github.com/pygments/pygments
+    "darker[flynt, isort, color]",
 
-[tool.poetry.dependencies]
-python = ">=3.8,<4.0.0"  # Enforce 3.9 in the future
-django = "*"
-huey = "*"
-bx_py_utils = "*"  # https://github.com/boxine/bx_py_utils
-bx_django_utils = "*"  # https://github.com/boxine/bx_django_utils
+    "tomli",  # https://github.com/hukkin/tomli
+    # tomli only needed for Python <3.11, but see bug:
+    # https://github.com/pypa/pip/issues/9644#issuecomment-1456583402
+    #"tomli;python_version<\"3.11\"",  # https://github.com/hukkin/tomli
 
-[tool.poetry.dev-dependencies]
-colorlog = "*"
-django-redis = "*"
-django-debug-toolbar = "*"  # http://django-debug-toolbar.readthedocs.io/en/stable/changes.html
-poetry-publish = "*"  # https://github.com/jedie/poetry-publish
-docker-compose = "*"
-psycopg2-binary = "*"
-tox = "*"
-pytest = "*"
-pytest-randomly = "*"  # https://github.com/pytest-dev/pytest-randomly
-pytest-cov = "*"
-pytest-django = "*"
-pytest-darker = "*"  # https://github.com/akaihola/pytest-darker
-coveralls = "*"
+    "model_bakery",  # https://github.com/model-bakers/model_bakery
+    "requests-mock",
+]
+django32=["django>=3.2,<3.3"]
+django41=["django>=4.1,<4.2"]
+django42=["django>=4.2,<4.3"]
 
-darker = {version = "*", extras = ["isort"]}  # https://github.com/akaihola/darker
-flake8 = "*"
+[project.urls]
+Documentation = "https://github.com/boxine/django-huey-monitor/"
+Source = "https://github.com/boxine/django-huey-monitor/"
 
-[tool.poetry.scripts]
-publish = "huey_monitor_tests.test_project.publish:publish"
+
+[project.scripts]
+huey_monitor_project = "huey_monitor_project.__main__:main"
+
+[manage_django_project]
+module_name="huey_monitor_project"
+
+# Django settings used for all commands except test/coverage/tox:
+local_settings='huey_monitor_project.settings.local'
+
+# Django settings used for test/coverage/tox commands:
+test_settings='huey_monitor_project.settings.tests'
+
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["setuptools>=61.0", "setuptools_scm>=7.1"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["huey_monitor*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "huey_monitor.__version__"}
 
 
 [tool.darker]
-src = ['huey_monitor', 'huey_monitor_tests']
-revision = "origin/master..."
-line_length = 100
+src = ['.']
+revision = "origin/main..."
+line_length = 119
 verbose = true
+color = true
 skip_string_normalization = true
 diff = false
 check = false
 stdout = false
 isort = true
+flynt = true
 lint = [
     "flake8",
 ]
@@ -86,60 +107,77 @@ log_level = "INFO"
 # https://pycqa.github.io/isort/docs/configuration/config_files/#pyprojecttoml-preferred-format
 atomic=true
 profile='black'
-line_length=120
-skip_glob=["*/htmlcov/*","*/migrations/*","*/volumes/*"]
-known_first_party=["huey_monitor","huey_monitor_tests"]
+skip_glob=['.*', '*/htmlcov/*','*/migrations/*']
+known_first_party=['huey_monitor']
+line_length=119
 lines_after_imports=2
 
+
 [tool.coverage.run]
-omit=[".*"]
+branch = true
+parallel = true
+concurrency = ["multiprocessing"]
+source = ['.']
+command_line = '-m huey_monitor_project test --shuffle --parallel --buffer'
 
-[tool.pytest.ini_options]
-# https://docs.pytest.org/en/latest/customize.html#pyproject-toml
-minversion = "6.0"
-DJANGO_SETTINGS_MODULE="huey_monitor_tests.test_project.settings.tests"
-norecursedirs = ".* migrations __pycache__ coverage* dist htmlcov volumes"
-# sometimes helpfull "addopts" arguments:
-#    -vv
-#    --verbose
-#    --capture=no
-#    --trace-config
-#    --full-trace
-#    -p no:warnings
-addopts = """
-    --reuse-db
-    --nomigrations
-    --cov=.
-    --cov-report term-missing
-    --no-cov-on-fail
-    --showlocals
-    --darker
-    --doctest-modules
-    --failed-first
-    --last-failed-no-failures all
-    --new-first
-    -p no:randomly
-"""
+[tool.coverage.report]
+omit = ['.*', '*/tests/*', '*/migrations/*']
+skip_empty = true
+fail_under = 30
+show_missing = true
+exclude_lines = [
+    'if self.debug:',
+    'pragma: no cover',
+    'raise NotImplementedError',
+    'if __name__ == .__main__.:',
+]
 
 
-[tool.tox]
-# https://tox.readthedocs.io/en/latest/example/basic.html#pyproject-toml-tox-legacy-ini
+[tool.tox]  # https://tox.wiki/en/latest/config.html#pyproject-toml
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py{39,310,311}-django{3.2,4.0,4.1}
+envlist = py{311,310,39}-django{42,41,32}
 skip_missing_interpreters = True
 
 [testenv]
 passenv = *
-deps =
-    django3.2: django>=3.2,<3.3
-    django4.0: django>=4.0,<4.1
-    django4.1: django>=4.1,<4.2
-allowlist_externals =
-    poetry
+skip_install = true
+commands_pre =
+    pip install -U pip-tools
+    django32: pip-sync requirements.django32.txt
+    django41: pip-sync requirements.django41.txt
+    django42: pip-sync requirements.django42.txt
 commands =
-    python --version
-    poetry run django-admin --version
-    poetry run pytest
+    django32: {envpython} -m coverage run --context='{envname}' -m huey_monitor_project test --buffer
+    django41: {envpython} -m coverage run --context='{envname}' -m huey_monitor_project test --buffer --shuffle --parallel
+    django42: {envpython} -m coverage run --context='{envname}' -m huey_monitor_project test --buffer --shuffle --parallel
 """
+
+
+[tool.mypy]
+warn_unused_configs = true
+ignore_missing_imports = true
+allow_redefinition = true  # https://github.com/python/mypy/issues/7165
+show_error_codes = true
+plugins = []
+exclude = ['.venv', 'tests', 'migrations']
+
+
+[manageprojects] # https://github.com/jedie/manageprojects
+initial_revision = "53a7e85"
+initial_date = 2023-04-10T19:08:56+02:00
+cookiecutter_template = "https://github.com/jedie/cookiecutter_templates/"
+cookiecutter_directory = "managed-django-project"
+
+[manageprojects.cookiecutter_context.cookiecutter]
+full_name = "Jens Diemer"
+github_username = "jedie"
+author_email = "django-huey-monitor@jensdiemer.de"
+project_name = "django-huey-monitor"
+package_name = "huey_monitor"
+package_version = "0.7.0"
+package_description = "Django based tool for monitoring huey task queue: https://github.com/coleifer/huey"
+package_url = "https://github.com/boxine/django-huey-monitor/"
+license = "GPL-3.0-or-later"
+_template = "https://github.com/jedie/cookiecutter_templates/"

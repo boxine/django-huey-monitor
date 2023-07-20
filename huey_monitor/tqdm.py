@@ -1,13 +1,11 @@
 import logging
 
-from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.text import Truncator
 from huey.api import Task
 
 from huey_monitor.constants import TASK_MODEL_DESC_MAX_LENGTH
 from huey_monitor.models import TaskModel
-
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +71,7 @@ class ProcessInfo:
                 main_task_id=parent_task_id,
                 sub_task_id=task.id,
             )
-            
+
         self.total_progress = 0
 
         logger.info('Init TaskModel %s', self)

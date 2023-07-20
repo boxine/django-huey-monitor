@@ -1,18 +1,29 @@
 .*
+*.egg-info
+__pycache__
+/dist/
+/coverage.json
+/coverage.xml
+
 !.github
-!.dockerignore
 !.editorconfig
 !.flake8
 !.gitignore
+!.gitkeep
 
-dist
-__pycache__
+# for django-dbbackup
+/backups/
+!/backups/.gitkeep
 
-htmlcov
-static
-!huey_monitor/static
-volumes
+# from test projects:
+/static/
+/media/
+*.sqlite3
+*.json
 
-*.xml
-*.log
-*.sqlite*
+# Include "ignored" *.json:
+!**/fixtures/*.json
+
+# Django
+secret.txt
+

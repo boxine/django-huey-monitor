@@ -26,7 +26,7 @@ echo "$(date +%c) - ${0} $*"
     # install/update venv and wait for services:
     /django/docker/utils/init.sh "${1}"
 
-    poetry run ./manage.py run_testserver django:8000
+    ./manage.py run_testserver django:8000
     echo "runserver terminated with exit code: $?"
     sleep 3
     exit 1
