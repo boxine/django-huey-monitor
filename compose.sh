@@ -4,4 +4,4 @@ source docker/common.env
 
 set -ex
 
-exec .venv/bin/docker-compose "$@"
+exec docker compose "$@"
