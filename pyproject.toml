@@ -17,7 +17,6 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "django-redis",
-    "docker-compose",
     "psycopg2-binary",
     "manage_django_project>=0.3.0",  # https://github.com/jedie/manage_django_project
     "django-debug-toolbar",  # http://django-debug-toolbar.readthedocs.io/en/stable/changes.html
@@ -107,7 +106,7 @@ log_level = "INFO"
 # https://pycqa.github.io/isort/docs/configuration/config_files/#pyprojecttoml-preferred-format
 atomic=true
 profile='black'
-skip_glob=['.*', '*/htmlcov/*','*/migrations/*']
+skip_glob=['.*', '*/htmlcov/*','*/migrations/*', 'volumes']
 known_first_party=['huey_monitor']
 line_length=119
 lines_after_imports=2
@@ -121,7 +120,7 @@ source = ['.']
 command_line = '-m huey_monitor_project test --shuffle --parallel --buffer'
 
 [tool.coverage.report]
-omit = ['.*', '*/tests/*', '*/migrations/*']
+omit = ['.*', '*/tests/*', '*/migrations/*', 'volumes']
 skip_empty = true
 fail_under = 30
 show_missing = true
@@ -161,7 +160,7 @@ ignore_missing_imports = true
 allow_redefinition = true  # https://github.com/python/mypy/issues/7165
 show_error_codes = true
 plugins = []
-exclude = ['.venv', 'tests', 'migrations']
+exclude = ['.venv', 'tests', 'migrations', 'volumes']
 
 
 [manageprojects] # https://github.com/jedie/manageprojects

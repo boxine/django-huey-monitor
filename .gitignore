@@ -16,6 +16,7 @@ __pycache__
 !/backups/.gitkeep
 
 # from test projects:
+/volumes/
 /static/
 /media/
 *.sqlite3
