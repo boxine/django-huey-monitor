@@ -203,7 +203,7 @@ You must change your Django settings and replace the app name:
 
 ## History
 
-* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.6.0...master)
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.6.0...main)
   * Switch to git `main` branch
   * Switch from `pytest` to normal `unittests`
   * Switch from `poetry` to `pip-tools`
