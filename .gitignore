@@ -1,9 +1,4 @@
 .*
-*.egg-info
-__pycache__
-/dist/
-/coverage.json
-/coverage.xml
 
 !.github
 !.editorconfig
@@ -11,9 +6,12 @@ __pycache__
 !.gitignore
 !.gitkeep
 
-# for django-dbbackup
-/backups/
-!/backups/.gitkeep
+__pycache__
+/build/
+/dist/
+*.egg-info
+/coverage.json
+/coverage.xml
 
 # from test projects:
 /volumes/
@@ -22,9 +20,7 @@ __pycache__
 *.sqlite3
 *.json
 
-# Include "ignored" *.json:
-!**/fixtures/*.json
-
 # Django
 secret.txt
+
 
