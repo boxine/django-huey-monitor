@@ -9,8 +9,7 @@ install:  ## install huey monitor package
 update:  ## Update the dependencies as according to the pyproject.toml file
 	./manage.py update_req
 
-run_dev_server:  ## Run Django's developer server
-	./manage.py run_dev_server
+run-dev-server:  ## Run Django's developer server
 
 test:  ## Run unittests
 	./manage.py test
@@ -39,26 +38,30 @@ up: build ## Start docker containers
 down: ## Stop all containers
 	./compose.sh down
 
-shell_django: ## go into a interactive bash shell in Django container
+shell-django: ## go into a interactive bash shell in Django container
 	./compose.sh exec django /bin/bash
 
-shell_huey1: ## go into a interactive bash shell in Huey worker container 1
+run-shell-django: ## Build and start the Django container and go into shell
+	./compose.sh build --pull --parallel django
+	./compose.sh run --entrypoint '/bin/bash' django
+
+shell-huey1: ## go into a interactive bash shell in Huey worker container 1
 	./compose.sh exec huey1 /bin/bash
 
-shell_huey2:  ## go into a interactive bash shell in Huey worker container 2
+shell-huey2:  ## go into a interactive bash shell in Huey worker container 2
 	./compose.sh exec huey2 /bin/bash
 
-shell_huey3:  ## go into a interactive bash shell in Huey worker container 3
+shell-huey3:  ## go into a interactive bash shell in Huey worker container 3
 	./compose.sh exec huey3 /bin/bash
 
 logs: ## Display and follow docker logs
 	./compose.sh logs --tail=500 --follow
 
-reload_django: ## Reload the Django dev server
+reload-django: ## Reload the Django dev server
 	./compose.sh exec django /django/docker/utils/kill_python.sh
 	./compose.sh logs --tail=500 --follow django
 
-reload_huey: ## Reload the Huey worker
+reload-huey: ## Reload the Huey worker
 	./compose.sh exec huey1 /django/docker/utils/kill_python.sh
 	./compose.sh exec huey2 /django/docker/utils/kill_python.sh
 	./compose.sh exec huey3 /django/docker/utils/kill_python.sh
@@ -66,11 +69,13 @@ reload_huey: ## Reload the Huey worker
 
 restart: down up  ## Restart the containers
 
-fire_test_tasks:  ## Call "fire_test_tasks" manage command to create some Huey Tasks
+fire-test-tasks:  ## Call "fire-test-tasks" manage command to create some Huey Tasks
 	./compose.sh exec django /django/manage.py fire_test_tasks
 
-fire_parallel_processing_task:  ## Just fire "parallel processing" Huey Task
+fire-parallel-processing-task:  ## Just fire "parallel processing" Huey Task
 	./compose.sh exec django /django/manage.py fire_parallel_processing_task
 
-delete_all_tasks_data:  ## Delete all Task/Signal database enties
+delete-all-tasks-data:  ## Delete all Task/Signal database enties
 	./compose.sh exec django /django/manage.py delete_all_tasks_data
+
+.PHONY: help install update run-dev-server test tox  makemessages clean build up down shell-django shell-huey1 shell-huey2 shell-huey3 logs reload-django reload-huey restart fire-test-tasks fire-parallel-processing-task delete-all-tasks-data

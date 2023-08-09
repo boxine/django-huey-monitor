@@ -131,7 +131,7 @@ Our Makefile contains the following targets:
 help                           List all commands
 install                        install huey monitor package
 update                         Update the dependencies as according to the pyproject.toml file
-run_dev_server                 Run Django's developer server
+run-dev-server                 Run Django's developer server
 test                           Run unittests
 tox                            Run unittests via tox
 makemessages                   Make and compile locales message files
@@ -139,17 +139,18 @@ clean                          Remove created files from the test project (e.g.:
 build                          Update/Build docker services
 up                             Start docker containers
 down                           Stop all containers
-shell_django                   go into a interactive bash shell in Django container
-shell_huey1                    go into a interactive bash shell in Huey worker container 1
-shell_huey2                    go into a interactive bash shell in Huey worker container 2
-shell_huey3                    go into a interactive bash shell in Huey worker container 3
+shell-django                   go into a interactive bash shell in Django container
+run-shell-django               Build and start the Django container and go into shell
+shell-huey1                    go into a interactive bash shell in Huey worker container 1
+shell-huey2                    go into a interactive bash shell in Huey worker container 2
+shell-huey3                    go into a interactive bash shell in Huey worker container 3
 logs                           Display and follow docker logs
-reload_django                  Reload the Django dev server
-reload_huey                    Reload the Huey worker
+reload-django                  Reload the Django dev server
+reload-huey                    Reload the Huey worker
 restart                        Restart the containers
-fire_test_tasks                Call "fire_test_tasks" manage command to create some Huey Tasks
-fire_parallel_processing_task  Just fire "parallel processing" Huey Task
-delete_all_tasks_data          Delete all Task/Signal database enties
+fire-test-tasks                Call "fire-test-tasks" manage command to create some Huey Tasks
+fire-parallel-processing-task  Just fire "parallel processing" Huey Task
+delete-all-tasks-data          Delete all Task/Signal database enties
 ```
 [comment]: <> (✂✂✂ auto generated make help end ✂✂✂)
 
