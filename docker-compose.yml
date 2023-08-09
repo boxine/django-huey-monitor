@@ -17,11 +17,16 @@ services:
             - postgres
             - redis
         volumes:
-            - .:/django/:ro
-            # static files, served by caddy:
+            - ./docker/:/django/docker/:ro
+            - ./huey_monitor/:/django/huey_monitor/:ro
+            - ./huey_monitor_project/:/django/huey_monitor_project/:ro
+            #
+            - ./volumes/django/venv/:/django/.venv/:rw
+            - ./volumes/django/build/:/django/build/:rw
             - ./volumes/django/static/:/static/:rw
-            # Use files, served by django:
             - ./volumes/django/media/:/media/:rw
+            # e.g.: pip cache must be the same value as $XDG_CACHE_HOME !
+            - ./volumes/cache/:/pipcache/:rw
         entrypoint: /django/docker/django/entrypoint.sh
 
     huey1:
@@ -42,10 +47,13 @@ services:
         depends_on:
             - django
         volumes:
-            - .:/django/:ro
-            # static files, served by caddy:
+            - ./docker/:/django/docker/:ro
+            - ./huey_monitor/:/django/huey_monitor/:ro
+            - ./huey_monitor_project/:/django/huey_monitor_project/:ro
+            #
+            - ./volumes/django/venv/:/django/.venv/:rw
+            - ./volumes/django/build/:/django/build/:rw
             - ./volumes/django/static/:/static/:rw
-            # Use files, served by django:
             - ./volumes/django/media/:/media/:rw
             # e.g.: pip cache must be the same value as $XDG_CACHE_HOME !
             - ./volumes/cache/:/pipcache/:rw
@@ -69,10 +77,13 @@ services:
         depends_on:
             - django
         volumes:
-            - .:/django/:ro
-            # static files, served by caddy:
+            - ./docker/:/django/docker/:ro
+            - ./huey_monitor/:/django/huey_monitor/:ro
+            - ./huey_monitor_project/:/django/huey_monitor_project/:ro
+            #
+            - ./volumes/django/venv/:/django/.venv/:rw
+            - ./volumes/django/build/:/django/build/:rw
             - ./volumes/django/static/:/static/:rw
-            # Use files, served by django:
             - ./volumes/django/media/:/media/:rw
             # e.g.: pip cache must be the same value as $XDG_CACHE_HOME !
             - ./volumes/cache/:/pipcache/:rw
@@ -96,10 +107,13 @@ services:
         depends_on:
             - django
         volumes:
-            - .:/django/:ro
-            # static files, served by caddy:
+            - ./docker/:/django/docker/:ro
+            - ./huey_monitor/:/django/huey_monitor/:ro
+            - ./huey_monitor_project/:/django/huey_monitor_project/:ro
+            #
+            - ./volumes/django/venv/:/django/.venv/:rw
+            - ./volumes/django/build/:/django/build/:rw
             - ./volumes/django/static/:/static/:rw
-            # Use files, served by django:
             - ./volumes/django/media/:/media/:rw
             # e.g.: pip cache must be the same value as $XDG_CACHE_HOME !
             - ./volumes/cache/:/pipcache/:rw

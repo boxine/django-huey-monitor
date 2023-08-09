@@ -1,16 +1,15 @@
 import os
 
-from huey_monitor_project.test_project import huey_docker_instance
-from huey_monitor_project.test_project.settings.base import *  # noqa
+from huey_monitor_project import huey_docker_instance
+from huey_monitor_project.settings.local import *  # noqa
 
 
+# _____________________________________________________________________________
 # Huey Configuration
-# ----------------------------------------------------------------------------
 HUEY = huey_docker_instance.HUEY
 
+# _____________________________________________________________________________
 # Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -25,15 +24,14 @@ DATABASES = {
 }
 
 
-# Django debug toolbar
-
-
-def always_show_toolbar(request):
-    return True
-
-
-DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_COLLAPSED': True,
-    'SHOW_TEMPLATE_CONTEXT': True,
-    'SHOW_TOOLBAR_CALLBACK': always_show_toolbar,
-}
+# # _____________________________________________________________________________
+# # Django debug toolbar
+# def always_show_toolbar(request):
+#     return True
+#
+#
+# DEBUG_TOOLBAR_CONFIG = {
+#     'SHOW_COLLAPSED': True,
+#     'SHOW_TEMPLATE_CONTEXT': True,
+#     'SHOW_TOOLBAR_CALLBACK': always_show_toolbar,
+# }

@@ -2,8 +2,8 @@
 """
     Settings used to run tests
 """
+from huey_monitor_project import huey_tests_instance
 from huey_monitor_project.settings.prod import *  # noqa
-from huey_monitor_project.test_project import huey_tests_instance
 
 
 # Huey Configuration
