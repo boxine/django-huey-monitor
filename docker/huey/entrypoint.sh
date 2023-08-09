@@ -2,11 +2,6 @@
 
 set -e
 
-(
-    set -x
-    poetry install
-)
-
 restart_error_handler() {
     echo "Restart ${0} in 3 sec..."
     sleep 3
@@ -26,6 +21,7 @@ echo "$(date +%c) - ${0} $*"
     # install/update venv and wait for services:
     /django/docker/utils/init.sh "${1}"
 
+    ./manage.py --help
     ./manage.py run_huey --worker-type process --workers 2
     echo "Huey terminated with exit code: $?"
     sleep 3

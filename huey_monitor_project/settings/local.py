@@ -7,7 +7,13 @@
 import os as __os
 import sys as __sys
 
+from huey_monitor_project import huey_tests_instance
 from huey_monitor_project.settings.prod import *  # noqa
+
+
+# Huey Configuration
+# ----------------------------------------------------------------------------
+HUEY = huey_tests_instance.HUEY
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -17,9 +23,6 @@ DEBUG = True
 # Serve static/media files for local development:
 SERVE_FILES = True
 
-
-# Disable caches:
-CACHES = {'default': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache'}}
 
 # Required for the debug toolbar to be displayed:
 INTERNAL_IPS = ('127.0.0.1', '0.0.0.0', 'localhost')
@@ -38,18 +41,17 @@ print(f'Use Database: {DATABASES["default"]["NAME"]!r}', file=__sys.stderr)
 
 # _____________________________________________________________________________
 
-# Download map via geotiler in huey_monitor.gpx_tools.gpxpy2map.generate_map
-MAP_DOWNLOAD = True
-
 if __os.environ.get('AUTOLOGIN') == '1':
     # Auto login for dev. server:
     MIDDLEWARE = MIDDLEWARE.copy()
     MIDDLEWARE += ['django_tools.middlewares.local_auto_login.AlwaysLoggedInAsSuperUserMiddleware']
 
+
 # _____________________________________________________________________________
 # Manage Django Project
 
 INSTALLED_APPS.append('manage_django_project')
+
 
 # _____________________________________________________________________________
 # Django-Debug-Toolbar
