@@ -204,14 +204,16 @@ You must change your Django settings and replace the app name:
 
 ## History
 
-* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.6.0...main)
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.7.0...main)
+  * _tbc_
+* [v0.7.0 - 09.08.2023](https://github.com/boxine/django-huey-monitor/compare/v0.6.0...v0.7.0)
+  * New: Display Huey pending/scheduled/result task counts in admin
   * Switch to git `main` branch
   * Switch from `pytest` to normal `unittests`
   * Switch from `poetry` to `pip-tools`
   * Use https://github.com/jedie/manage_django_project for developing
   * Expand test matrix by remove Django 4.0 and add 4.2
   * Enhance tox config
-  * _tbc_
 * [v0.6.0 - 09.01.2023](https://github.com/boxine/django-huey-monitor/compare/v0.5.0...v0.6.0)
   * Test against Django v3.2, v4.0, v4.1 and Python v3.9 - v3.11
   * Optimize Admin change list ([contributed by henribru](https://github.com/boxine/django-huey-monitor/pull/110))
