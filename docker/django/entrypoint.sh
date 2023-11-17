@@ -24,7 +24,11 @@ echo "$(date +%c) - ${0} $*"
     /django/docker/utils/init.sh "${1}"
 
     ./manage.py --help
-    ./manage.py run_dev_server django:8000
+
+    # Needed for AlwaysLoggedInAsSuperUserMiddleware:
+    export RUN_MAIN=true
+
+    watchfiles --filter python "python manage.py run_dev_server --noreload django:8000" /django/
     echo "runserver terminated with exit code: $?"
     sleep 3
     exit 1

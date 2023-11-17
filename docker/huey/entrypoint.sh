@@ -22,7 +22,7 @@ echo "$(date +%c) - ${0} $*"
     /django/docker/utils/init.sh "${1}"
 
     ./manage.py --help
-    ./manage.py run_huey --worker-type process --workers 2
+    watchfiles --filter python "python manage.py run_huey --worker-type process --workers 2" /django/
     echo "Huey terminated with exit code: $?"
     sleep 3
     exit 1

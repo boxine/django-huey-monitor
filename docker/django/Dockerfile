@@ -12,7 +12,7 @@ RUN set -x \
     && apt-get install -y postgresql-client python3-pip \
     && rm -rf /var/lib/apt \
     && python3 -m pip install -U pip \
-    && pip3 install -U setuptools psycopg2-binary
+    && pip3 install -U setuptools psycopg2-binary watchfiles
 
 WORKDIR /django
 
