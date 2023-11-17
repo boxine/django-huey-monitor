@@ -8,34 +8,34 @@ asgiref==3.7.2 \
     --hash=sha256:89b2ef2247e3b562a16eef663bc0e2e703ec6468e2fa8a5cd61cd449786d4f6e \
     --hash=sha256:9e0ce3aa93a819ba5b45120216b23878cf6e8525eb3848653452b4192b92afed
     # via django
-bx-django-utils==63 \
-    --hash=sha256:0023c0c18c8ce21fbee0e3bb563cd0283749495ca22cab1857ac971e4ee2bb05 \
-    --hash=sha256:3b050d9d9d4e496e082c29d98d7633eb89ad028c658743b0032ee88e7e49be63
+bx-django-utils==69 \
+    --hash=sha256:39e96b8ad47bcf36d6713e4e42c8d09deb21e413160dc2944f17b7d2e2244713 \
+    --hash=sha256:59b806aa36b50184f14bd0f7a61fb66c478fa231a44f92472360ce0cf1616013
     # via django-huey-monitor (pyproject.toml)
-bx-py-utils==85 \
-    --hash=sha256:8d6ee4bb0c431304b812f5bebb1bc8e2ab05f1b6c2f8d16d352cbcee5e916cd2 \
-    --hash=sha256:df023fa05cda8e969d2cbdb4cc348d8b7670567a2fe775faf7a0c869ec56eaa2
+bx-py-utils==88 \
+    --hash=sha256:32fbc7e9ff3dfb0a817c80fb1d165ec559643dab59c0be549e646acbf8223b75 \
+    --hash=sha256:3a6f4eeef6abcac834b2c1ea4c5211130fd930a064aa0baabddd7c2bd00e38ac
     # via
     #   bx-django-utils
     #   django-huey-monitor (pyproject.toml)
-django==4.2.4 \
-    --hash=sha256:7e4225ec065e0f354ccf7349a22d209de09cc1c074832be9eb84c51c1799c432 \
-    --hash=sha256:860ae6a138a238fc4f22c99b52f3ead982bb4b1aad8c0122bcd8c8a3a02e409d
+django==4.2.7 \
+    --hash=sha256:8e0f1c2c2786b5c0e39fe1afce24c926040fad47c8ea8ad30aaf1188df29fc41 \
+    --hash=sha256:e1d37c51ad26186de355cbcec16613ebdabfa9689bbade9c538835205a8abbe9
     # via
     #   bx-django-utils
     #   django-huey-monitor (pyproject.toml)
-huey==2.4.5 \
-    --hash=sha256:760cf150deff1fa34b852da37701a5a750d1148f03ea07aa2b3764dc6060b4c3
+huey==2.5.0 \
+    --hash=sha256:2ffb52fb5c46a1b0d53c79d59df3622312b27e2ab68d81a580985a8ea4ca3480
     # via django-huey-monitor (pyproject.toml)
-python-stdnum==1.18 \
-    --hash=sha256:bcc763d9c49ae23da5d2b7a686d5fd1deec9d9051341160a10d1ac723a26bec0 \
-    --hash=sha256:d7f2a3c7ef4635c957b9cbdd9b1993d1f6ee3a2959f03e172c45440d99f296eb
+python-stdnum==1.19 \
+    --hash=sha256:133ec82f56390ea74c190569e98f2fb14b869808b1d54785708f22d0fead8b3f \
+    --hash=sha256:1b5b401ad3f45b798b0317313b781a433f5d7a5ff2c9feb8054664f76f78644e
     # via bx-django-utils
 sqlparse==0.4.4 \
     --hash=sha256:5430a4fe2ac7d0f93e66f1efc6e1338a41884b7ddf2a350cedd20ccc4d9d28f3 \
     --hash=sha256:d446183e84b8349fa3061f0fe7f06ca94ba65b426946ffebe6e3e8295332420c
     # via django
-typing-extensions==4.7.1 \
-    --hash=sha256:440d5dd3af93b060174bf433bccd69b0babc3b15b1a8dca43789fd7f61514b36 \
-    --hash=sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2
+typing-extensions==4.8.0 \
+    --hash=sha256:8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0 \
+    --hash=sha256:df8e4339e9cb77357558cbdbceca33c303714cf861d1eef15e1070055ae8b7ef
     # via asgiref
