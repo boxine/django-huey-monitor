@@ -16,6 +16,14 @@ from huey_monitor_project.test_app.tasks import (
 class Command(BaseCommand):
     help = 'Just fire some Huey Tasks to fill the database a little bit ;)'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--count',
+            default=10,
+            type=int,
+            help='Number of main_task() to additional fire (default: %(default)s)',
+        )
+
     def handle(self, *args, **options):
         linear_processing_task()
         parallel_task(task_num=3)  # Create three "worker" tasks
@@ -35,4 +43,6 @@ class Command(BaseCommand):
         retry_and_lock_task(info='2', sleep=10)
         retry_and_lock_task(info='3', sleep=20)
 
-        main_task()  # A task that fires "sub-tasks"
+        main_task_count = options['count']
+        for _ in range(main_task_count):
+            main_task()  # A task that fires "sub-tasks"

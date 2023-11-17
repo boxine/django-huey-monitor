@@ -149,6 +149,7 @@ reload-django                  Reload the Django dev server
 reload-huey                    Reload the Huey worker
 restart                        Restart the containers
 fire-test-tasks                Call "fire-test-tasks" manage command to create some Huey Tasks
+fire-many-test-tasks           Call "fire-test-tasks" with --count 10000 to create many task entries ;)
 fire-parallel-processing-task  Just fire "parallel processing" Huey Task
 delete-all-tasks-data          Delete all Task/Signal database enties
 ```
