@@ -145,6 +145,7 @@ shell-huey1                    go into a interactive bash shell in Huey worker c
 shell-huey2                    go into a interactive bash shell in Huey worker container 2
 shell-huey3                    go into a interactive bash shell in Huey worker container 3
 logs                           Display and follow docker logs
+logs-django                    Display and follow docker logs only from "django" container
 reload-django                  Reload the Django dev server
 reload-huey                    Reload the Huey worker
 restart                        Restart the containers

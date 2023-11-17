@@ -57,6 +57,9 @@ shell-huey3:  ## go into a interactive bash shell in Huey worker container 3
 logs: ## Display and follow docker logs
 	./compose.sh logs --tail=500 --follow
 
+logs-django: ## Display and follow docker logs only from "django" container
+	./compose.sh logs --tail=500 --follow django
+
 reload-django: ## Reload the Django dev server
 	./compose.sh exec django /django/docker/utils/kill_python.sh
 	./compose.sh logs --tail=500 --follow django
