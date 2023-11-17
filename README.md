@@ -82,6 +82,22 @@ It is also possible to divide the work to several tasks and collect information 
 Working example can be found in the test app here: [huey_monitor_tests/test_app/tasks.py](https://github.com/boxine/django-huey-monitor/blob/master/huey_monitor_tests/test_app/tasks.py)
 
 
+## settings
+
+### override list filter (optional)
+
+It is possible to override `list_filter` of `SignalInfoModelAdmin` and `TaskModelAdmin` via settings.
+e.g.:
+
+```python
+HUEY_MONITOR_SIGNAL_INFO_MODEL_LIST_FILTER = ('task__name', 'signal_name')
+HUEY_MONITOR_TASK_MODEL_LIST_FILTER = ('name', 'state__signal_name')
+```
+
+Note: This both settings are optional.
+In this example is the "hostname" filter not present ;)
+
+
 ## run test project
 
 Note: You can quickly test Huey Monitor with the test project, e.g:
@@ -209,6 +225,7 @@ You must change your Django settings and replace the app name:
 ## History
 
 * [dev](https://github.com/boxine/django-huey-monitor/compare/v0.7.0...main)
+  * Make is possible to override `list_filter` of `SignalInfoModelAdmin` and `TaskModelAdmin` via settings
   * _tbc_
 * [v0.7.0 - 09.08.2023](https://github.com/boxine/django-huey-monitor/compare/v0.6.0...v0.7.0)
   * New: Display Huey pending/scheduled/result task counts in admin

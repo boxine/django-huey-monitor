@@ -11,9 +11,23 @@ from huey_monitor_project import huey_tests_instance
 from huey_monitor_project.settings.prod import *  # noqa
 
 
+# Huey-Monitor settings
+# ----------------------------------------------------------------------------
+
+# Use default SignalInfoModelAdmin.list_filter:
+HUEY_MONITOR_SIGNAL_INFO_MODEL_LIST_FILTER = None
+
+# Use default TaskModelAdmin.list_filter:
+HUEY_MONITOR_TASK_MODEL_LIST_FILTER = None
+
+
 # Huey Configuration
 # ----------------------------------------------------------------------------
 HUEY = huey_tests_instance.HUEY
+
+
+# Django settings
+# ----------------------------------------------------------------------------
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
