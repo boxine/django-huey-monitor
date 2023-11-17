@@ -124,6 +124,8 @@ To start developing e.g.:
 ~/django-huey-monitor$ make up
 ```
 
+Point our browser to: `http://localhost:8000/`
+
 Our Makefile contains the following targets:
 
 [comment]: <> (✂✂✂ auto generated make help start ✂✂✂)
