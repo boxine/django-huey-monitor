@@ -4,5 +4,5 @@
     Django based tool for monitoring huey task queue: https://github.com/coleifer/huey
 """
 
-__version__ = '0.7.1'
+__version__ = '0.8.0'
 __author__ = 'Jens Diemer <django-huey-monitor@jensdiemer.de>'

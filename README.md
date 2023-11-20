@@ -224,9 +224,13 @@ You must change your Django settings and replace the app name:
 
 ## History
 
-* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.7.0...main)
-  * Make is possible to override `list_filter` of `SignalInfoModelAdmin` and `TaskModelAdmin` via settings
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.8.0...main)
   * _tbc_
+* [v0.8.0 - 20.11.2023](https://github.com/boxine/django-huey-monitor/compare/v0.7.1...v0.8.0)
+  * Make is possible to override `list_filter` of `SignalInfoModelAdmin` and `TaskModelAdmin` via settings
+  * Update local docker dev setup
+* [v0.7.1 - 18.08.2023](https://github.com/boxine/django-huey-monitor/compare/v0.7.0...v0.7.1)
+  * Fix #127: Catch error getting HUEY counts
 * [v0.7.0 - 09.08.2023](https://github.com/boxine/django-huey-monitor/compare/v0.6.0...v0.7.0)
   * New: Display Huey pending/scheduled/result task counts in admin
   * Switch to git `main` branch
