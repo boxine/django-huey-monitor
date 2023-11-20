@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from bx_django_utils.humanize.time import human_timedelta
 
 
