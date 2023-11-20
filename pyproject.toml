@@ -60,6 +60,7 @@ Source = "https://github.com/boxine/django-huey-monitor/"
 
 
 [project.scripts]
+# Must be set in ./manage.py and PROJECT_SHELL_SCRIPT:
 huey_monitor_project = "huey_monitor_project.__main__:main"
 
 [manage_django_project]
@@ -78,7 +79,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["huey_monitor*"]
+include = ["huey_monitor*", "huey_monitor_project*"]
 
 [tool.setuptools.dynamic]
 version = {attr = "huey_monitor.__version__"}
@@ -136,7 +137,7 @@ exclude_lines = [
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py{311,310,39}-django{42,41,32}
+envlist = py{312,311,310,39}-django{42,41,32}
 skip_missing_interpreters = True
 
 [testenv]
@@ -180,3 +181,6 @@ package_description = "Django based tool for monitoring huey task queue: https:/
 package_url = "https://github.com/boxine/django-huey-monitor/"
 license = "GPL-3.0-or-later"
 _template = "https://github.com/jedie/cookiecutter_templates/"
+applied_migrations = [
+    "3383cb0", # 2023-11-09T20:14:05+01:00
+]

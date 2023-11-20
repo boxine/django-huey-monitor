@@ -1,4 +1,5 @@
 from bx_django_utils.templatetags.humanize_time import human_duration
+from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin.views.main import ChangeList
 from django.db.models import OuterRef, Prefetch
@@ -141,7 +142,6 @@ class TaskModelAdmin(admin.ModelAdmin):
     list_display_links = None
     list_select_related = ('state',)
     date_hierarchy = 'create_dt'
-    list_filter = ('name', 'state__signal_name', 'state__hostname')
     search_fields = ('name', 'state__exception_line', 'state__exception')
     fieldsets = (
         (_('Meta'), {'fields': ('task_id', 'create_dt', 'update_dt')}),
@@ -161,6 +161,13 @@ class TaskModelAdmin(admin.ModelAdmin):
         ),
         (_('Hierarchy'), {'fields': ('task_hierarchy_info',)}),
     )
+
+    def get_list_filter(self, request):
+        return getattr(settings, 'HUEY_MONITOR_TASK_MODEL_LIST_FILTER', None) or (
+            'name',
+            'state__signal_name',
+            'state__hostname',
+        )
 
     class Media:
         css = {
@@ -186,8 +193,14 @@ class SignalInfoModelAdmin(admin.ModelAdmin):
     list_display_links = ('task_name',)
     ordering = ('-create_dt',)
     date_hierarchy = 'create_dt'
-    list_filter = ('task__name', 'signal_name', 'hostname')
     search_fields = ('task__name', 'exception_line', 'exception')
+
+    def get_list_filter(self, request):
+        return getattr(settings, 'HUEY_MONITOR_SIGNAL_INFO_MODEL_LIST_FILTER', None) or (
+            'task__name',
+            'signal_name',
+            'hostname',
+        )
 
     def has_change_permission(self, request, obj=None):
         return False

@@ -1,4 +1,9 @@
 .*
+*.egg-info
+__pycache__
+/dist/
+/coverage.*
+*.orig
 
 !.github
 !.editorconfig
@@ -6,12 +11,6 @@
 !.gitignore
 !.gitkeep
 
-__pycache__
-/build/
-/dist/
-*.egg-info
-/coverage.json
-/coverage.xml
 
 # from test projects:
 /volumes/

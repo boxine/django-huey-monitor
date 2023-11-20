@@ -18,6 +18,20 @@ assert __Path(BASE_PATH, 'huey_monitor_project').is_dir()
 ###############################################################################
 
 
+# Huey-Monitor settings
+# ----------------------------------------------------------------------------
+
+# e.g.: override SignalInfoModelAdmin.list_filter:
+HUEY_MONITOR_SIGNAL_INFO_MODEL_LIST_FILTER = ('task__name', 'signal_name', 'hostname')
+
+# e.g.: override TaskModelAdmin.list_filter:
+HUEY_MONITOR_TASK_MODEL_LIST_FILTER = ('name', 'state__signal_name', 'state__hostname')
+
+
+# Django settings
+# ----------------------------------------------------------------------------
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 

@@ -82,6 +82,22 @@ It is also possible to divide the work to several tasks and collect information 
 Working example can be found in the test app here: [huey_monitor_tests/test_app/tasks.py](https://github.com/boxine/django-huey-monitor/blob/master/huey_monitor_tests/test_app/tasks.py)
 
 
+## settings
+
+### override list filter (optional)
+
+It is possible to override `list_filter` of `SignalInfoModelAdmin` and `TaskModelAdmin` via settings.
+e.g.:
+
+```python
+HUEY_MONITOR_SIGNAL_INFO_MODEL_LIST_FILTER = ('task__name', 'signal_name')
+HUEY_MONITOR_TASK_MODEL_LIST_FILTER = ('name', 'state__signal_name')
+```
+
+Note: This both settings are optional.
+In this example is the "hostname" filter not present ;)
+
+
 ## run test project
 
 Note: You can quickly test Huey Monitor with the test project, e.g:
@@ -124,6 +140,8 @@ To start developing e.g.:
 ~/django-huey-monitor$ make up
 ```
 
+Point our browser to: `http://localhost:8000/`
+
 Our Makefile contains the following targets:
 
 [comment]: <> (✂✂✂ auto generated make help start ✂✂✂)
@@ -145,10 +163,12 @@ shell-huey1                    go into a interactive bash shell in Huey worker c
 shell-huey2                    go into a interactive bash shell in Huey worker container 2
 shell-huey3                    go into a interactive bash shell in Huey worker container 3
 logs                           Display and follow docker logs
+logs-django                    Display and follow docker logs only from "django" container
 reload-django                  Reload the Django dev server
 reload-huey                    Reload the Huey worker
 restart                        Restart the containers
 fire-test-tasks                Call "fire-test-tasks" manage command to create some Huey Tasks
+fire-many-test-tasks           Call "fire-test-tasks" with --count 10000 to create many task entries ;)
 fire-parallel-processing-task  Just fire "parallel processing" Huey Task
 delete-all-tasks-data          Delete all Task/Signal database enties
 ```
@@ -205,6 +225,7 @@ You must change your Django settings and replace the app name:
 ## History
 
 * [dev](https://github.com/boxine/django-huey-monitor/compare/v0.7.0...main)
+  * Make is possible to override `list_filter` of `SignalInfoModelAdmin` and `TaskModelAdmin` via settings
   * _tbc_
 * [v0.7.0 - 09.08.2023](https://github.com/boxine/django-huey-monitor/compare/v0.6.0...v0.7.0)
   * New: Display Huey pending/scheduled/result task counts in admin

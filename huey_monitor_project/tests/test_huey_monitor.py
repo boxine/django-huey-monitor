@@ -1,7 +1,7 @@
 from bx_django_utils.test_utils.html_assertion import HtmlAssertionMixin
 from django import VERSION as DJANGO_VERSION
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from huey_monitor.models import SignalInfoModel, TaskModel
 from huey_monitor_project.test_app.tasks import delay_task, raise_error_task
@@ -101,3 +101,77 @@ class HueyMonitorTestCase(HtmlAssertionMixin, TestCase):
         response = self.client.get(flush_locks_url)
         self.assertRedirects(response, expected_url='/admin/huey_monitor/taskmodel/')
         self.assert_messages(response, expected_messages=['No tasks locks exists, nothing to flush, ok.'])
+
+    def test_signalinfo_model_list_filter_overwrite(self):
+        self.client.force_login(self.superuser)
+
+        if DJANGO_VERSION < (4, 0):
+            # Django 3.2 used other html for the filter
+            START_TAG, END_TAG = ('<h3>', '</h3>')
+        else:
+            START_TAG, END_TAG = ('<summary>', '</summary>')
+
+        FILTER_BY_HOSTNAME_HTML = f'{START_TAG}By Hostname{END_TAG}'
+
+        # Default TaskModelAdmin.list_filter should be used:
+        with override_settings(HUEY_MONITOR_SIGNAL_INFO_MODEL_LIST_FILTER=None):
+            response = self.client.get('/admin/huey_monitor/signalinfomodel/')
+        self.assert_html_parts(
+            response,
+            parts=(
+                '<h1>Select Task Signal to view</h1>',
+                f'{START_TAG}By Task name{END_TAG}',
+                f'{START_TAG}By Signal Name{END_TAG}',
+                FILTER_BY_HOSTNAME_HTML,  # filter by hostname exists
+            ),
+        )
+
+        # Override TaskModelAdmin.list_filter and don't include hostname filter:
+        with override_settings(HUEY_MONITOR_SIGNAL_INFO_MODEL_LIST_FILTER=('task__name', 'signal_name')):
+            response = self.client.get('/admin/huey_monitor/signalinfomodel/')
+        self.assert_html_parts(
+            response,
+            parts=(
+                '<h1>Select Task Signal to view</h1>',
+                f'{START_TAG}By Task name{END_TAG}',
+                f'{START_TAG}By Signal Name{END_TAG}',
+            ),
+        )
+        self.assert_parts_not_in_html(response, parts=(FILTER_BY_HOSTNAME_HTML,))
+
+    def test_task_model_list_filter_overwrite(self):
+        self.client.force_login(self.superuser)
+
+        if DJANGO_VERSION < (4, 0):
+            # Django 3.2 used other html for the filter
+            START_TAG, END_TAG = ('<h3>', '</h3>')
+        else:
+            START_TAG, END_TAG = ('<summary>', '</summary>')
+
+        FILTER_BY_HOSTNAME_HTML = f'{START_TAG}By Hostname{END_TAG}'
+
+        # Default TaskModelAdmin.list_filter should be used:
+        with override_settings(HUEY_MONITOR_TASK_MODEL_LIST_FILTER=None):
+            response = self.client.get('/admin/huey_monitor/taskmodel/')
+        self.assert_html_parts(
+            response,
+            parts=(
+                '<h1>Select Task to view</h1>',
+                f'{START_TAG}By Task name{END_TAG}',
+                f'{START_TAG}By Signal Name{END_TAG}',
+                FILTER_BY_HOSTNAME_HTML,  # filter by hostname exists
+            ),
+        )
+
+        # Override TaskModelAdmin.list_filter and don't include hostname filter:
+        with override_settings(HUEY_MONITOR_TASK_MODEL_LIST_FILTER=('name', 'state__signal_name')):
+            response = self.client.get('/admin/huey_monitor/taskmodel/')
+        self.assert_html_parts(
+            response,
+            parts=(
+                '<h1>Select Task to view</h1>',
+                f'{START_TAG}By Task name{END_TAG}',
+                f'{START_TAG}By Signal Name{END_TAG}',
+            ),
+        )
+        self.assert_parts_not_in_html(response, parts=(FILTER_BY_HOSTNAME_HTML,))

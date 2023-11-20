@@ -121,7 +121,7 @@ services:
 
     postgres:
         # https://hub.docker.com/_/postgres
-        image: postgres:15-alpine
+        image: postgres:alpine
         restart: "no"
         hostname: postgres
         ports:
@@ -135,7 +135,7 @@ services:
 
     redis:
         # https://hub.docker.com/_/redis
-        image: redis:7-alpine
+        image: redis:alpine
         restart: "no"
         hostname: redis
         ports:
