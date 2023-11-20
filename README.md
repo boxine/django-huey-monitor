@@ -224,8 +224,10 @@ You must change your Django settings and replace the app name:
 
 ## History
 
-* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.8.0...main)
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.8.1...main)
   * _tbc_
+* [v0.8.1 - 20.11.2023](https://github.com/boxine/django-huey-monitor/compare/v0.8.0...v0.8.1)
+  * Bugfix `ZeroDivisionError` in admin
 * [v0.8.0 - 20.11.2023](https://github.com/boxine/django-huey-monitor/compare/v0.7.1...v0.8.0)
   * Make is possible to override `list_filter` of `SignalInfoModelAdmin` and `TaskModelAdmin` via settings
   * Update local docker dev setup

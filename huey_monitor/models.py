@@ -120,7 +120,7 @@ class TaskModel(TimetrackingBaseModel):
             return dt_diff.total_seconds()
 
     def human_percentage(self):
-        if self.progress_count is not None and self.total is not None:
+        if self.progress_count is not None and self.total:
             return percentage(num=self.progress_count, total=self.total)
     human_percentage.short_description = _('percentage')
 
