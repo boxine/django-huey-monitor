@@ -16,6 +16,7 @@ dependencies = [
 ]
 [project.optional-dependencies]
 dev = [
+    "gevent",  # https://github.com/gevent/gevent
     "django-redis",
     "psycopg2-binary",
     "manage_django_project",  # https://github.com/jedie/manage_django_project

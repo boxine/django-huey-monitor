@@ -54,6 +54,9 @@ shell-huey2:  ## go into a interactive bash shell in Huey worker container 2
 shell-huey3:  ## go into a interactive bash shell in Huey worker container 3
 	./compose.sh exec huey3 /bin/bash
 
+shell-redis:  ## go into a interactive bash shell in Redis container
+	./compose.sh exec redis /bin/ash
+
 logs: ## Display and follow docker logs
 	./compose.sh logs --tail=500 --follow
 
