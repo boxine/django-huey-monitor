@@ -22,10 +22,10 @@ assert __Path(BASE_PATH, 'huey_monitor_project').is_dir()
 # ----------------------------------------------------------------------------
 
 # e.g.: override SignalInfoModelAdmin.list_filter:
-HUEY_MONITOR_SIGNAL_INFO_MODEL_LIST_FILTER = ('task__name', 'signal_name', 'hostname')
+HUEY_MONITOR_SIGNAL_INFO_MODEL_LIST_FILTER = ('task__name', 'signal_name', 'thread', 'hostname')
 
 # e.g.: override TaskModelAdmin.list_filter:
-HUEY_MONITOR_TASK_MODEL_LIST_FILTER = ('name', 'state__signal_name', 'state__hostname')
+HUEY_MONITOR_TASK_MODEL_LIST_FILTER = ('name', 'state__signal_name', 'state__thread', 'state__hostname')
 
 
 # Django settings
@@ -174,14 +174,18 @@ LOGGING = {
     'formatters': {
         'colored': {  # https://github.com/borntyping/python-colorlog
             '()': 'colorlog.ColoredFormatter',
-            'format': '%(log_color)s%(asctime)s %(levelname)8s %(cut_path)s:%(lineno)-3s %(message)s',
+            'format': (
+                '%(log_color)s%(asctime)s'
+                ' %(levelname)8s %(processName)s %(threadName)s'
+                ' %(cut_path)s:%(lineno)-3s %(message)s'
+            ),
         }
     },
     'handlers': {'console': {'class': 'colorlog.StreamHandler', 'formatter': 'colored'}},
     'loggers': {
-        '': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
+        '': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
         'django': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
-        'huey': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
+        'huey': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
         'huey_monitor': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
         'huey_monitor_tests': {'handlers': ['console'], 'level': 'DEBUG', 'propagate': False},
     },

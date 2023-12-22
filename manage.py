@@ -113,7 +113,10 @@ def main(argv):
         verbose_check_call(PIP_PATH, 'install', '--no-deps', '-e', '.')
         store_dep_hash()
 
-    signal.signal(signal.SIGINT, noop_sigint_handler)  # ignore "Interrupt from keyboard" signals
+    if 'run_dev_server' not in argv and 'run_huey' not in argv:
+        # ignore "Interrupt from keyboard" signals
+        # But not if we run the dev server or Huey consumer (respect watchfiles signals)
+        signal.signal(signal.SIGINT, noop_sigint_handler)
 
     # Call our entry point CLI:
     try:

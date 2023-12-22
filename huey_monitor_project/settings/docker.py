@@ -1,4 +1,5 @@
 import os
+import sys as __sys
 
 from huey_monitor_project import huey_docker_instance
 from huey_monitor_project.settings.local import *  # noqa
@@ -22,7 +23,7 @@ DATABASES = {
         'CONN_MAX_AGE': 600,
     },
 }
-
+print(f'Use Database: {DATABASES["default"]["NAME"]!r}', file=__sys.stderr)
 
 # # _____________________________________________________________________________
 # # Django debug toolbar

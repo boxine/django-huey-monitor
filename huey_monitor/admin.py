@@ -162,10 +162,22 @@ class TaskModelAdmin(admin.ModelAdmin):
         (_('Hierarchy'), {'fields': ('task_hierarchy_info',)}),
     )
 
+    def lookup_allowed(self, lookup, value):
+        if lookup in (
+            'state__signal_name',
+            'state__thread',
+            'state__hostname',
+        ):
+            # Work-a-round for: https://code.djangoproject.com/ticket/35020
+            # FIXME: Remove after release.
+            return True
+        return super().lookup_allowed(lookup, value)
+
     def get_list_filter(self, request):
         return getattr(settings, 'HUEY_MONITOR_TASK_MODEL_LIST_FILTER', None) or (
             'name',
             'state__signal_name',
+            'state__thread',
             'state__hostname',
         )
 
@@ -199,6 +211,7 @@ class SignalInfoModelAdmin(admin.ModelAdmin):
         return getattr(settings, 'HUEY_MONITOR_SIGNAL_INFO_MODEL_LIST_FILTER', None) or (
             'task__name',
             'signal_name',
+            'thread',
             'hostname',
         )
 

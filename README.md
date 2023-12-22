@@ -162,6 +162,7 @@ run-shell-django               Build and start the Django container and go into 
 shell-huey1                    go into a interactive bash shell in Huey worker container 1
 shell-huey2                    go into a interactive bash shell in Huey worker container 2
 shell-huey3                    go into a interactive bash shell in Huey worker container 3
+shell-redis                    go into a interactive bash shell in Redis container
 logs                           Display and follow docker logs
 logs-django                    Display and follow docker logs only from "django" container
 reload-django                  Reload the Django dev server
@@ -224,8 +225,19 @@ You must change your Django settings and replace the app name:
 
 ## History
 
-* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.8.1...main)
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.9.0...main)
   * _tbc_
+* [v0.9.0 - 22.12.2023](https://github.com/boxine/django-huey-monitor/compare/v0.8.1...v0.9.0)
+  * Fix #135 DisallowedModelAdminLookup
+  * Add "thread" name as change list filter.
+  * Enhance test project setup
+  * Apply manageprojects updates
+  * Remove Python v3.9 support
+  * Add Django v5.0 to test matrix and remove Django 4.1
+  * Enable local AUTOLOGIN as default
+  * Use unittest "load_tests Protocol" and deny any requests in tests
+  * Add https://github.com/PyCQA/flake8-bugbear
+  * Update requirements
 * [v0.8.1 - 20.11.2023](https://github.com/boxine/django-huey-monitor/compare/v0.8.0...v0.8.1)
   * Bugfix `ZeroDivisionError` in admin
 * [v0.8.0 - 20.11.2023](https://github.com/boxine/django-huey-monitor/compare/v0.7.1...v0.8.0)

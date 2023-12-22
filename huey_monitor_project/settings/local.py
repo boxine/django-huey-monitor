@@ -5,7 +5,6 @@
 """
 
 import os as __os
-import sys as __sys
 
 from huey_monitor_project import huey_tests_instance
 from huey_monitor_project.settings.prod import *  # noqa
@@ -51,7 +50,7 @@ DATABASES = {
         'timeout': 30,
     }
 }
-print(f'Use Database: {DATABASES["default"]["NAME"]!r}', file=__sys.stderr)
+
 
 # _____________________________________________________________________________
 
