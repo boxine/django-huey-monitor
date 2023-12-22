@@ -6,6 +6,9 @@ from huey_monitor_project import huey_tests_instance
 from huey_monitor_project.settings.prod import *  # noqa
 
 
+ALLOWED_HOSTS = ['testserver']
+
+
 # Huey Configuration
 # ----------------------------------------------------------------------------
 HUEY = huey_tests_instance.HUEY
