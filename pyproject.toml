@@ -7,7 +7,7 @@ readme = "README.md"
 authors = [
     {name = 'Jens Diemer', email = 'django-huey-monitor@jensdiemer.de'}
 ]
-requires-python = ">=3.9,<4" # Keep Python 3.9 until Yunohost contains a newer Python Version ;)
+requires-python = ">=3.10"
 dependencies = [
     "huey",  # https://github.com/coleifer/huey
     "django",
@@ -18,7 +18,7 @@ dependencies = [
 dev = [
     "django-redis",
     "psycopg2-binary",
-    "manage_django_project>=0.3.0",  # https://github.com/jedie/manage_django_project
+    "manage_django_project",  # https://github.com/jedie/manage_django_project
     "django-debug-toolbar",  # http://django-debug-toolbar.readthedocs.io/en/stable/changes.html
     "colorlog",  # https://github.com/borntyping/python-colorlog
     "gunicorn",  # https://github.com/benoimyproject.wsgitc/gunicorn
@@ -29,6 +29,7 @@ dev = [
     "autopep8",  # https://github.com/hhatto/autopep8
     "pyupgrade",  # https://github.com/asottile/pyupgrade
     "flake8",  # https://github.com/pycqa/flake8
+    "flake8-bugbear",  # https://github.com/PyCQA/flake8-bugbear
     "pyflakes",  # https://github.com/PyCQA/pyflakes
     "codespell",  # https://github.com/codespell-project/codespell
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
@@ -51,8 +52,8 @@ dev = [
     "requests-mock",
 ]
 django32=["django>=3.2,<3.3"]
-django41=["django>=4.1,<4.2"]
 django42=["django>=4.2,<4.3"]
+django50=["django>=5.0,<5.1"]
 
 [project.urls]
 Documentation = "https://github.com/boxine/django-huey-monitor/"
@@ -137,7 +138,7 @@ exclude_lines = [
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py{312,311,310,39}-django{42,41,32}
+envlist = py{312,311,310}-django{50,42,32}
 skip_missing_interpreters = True
 
 [testenv]
@@ -146,12 +147,12 @@ skip_install = true
 commands_pre =
     pip install -U pip-tools
     django32: pip-sync requirements.django32.txt
-    django41: pip-sync requirements.django41.txt
     django42: pip-sync requirements.django42.txt
+    django50: pip-sync requirements.django50.txt
 commands =
     django32: {envpython} -m coverage run --context='{envname}' -m huey_monitor_project test --buffer
-    django41: {envpython} -m coverage run --context='{envname}' -m huey_monitor_project test --buffer --shuffle --parallel
     django42: {envpython} -m coverage run --context='{envname}' -m huey_monitor_project test --buffer --shuffle --parallel
+    django50: {envpython} -m coverage run --context='{envname}' -m huey_monitor_project test --buffer --shuffle --parallel
 """
 
 
@@ -169,6 +170,9 @@ initial_revision = "53a7e85"
 initial_date = 2023-04-10T19:08:56+02:00
 cookiecutter_template = "https://github.com/jedie/cookiecutter_templates/"
 cookiecutter_directory = "managed-django-project"
+applied_migrations = [
+    "3c16cf7", # 2023-12-21T22:22:06+01:00
+]
 
 [manageprojects.cookiecutter_context.cookiecutter]
 full_name = "Jens Diemer"

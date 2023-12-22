@@ -8,6 +8,7 @@
 """
 
 import hashlib
+import shlex
 import signal
 import subprocess
 import sys
@@ -33,7 +34,7 @@ else:
         sys.exit(-1)
 
 
-assert sys.version_info >= (3, 9), 'Python version is too old!'
+assert sys.version_info >= (3, 10), f'Python version {sys.version_info} is too old!'
 
 
 if sys.platform == 'win32':  # wtf
@@ -52,7 +53,7 @@ PYTHON_PATH = BIN_PATH / f'python{FILE_EXT}'
 PIP_PATH = BIN_PATH / f'pip{FILE_EXT}'
 PIP_SYNC_PATH = BIN_PATH / f'pip-sync{FILE_EXT}'
 
-DEP_LOCK_PATH = BASE_PATH / 'requirements.django42.txt'
+DEP_LOCK_PATH = BASE_PATH / 'requirements.dev.txt'
 DEP_HASH_PATH = VENV_PATH / '.dep_hash'
 
 # script file defined in pyproject.toml as [console_scripts]
@@ -78,7 +79,7 @@ def venv_up2date():
 
 
 def verbose_check_call(*popen_args):
-    print(f'\n+ {" ".join(str(arg) for arg in popen_args)}\n')
+    print(f'\n+ {shlex.join(str(arg) for arg in popen_args)}\n')
     return subprocess.check_call(popen_args)
 
 
@@ -87,7 +88,6 @@ def noop_sigint_handler(signal_num, frame):
     Don't exist cmd2 shell on "Interrupt from keyboard"
     e.g.: User stops the dev. server by CONTROL-C
     """
-    pass
 
 
 def main(argv):
@@ -95,7 +95,7 @@ def main(argv):
 
     # Create virtual env in ".venv/":
     if not PYTHON_PATH.is_file():
-        print('Create virtual env here:', VENV_PATH.absolute())
+        print(f'Create virtual env here: {VENV_PATH.absolute()}')
         builder = venv.EnvBuilder(symlinks=True, upgrade=True, with_pip=True)
         builder.create(env_dir=VENV_PATH)
         # Update pip

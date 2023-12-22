@@ -77,7 +77,7 @@ def linear_processing_task(task, desc=None, total=2000, no_total=False):
     else:
         process_info = ProcessInfo(task, desc=desc, total=total)
 
-    for i in range(total):
+    for _ in range(total):
         time.sleep(0.1)
         process_info.update(n=1)
 
