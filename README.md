@@ -225,10 +225,12 @@ You must change your Django settings and replace the app name:
 
 ## History
 
-* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.9.0...main)
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.9.1...main)
   * _tbc_
+* [v0.9.1 - 26.01.2024](https://github.com/boxine/django-huey-monitor/compare/v0.9.0...v0.9.1)
+  * Fix `DisallowedModelAdminLookup` in `SignalInfoModelAdmin`, too.
 * [v0.9.0 - 22.12.2023](https://github.com/boxine/django-huey-monitor/compare/v0.8.1...v0.9.0)
-  * Fix #135 DisallowedModelAdminLookup
+  * Fix #135 `DisallowedModelAdminLookup` in `TaskModelAdmin`
   * Add "thread" name as change list filter.
   * Enhance test project setup
   * Apply manageprojects updates
