@@ -43,7 +43,7 @@ class TaskModel(TimetrackingBaseModel):
         to='self',
         null=True, blank=True,
         editable=False,
-        related_name='+',
+        related_name='sub_tasks',
         on_delete=models.CASCADE,
         verbose_name=_('Parent Task'),
         help_text=_('Only set if this task is a sub task started from his parent.'),
@@ -120,7 +120,7 @@ class TaskModel(TimetrackingBaseModel):
             return dt_diff.total_seconds()
 
     def human_percentage(self):
-        if self.progress_count is not None and self.total is not None:
+        if self.progress_count is not None and self.total:
             return percentage(num=self.progress_count, total=self.total)
     human_percentage.short_description = _('percentage')
 

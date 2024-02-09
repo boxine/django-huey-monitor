@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from bx_django_utils.humanize.time import human_timedelta
 
 
@@ -41,13 +43,18 @@ def format_sizeof(num, suffix='', divisor=1000):
     return f'{num:3.1f}Y' + suffix
 
 
-def percentage(num, total):
+def percentage(num, total) -> str | None:
     """
     >>> percentage(25, 100)
     '25%'
     >>> percentage(33.333, 100)
     '33%'
+    >>> percentage(123, 0)
+    None
     """
+    if not total:
+        return None
+
     frac = num / total
     percentage = frac * 100
     return f'{percentage:.0f}%'

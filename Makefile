@@ -1,64 +1,35 @@
 SHELL := /bin/bash
-MAX_LINE_LENGTH := 119
-POETRY_VERSION := $(shell poetry --version 2>/dev/null)
 
 help: ## List all commands
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9 -_]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9 -_]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-check-poetry:
-	@if [[ "${POETRY_VERSION}" == *"Poetry"* ]] ; \
-	then \
-		echo "Found ${POETRY_VERSION}, ok." ; \
-	else \
-		echo 'Please install poetry first, with e.g.:' ; \
-		echo 'make install-poetry' ; \
-		exit 1 ; \
-	fi
+install:  ## install huey monitor package
+	./manage.py install
 
-install-poetry: ## install or update poetry via pip
-	pip3 install -U poetry
+update:  ## Update the dependencies as according to the pyproject.toml file
+	./manage.py update_req
 
-install: check-poetry ## install via poetry
-	poetry install
+run-dev-server:  ## Run Django's developer server
 
-update: check-poetry ## Update the dependencies as according to the pyproject.toml file
-	poetry update
+test:  ## Run unittests
+	./manage.py test
 
-lint: ## Run code formatters and linter
-	poetry run darker --diff --check
+tox:  ## Run unittests via tox
+	./manage.py tox p
 
-fix-code-style: ## Fix code formatting
-	poetry run darker
-
-tox-listenvs: check-poetry ## List all tox test environments
-	poetry run tox --listenvs
-
-tox: check-poetry ## Run pytest via tox with all environments
-	poetry run tox
-
-pytest: check-poetry ## Run pytest
-	poetry run pytest
-
-pytest-ci: check-poetry ## Run pytest with CI settings
-	poetry run pytest -c pytest-ci.ini
-
-publish: ## Release new version to PyPi
-	poetry run publish
-
-makemessages: ## Make and compile locales message files
-	./manage.sh makemessages --all --no-location --no-obsolete --ignore=htmlcov --ignore=".tox*" --ignore=volumes
-	./manage.sh compilemessages --ignore=htmlcov --ignore=".tox*" --ignore=volumes
+makemessages:  ## Make and compile locales message files
+	./manage.py makemessages --all --no-location --no-obsolete --ignore=htmlcov --ignore=".tox*" --ignore=volumes
+	./manage.py compilemessages --ignore=htmlcov --ignore=".tox*" --ignore=volumes
 
 clean: ## Remove created files from the test project (e.g.: SQlite, static files)
-	git clean -dfX huey_monitor_tests_tests/
+	git clean -dfX huey_monitor_project/
 
 ###################################################################################################
 # docker
 
 build: ## Update/Build docker services
-	$(MAKE) update
-	./compose.sh pull
-	./compose.sh build --pull
+	./compose.sh pull --parallel
+	./compose.sh build --pull --parallel
 
 up: build ## Start docker containers
 	./compose.sh up -d
@@ -67,26 +38,36 @@ up: build ## Start docker containers
 down: ## Stop all containers
 	./compose.sh down
 
-shell_django: ## go into a interactive bash shell in Django container
+shell-django: ## go into a interactive bash shell in Django container
 	./compose.sh exec django /bin/bash
 
-shell_huey1: ## go into a interactive bash shell in Huey worker container 1
+run-shell-django: ## Build and start the Django container and go into shell
+	./compose.sh build --pull --parallel django
+	./compose.sh run --entrypoint '/bin/bash' django
+
+shell-huey1: ## go into a interactive bash shell in Huey worker container 1
 	./compose.sh exec huey1 /bin/bash
 
-shell_huey2:  ## go into a interactive bash shell in Huey worker container 2
+shell-huey2:  ## go into a interactive bash shell in Huey worker container 2
 	./compose.sh exec huey2 /bin/bash
 
-shell_huey3:  ## go into a interactive bash shell in Huey worker container 3
+shell-huey3:  ## go into a interactive bash shell in Huey worker container 3
 	./compose.sh exec huey3 /bin/bash
+
+shell-redis:  ## go into a interactive bash shell in Redis container
+	./compose.sh exec redis /bin/ash
 
 logs: ## Display and follow docker logs
 	./compose.sh logs --tail=500 --follow
 
-reload_django: ## Reload the Django dev server
+logs-django: ## Display and follow docker logs only from "django" container
+	./compose.sh logs --tail=500 --follow django
+
+reload-django: ## Reload the Django dev server
 	./compose.sh exec django /django/docker/utils/kill_python.sh
 	./compose.sh logs --tail=500 --follow django
 
-reload_huey: ## Reload the Huey worker
+reload-huey: ## Reload the Huey worker
 	./compose.sh exec huey1 /django/docker/utils/kill_python.sh
 	./compose.sh exec huey2 /django/docker/utils/kill_python.sh
 	./compose.sh exec huey3 /django/docker/utils/kill_python.sh
@@ -94,13 +75,16 @@ reload_huey: ## Reload the Huey worker
 
 restart: down up  ## Restart the containers
 
-fire_test_tasks:  ## Call "fire_test_tasks" manage command to create some Huey Tasks
-	./compose.sh exec django /django/manage.sh fire_test_tasks
+fire-test-tasks:  ## Call "fire-test-tasks" manage command to create some Huey Tasks
+	./compose.sh exec django /django/manage.py fire_test_tasks
 
-fire_parallel_processing_task:  ## Just fire "parallel processing" Huey Task
-	./compose.sh exec django /django/manage.sh fire_parallel_processing_task
+fire-many-test-tasks:  ## Call "fire-test-tasks" with --count 10000 to create many task entries ;)
+	./compose.sh exec django /django/manage.py fire_test_tasks --count 10000
 
-delete_all_tasks_data:  ## Delete all Task/Signal database enties
-	./compose.sh exec django /django/manage.sh delete_all_tasks_data
+fire-parallel-processing-task:  ## Just fire "parallel processing" Huey Task
+	./compose.sh exec django /django/manage.py fire_parallel_processing_task
 
-.PHONY: help install lint fix pytest publish
+delete-all-tasks-data:  ## Delete all Task/Signal database enties
+	./compose.sh exec django /django/manage.py delete_all_tasks_data
+
+.PHONY: help install update run-dev-server test tox  makemessages clean build up down shell-django shell-huey1 shell-huey2 shell-huey3 logs reload-django reload-huey restart fire-test-tasks fire-parallel-processing-task delete-all-tasks-data

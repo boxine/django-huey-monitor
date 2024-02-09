@@ -1,0 +1,6 @@
+{% extends "admin/change_list.html" %}
+{% load huey_monitor %}
+
+{% block object-tools %}{{ block.super }}
+    {% huey_counts_info %}
+{% endblock %}

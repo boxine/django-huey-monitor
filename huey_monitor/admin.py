@@ -1,11 +1,37 @@
 from bx_django_utils.templatetags.humanize_time import human_duration
-from django.contrib import admin
+from django.conf import settings
+from django.contrib import admin, messages
 from django.contrib.admin.views.main import ChangeList
+from django.db.models import OuterRef, Prefetch
+from django.shortcuts import redirect
 from django.template.loader import render_to_string
+from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from huey.contrib.djhuey import HUEY
+from huey.signals import SIGNAL_EXECUTING
 
 from huey_monitor.models import SignalInfoModel, TaskModel
+
+
+class FixLookupAllowedMixin:
+    """
+    Work-a-round for: https://code.djangoproject.com/ticket/35020
+    # FIXME: Remove after release into all supported Django versions.
+    """
+
+    def lookup_allowed(self, lookup, value):
+        list_filter = self._get_list_filter()
+        if lookup in list_filter:
+            return True
+        return super().lookup_allowed(lookup, value)
+
+    def _get_list_filter(self):
+        """return list_filter without `request` object."""
+        raise NotImplementedError()
+
+    def get_list_filter(self, request):
+        return self._get_list_filter()
 
 
 class TaskModelChangeList(ChangeList):
@@ -14,20 +40,34 @@ class TaskModelChangeList(ChangeList):
         List only the main-tasks (sub-tasks will be inlined)
         """
         qs = super().get_queryset(request)
-        qs = qs.filter(parent_task__isnull=True)
+        executing_dt = SignalInfoModel.objects.filter(
+            task_id=OuterRef('task_id'), signal_name=SIGNAL_EXECUTING
+        ).values('create_dt')[:1]
+        qs = (
+            qs.filter(parent_task__isnull=True)
+            .prefetch_related(
+                Prefetch(
+                    'sub_tasks',
+                    queryset=TaskModel.objects.select_related('state')
+                    .annotate(executing_dt=executing_dt)
+                    .order_by('-create_dt'),
+                )
+            )
+            .annotate(executing_dt=executing_dt)
+        )
         return qs
 
 
 @admin.register(TaskModel)
-class TaskModelAdmin(admin.ModelAdmin):
+class TaskModelAdmin(FixLookupAllowedMixin, admin.ModelAdmin):
     def get_changelist(self, request, **kwargs):
         return TaskModelChangeList
 
     def column_name(self, obj):
-        qs = TaskModel.objects.filter(parent_task_id=obj.pk)
+        qs = obj.sub_tasks.all()
         context = {
             'main_task': obj,
-            'sub_tasks': qs
+            'sub_tasks': qs,
         }
         return render_to_string(
             template_name='admin/huey_monitor/taskmodel/column_name.html',
@@ -40,13 +80,13 @@ class TaskModelAdmin(admin.ModelAdmin):
         if obj.parent_task_id is not None:
             # This is a sub task
             context = {
-                'main_task': TaskModel.objects.get(pk=obj.parent_task_id)
+                'main_task': TaskModel.objects.get(pk=obj.parent_task_id),
             }
         else:
             # This is a main Task
             qs = TaskModel.objects.filter(parent_task_id=obj.pk)
             context = {
-                'sub_tasks': qs
+                'sub_tasks': qs,
             }
 
         return render_to_string(
@@ -78,6 +118,29 @@ class TaskModelAdmin(admin.ModelAdmin):
 
         return human_duration(obj.create_dt, end_dt)
 
+    def changelist_url(self):
+        info = (self.admin_site.name, self.model._meta.app_label, self.model._meta.model_name)
+        url_name = '%s:%s_%s_changelist' % info
+        return reverse(url_name, current_app=self.admin_site.name)
+
+    def flush_locks_view(self, request):
+        flushed = HUEY.flush_locks()
+        if not flushed:
+            messages.info(request, 'No tasks locks exists, nothing to flush, ok.')
+        else:
+            messages.success(request, f'Flush task locks: {", ".join(sorted(flushed))}')
+        return redirect(self.changelist_url())
+
+    def get_urls(self):
+        urls = [
+            path(
+                'flush_locks/',
+                self.admin_site.admin_view(self.flush_locks_view),
+                name='flush_locks',
+            ),
+        ] + super().get_urls()
+        return urls
+
     list_display = (
         'human_update_dt',
         'column_name',
@@ -87,10 +150,13 @@ class TaskModelAdmin(admin.ModelAdmin):
         'human_percentage',
         'human_progress',
         'human_throughput',
-        'duration'
+        'duration',
     )
     readonly_fields = (
-        'task_id', 'signals', 'create_dt', 'update_dt',
+        'task_id',
+        'signals',
+        'create_dt',
+        'update_dt',
         'human_percentage',
         'human_progress',
         'human_throughput',
@@ -99,7 +165,6 @@ class TaskModelAdmin(admin.ModelAdmin):
     list_display_links = None
     list_select_related = ('state',)
     date_hierarchy = 'create_dt'
-    list_filter = ('name', 'state__signal_name', 'state__hostname')
     search_fields = ('name', 'state__exception_line', 'state__exception')
     fieldsets = (
         (_('Meta'), {'fields': ('task_id', 'create_dt', 'update_dt')}),
@@ -120,14 +185,26 @@ class TaskModelAdmin(admin.ModelAdmin):
         (_('Hierarchy'), {'fields': ('task_hierarchy_info',)}),
     )
 
+    def _get_list_filter(self):
+        """return list_filter without `request` object."""
+        return getattr(settings, 'HUEY_MONITOR_TASK_MODEL_LIST_FILTER', None) or (
+            'name',
+            'state__signal_name',
+            'state__thread',
+            'state__hostname',
+        )
+
+    def get_list_filter(self, request):
+        return self._get_list_filter()
+
     class Media:
         css = {
-            'all': ('huey_monitor.css',)
+            'all': ('huey_monitor.css',),
         }
 
 
 @admin.register(SignalInfoModel)
-class SignalInfoModelAdmin(admin.ModelAdmin):
+class SignalInfoModelAdmin(FixLookupAllowedMixin, admin.ModelAdmin):
     def task_name(self, obj):
         return obj.task.name
 
@@ -144,8 +221,22 @@ class SignalInfoModelAdmin(admin.ModelAdmin):
     list_display_links = ('task_name',)
     ordering = ('-create_dt',)
     date_hierarchy = 'create_dt'
-    list_filter = ('task__name', 'signal_name', 'hostname')
     search_fields = ('task__name', 'exception_line', 'exception')
+
+    def _get_list_filter(self):
+        """return list_filter without `request` object."""
+        return getattr(settings, 'HUEY_MONITOR_SIGNAL_INFO_MODEL_LIST_FILTER', None) or (
+            'task__name',
+            'signal_name',
+            'thread',
+            'hostname',
+        )
+
+    def get_list_filter(self, request):
+        return self._get_list_filter()
 
     def has_change_permission(self, request, obj=None):
         return False
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related('task')

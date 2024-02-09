@@ -5,6 +5,12 @@ Django based tool for monitoring [huey task queue](https://github.com/coleifer/h
 Current implementation will just store all Huey task signals into the database
 and display them in the Django admin.
 
+[![tests](https://github.com/boxine/django-huey-monitor//actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/boxine/django-huey-monitor//actions/workflows/tests.yml)
+[![codecov](https://codecov.io/github/jedie/huey_monitor/branch/main/graph/badge.svg)](https://app.codecov.io/github/jedie/huey_monitor)
+[![django-huey-monitor @ PyPi](https://img.shields.io/pypi/v/django-huey-monitor?label=django-huey-monitor%20%40%20PyPi)](https://pypi.org/project/django-huey-monitor/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/django-huey-monitor)](https://github.com/boxine/django-huey-monitor//blob/main/pyproject.toml)
+[![License GPL-3.0-or-later](https://img.shields.io/pypi/l/django-huey-monitor)](https://github.com/boxine/django-huey-monitor//blob/main/LICENSE)
+
 
 ## Quickstart
 
@@ -76,6 +82,22 @@ It is also possible to divide the work to several tasks and collect information 
 Working example can be found in the test app here: [huey_monitor_tests/test_app/tasks.py](https://github.com/boxine/django-huey-monitor/blob/master/huey_monitor_tests/test_app/tasks.py)
 
 
+## settings
+
+### override list filter (optional)
+
+It is possible to override `list_filter` of `SignalInfoModelAdmin` and `TaskModelAdmin` via settings.
+e.g.:
+
+```python
+HUEY_MONITOR_SIGNAL_INFO_MODEL_LIST_FILTER = ('task__name', 'signal_name')
+HUEY_MONITOR_TASK_MODEL_LIST_FILTER = ('name', 'state__signal_name')
+```
+
+Note: This both settings are optional.
+In this example is the "hostname" filter not present ;)
+
+
 ## run test project
 
 Note: You can quickly test Huey Monitor with the test project, e.g:
@@ -113,35 +135,45 @@ To start developing e.g.:
 ```bash
 ~$ git clone https://github.com/boxine/django-huey-monitor.git
 ~$ cd django-huey-monitor
-~/django-huey-monitor$ make
-help                 List all commands
-install-poetry       install or update poetry via pip
-install              install via poetry
-update               Update the dependencies as according to the pyproject.toml file
-lint                 Run code formatters and linter
-fix-code-style       Fix code formatting
-tox-listenvs         List all tox test environments
-tox                  Run pytest via tox with all environments
-pytest               Run pytest
-pytest-ci            Run pytest with CI settings
-publish              Release new version to PyPi
-makemessages         Make and compile locales message files
-clean                Remove created files from the test project (e.g.: SQlite, static files)
-build                Update/Build docker services
-up                   Start docker containers
-down                 Stop all containers
-shell_django         go into a interactive bash shell in Django container
-shell_huey           go into a interactive bash shell in Huey worker container
-logs                 Display and follow docker logs
-reload_django        Reload the Django dev server
-reload_huey          Reload the Huey worker
-restart              Restart the containers
-fire_test_tasks      Call "fire_test_tasks" manage command to create some Huey Tasks
-
-~/django-huey-monitor$ make install-poetry
-~/django-huey-monitor$ make install
+~/django-huey-monitor$ ./manage.py
+~/django-huey-monitor$ make help
 ~/django-huey-monitor$ make up
 ```
+
+Point our browser to: `http://localhost:8000/`
+
+Our Makefile contains the following targets:
+
+[comment]: <> (✂✂✂ auto generated make help start ✂✂✂)
+```
+help                           List all commands
+install                        install huey monitor package
+update                         Update the dependencies as according to the pyproject.toml file
+run-dev-server                 Run Django's developer server
+test                           Run unittests
+tox                            Run unittests via tox
+makemessages                   Make and compile locales message files
+clean                          Remove created files from the test project (e.g.: SQlite, static files)
+build                          Update/Build docker services
+up                             Start docker containers
+down                           Stop all containers
+shell-django                   go into a interactive bash shell in Django container
+run-shell-django               Build and start the Django container and go into shell
+shell-huey1                    go into a interactive bash shell in Huey worker container 1
+shell-huey2                    go into a interactive bash shell in Huey worker container 2
+shell-huey3                    go into a interactive bash shell in Huey worker container 3
+shell-redis                    go into a interactive bash shell in Redis container
+logs                           Display and follow docker logs
+logs-django                    Display and follow docker logs only from "django" container
+reload-django                  Reload the Django dev server
+reload-huey                    Reload the Huey worker
+restart                        Restart the containers
+fire-test-tasks                Call "fire-test-tasks" manage command to create some Huey Tasks
+fire-many-test-tasks           Call "fire-test-tasks" with --count 10000 to create many task entries ;)
+fire-parallel-processing-task  Just fire "parallel processing" Huey Task
+delete-all-tasks-data          Delete all Task/Signal database enties
+```
+[comment]: <> (✂✂✂ auto generated make help end ✂✂✂)
 
 
 It's also possible to run the test setup with SQLite and Huey immediate setup
@@ -150,7 +182,7 @@ without docker:
 ```bash
 ~$ git clone https://github.com/boxine/django-huey-monitor.git
 ~$ cd django-huey-monitor
-~/django-huey-monitor$ ./manage.sh run_testserver
+~/django-huey-monitor$ ./manage.py run_dev_server
 ```
 
 
@@ -159,11 +191,17 @@ without docker:
 
 ### Version compatibility
 
-| huey-monitor    | Django           | Python
-|-----------------|------------------|------------------
-| >v0.5.0         | v2.2, v3.1, v3.2 | v3.7, v3.8, v3.9
-| <=v0.4.0        | v2.2, v3.0, v3.1 | v3.7, v3.8, v3.9
+| Huey Monitor | Django           | Python             |
+|--------------|------------------|--------------------|
+| >v0.7.0      | v3.2, v4.1, v4.2 | v3.9, v3.10, v3.11 |
+| >v0.6.0      | v3.2, v4.0, v4.1 | v3.9, v3.10, v3.11 |
+| >v0.5.0      | v2.2, v3.1, v3.2 | v3.7, v3.8, v3.9   |
+| <=v0.4.0     | v2.2, v3.0, v3.1 | v3.7, v3.8, v3.9   |
 
+
+### v0.6.0
+
+We refactor the project setup: Developer must reinit the repository.
 
 ### v0.5.0
 
@@ -187,8 +225,46 @@ You must change your Django settings and replace the app name:
 
 ## History
 
-* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.5.0...master)
+* [dev](https://github.com/boxine/django-huey-monitor/compare/v0.9.1...main)
   * _tbc_
+* [v0.9.1 - 26.01.2024](https://github.com/boxine/django-huey-monitor/compare/v0.9.0...v0.9.1)
+  * Fix `DisallowedModelAdminLookup` in `SignalInfoModelAdmin`, too.
+* [v0.9.0 - 22.12.2023](https://github.com/boxine/django-huey-monitor/compare/v0.8.1...v0.9.0)
+  * Fix #135 `DisallowedModelAdminLookup` in `TaskModelAdmin`
+  * Add "thread" name as change list filter.
+  * Enhance test project setup
+  * Apply manageprojects updates
+  * Remove Python v3.9 support
+  * Add Django v5.0 to test matrix and remove Django 4.1
+  * Enable local AUTOLOGIN as default
+  * Use unittest "load_tests Protocol" and deny any requests in tests
+  * Add https://github.com/PyCQA/flake8-bugbear
+  * Update requirements
+* [v0.8.1 - 20.11.2023](https://github.com/boxine/django-huey-monitor/compare/v0.8.0...v0.8.1)
+  * Bugfix `ZeroDivisionError` in admin
+* [v0.8.0 - 20.11.2023](https://github.com/boxine/django-huey-monitor/compare/v0.7.1...v0.8.0)
+  * Make is possible to override `list_filter` of `SignalInfoModelAdmin` and `TaskModelAdmin` via settings
+  * Update local docker dev setup
+* [v0.7.1 - 18.08.2023](https://github.com/boxine/django-huey-monitor/compare/v0.7.0...v0.7.1)
+  * Fix #127: Catch error getting HUEY counts
+* [v0.7.0 - 09.08.2023](https://github.com/boxine/django-huey-monitor/compare/v0.6.0...v0.7.0)
+  * New: Display Huey pending/scheduled/result task counts in admin
+  * Switch to git `main` branch
+  * Switch from `pytest` to normal `unittests`
+  * Switch from `poetry` to `pip-tools`
+  * Use https://github.com/jedie/manage_django_project for developing
+  * Expand test matrix by remove Django 4.0 and add 4.2
+  * Enhance tox config
+* [v0.6.0 - 09.01.2023](https://github.com/boxine/django-huey-monitor/compare/v0.5.0...v0.6.0)
+  * Test against Django v3.2, v4.0, v4.1 and Python v3.9 - v3.11
+  * Optimize Admin change list ([contributed by henribru](https://github.com/boxine/django-huey-monitor/pull/110))
+  * Order sub-tasks chronologically in admin ([contributed by Skrattoune](https://github.com/boxine/django-huey-monitor/pull/90))
+  * displaying progression for parent_tasks ([contributed by Skrattoune](https://github.com/boxine/django-huey-monitor/pull/91))
+  * Delegating set_parent_task to `ProcessInfo.__init__` ([contributed by Skrattoune](https://github.com/boxine/django-huey-monitor/pull/111))
+  * Fix #27 auto crop overlong process info description
+  * NEW #102 Unlock all tasks via change list object tool link
+  * Fix #81 Expand `TaskModel.desc` max. length and make `SignalInfoModel.exception_line` optional
+  * Update docker test setup
 * [v0.5.0 - 10.02.2022](https://github.com/boxine/django-huey-monitor/compare/v0.4.6...v0.5.0)
   * Refactor models: Remove `TaskProgressModel` and store progress information into `TaskModel`
 * [v0.4.6 - 03.02.2022](https://github.com/boxine/django-huey-monitor/compare/v0.4.5...v0.4.6)
