@@ -63,6 +63,7 @@ class TaskModelAdmin(FixLookupAllowedMixin, admin.ModelAdmin):
     def get_changelist(self, request, **kwargs):
         return TaskModelChangeList
 
+    @admin.display(description=_('Execution detail'))
     def column_name(self, obj):
         qs = obj.sub_tasks.all()
         context = {
@@ -77,18 +78,14 @@ class TaskModelAdmin(FixLookupAllowedMixin, admin.ModelAdmin):
     column_name.short_description = _('Task name')
 
     def task_hierarchy_info(self, obj):
+        qs = TaskModel.objects.filter(parent_task_id=obj.pk)
+        context = {
+            'sub_tasks': qs
+        }
         if obj.parent_task_id is not None:
             # This is a sub task
-            context = {
-                'main_task': TaskModel.objects.get(pk=obj.parent_task_id),
-            }
-        else:
-            # This is a main Task
-            qs = TaskModel.objects.filter(parent_task_id=obj.pk)
-            context = {
-                'sub_tasks': qs,
-            }
-
+            context['main_task'] = TaskModel.objects.get(pk=obj.parent_task_id)
+            
         return render_to_string(
             template_name='admin/huey_monitor/taskmodel/task_hierarchy_info.html',
             context=context,
