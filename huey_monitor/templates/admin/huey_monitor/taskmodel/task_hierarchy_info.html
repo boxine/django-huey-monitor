@@ -1,12 +1,18 @@
 {% load i18n humanize_time %}
 
 {% if main_task %}
+<p>Parent task: </p>
 <p>
     <a href="{{ main_task.admin_link }}">{% firstof main_task.desc main_task.name %}</a>
     {{ main_task.state|default_if_none:"" }}
     {{ main_task.human_progress_string }}
 </p>
-{% elif sub_tasks %}
+{% else %}
+    <p>This task has no parent task.</p>
+{% endif %}
+<br>
+{% if sub_tasks %}
+    <p>This task has {{sub_tasks|length}} sub tasks:</p>
     <table class="table-bordered table-condensed table-striped huey_monitor">
     <thead>
         <tr>
