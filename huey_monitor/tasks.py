@@ -46,7 +46,7 @@ def update_task_instance(instance, last_signal, task_finished):
     instance.save(update_fields=update_fields)
     
     if instance.parent_task:
-        instance.parent_task.update_dt = timezone.now()
+        instance.parent_task.update_dt = last_signal.create_dt
         instance.parent_task.save(update_fields='update_dt')
 
 
