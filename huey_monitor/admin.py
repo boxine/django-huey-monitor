@@ -78,7 +78,7 @@ class TaskModelAdmin(FixLookupAllowedMixin, admin.ModelAdmin):
     column_name.short_description = _('Task name')
 
     def task_hierarchy_info(self, obj):
-        qs = TaskModel.objects.filter(parent_task_id=obj.pk)
+        qs = TaskModel.objects.filter(parent_task_id=obj.pk).order_by('create_dt')
         context = {
             'sub_tasks': qs
         }
