@@ -75,7 +75,8 @@ def throughput(num, elapsed_sec, suffix='', divisor=1000) -> str:
         if suffix:
             return f'0/{suffix}'
         return '0'
-    rate = num / elapsed_sec
+    # need to prevent ZeroDivisionError:
+    rate = num / max(elapsed_sec, 0.001)
 
     if rate > 1:
         rate_str = format_sizeof(rate, suffix=suffix, divisor=divisor)
