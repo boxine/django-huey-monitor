@@ -1,5 +1,8 @@
 import logging
 import uuid
+import os
+import threading
+import socket
 
 from bx_django_utils.models.timetracking import TimetrackingBaseModel
 from django.db import models
@@ -13,12 +16,17 @@ from huey_monitor.humanize import format_sizeof, percentage, throughput
 
 
 try:
-    from functools import cached_property  # new in Python 3.8
+    from functools import lru_cache, cached_property  # new in Python 3.8
 except ImportError:
     from django.utils.functional import cached_property
 
 
 logger = logging.getLogger(__name__)
+
+lru_cache(maxsize=None)
+def get_hostname():
+    return socket.gethostname()
+
 
 
 class TaskManager(models.Manager):
@@ -254,6 +262,16 @@ class SignalInfoModel(models.Model):
         verbose_name=_('Create date'),
         help_text=_('(will be set automatically)')
     )
+
+    def __init__(self, *args, **kwargs):
+        if not 'hostname' in kwargs:
+            kwargs['hostname'] = get_hostname()
+        if not 'pid' in kwargs:
+            kwargs['pid'] = os.getpid(),
+        if not 'thread' in kwargs:
+            kwargs['thread'] = threading.current_thread().name,
+        
+        super().__init__(*args, **kwargs)
 
     def admin_link(self):
         url = reverse('admin:huey_monitor_signalinfomodel_change', args=[self.pk])
