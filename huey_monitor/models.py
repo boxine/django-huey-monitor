@@ -267,9 +267,9 @@ class SignalInfoModel(models.Model):
         if not 'hostname' in kwargs:
             kwargs['hostname'] = get_hostname()
         if not 'pid' in kwargs:
-            kwargs['pid'] = os.getpid(),
+            kwargs['pid'] = os.getpid()
         if not 'thread' in kwargs:
-            kwargs['thread'] = threading.current_thread().name,
+            kwargs['thread'] = threading.current_thread().name
         
         super().__init__(*args, **kwargs)
 
