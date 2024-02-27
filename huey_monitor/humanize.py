@@ -49,8 +49,8 @@ def percentage(num, total) -> str | None:
     '25%'
     >>> percentage(33.333, 100)
     '33%'
-    >>> percentage(123, 0)
-    None
+    >>> percentage(123, 0) is None
+    True
     """
     if not total:
         return None
@@ -70,11 +70,15 @@ def throughput(num, elapsed_sec, suffix='', divisor=1000) -> str:
     '2.00kBytes/s'
     >>> throughput(4, 250, suffix='subtask')
     '1.0\xa0minutes/subtask'
+    >>> throughput(123, 0)
+    '∞'
     """
     if num == 0:
         if suffix:
             return f'0/{suffix}'
         return '0'
+    if elapsed_sec == 0:
+        return '∞'
     rate = num / elapsed_sec
 
     if rate > 1:
