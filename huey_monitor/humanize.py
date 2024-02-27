@@ -49,8 +49,8 @@ def percentage(num, total) -> str | None:
     '25%'
     >>> percentage(33.333, 100)
     '33%'
-    >>> percentage(123, 0)
-    None
+    >>> percentage(123, 0) is None
+    True
     """
     if not total:
         return None
