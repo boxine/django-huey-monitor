@@ -7,6 +7,7 @@ import traceback
 import uuid
 from functools import lru_cache
 
+from django.utils import timezone
 from django.db import transaction
 from django.db.models import Sum
 from huey.contrib.djhuey import on_startup, signal
@@ -43,6 +44,10 @@ def update_task_instance(instance, last_signal, task_finished):
                     update_fields.append('progress_count')
 
     instance.save(update_fields=update_fields)
+    
+    if instance.parent_task:
+        instance.parent_task.update_dt = last_signal.create_dt
+        instance.parent_task.save(update_fields='update_dt')
 
 
 @signal()
