@@ -23,4 +23,6 @@ __pycache__
 # Django
 secret.txt
 
+# Include all test snapshot files:
+!**/*.snapshot.*
 

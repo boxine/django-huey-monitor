@@ -7,7 +7,7 @@ readme = "README.md"
 authors = [
     {name = 'Jens Diemer', email = 'django-huey-monitor@jensdiemer.de'}
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "huey",  # https://github.com/coleifer/huey
     "django",
@@ -34,9 +34,10 @@ dev = [
     "pyflakes",  # https://github.com/PyCQA/pyflakes
     "codespell",  # https://github.com/codespell-project/codespell
     "EditorConfig",  # https://github.com/editorconfig/editorconfig-core-py
-    "safety",  # https://github.com/pyupio/safety
+    "pip-audit",  # https://github.com/pypa/pip-audit
     "mypy",  # https://github.com/python/mypy
     "twine",  # https://github.com/pypa/twine
+    "typeguard",  # https://github.com/agronholm/typeguard/
 
     # https://github.com/akaihola/darker
     # https://github.com/ikamensh/flynt
@@ -44,17 +45,18 @@ dev = [
     # https://github.com/pygments/pygments
     "darker[flynt, isort, color]",
 
-    "tomli",  # https://github.com/hukkin/tomli
-    # tomli only needed for Python <3.11, but see bug:
-    # https://github.com/pypa/pip/issues/9644#issuecomment-1456583402
-    #"tomli;python_version<\"3.11\"",  # https://github.com/hukkin/tomli
-
     "model_bakery",  # https://github.com/model-bakers/model_bakery
     "requests-mock",
+    "django-override-storage",  # https://github.com/danifus/django-override-storage
+
+    # Work-a-round for: https://github.com/jazzband/pip-tools/issues/1866
+    # see also: https://github.com/jazzband/pip-tools/issues/994#issuecomment-1321226661
+    # backports.tarfile is needed for python <3.12
+    'backports.tarfile', # via jaraco-context -> keyring -> twine
 ]
-django32=["django>=3.2,<3.3"]
 django42=["django>=4.2,<4.3"]
 django50=["django>=5.0,<5.1"]
+django51=["django>=5.1,<5.2"]
 
 [project.urls]
 Documentation = "https://github.com/boxine/django-huey-monitor/"
@@ -75,6 +77,16 @@ local_settings='huey_monitor_project.settings.local'
 test_settings='huey_monitor_project.settings.tests'
 
 
+[tool.cli_base.pip_audit]
+requirements=["requirements.dev.txt"]
+strict=true
+require_hashes=true
+ignore-vuln=[
+#    "CVE-2019-8341", # Jinja2: Side Template Injection (SSTI)
+]
+
+
+
 [build-system]
 requires = ["setuptools>=61.0", "setuptools_scm>=7.1"]
 build-backend = "setuptools.build_meta"
@@ -91,14 +103,12 @@ version = {attr = "huey_monitor.__version__"}
 src = ['.']
 revision = "origin/main..."
 line_length = 119
-verbose = true
 color = true
 skip_string_normalization = true
 diff = false
 check = false
 stdout = false
 isort = true
-flynt = true
 lint = [
     "flake8",
 ]
@@ -115,7 +125,7 @@ line_length=119
 lines_after_imports=2
 
 
-[tool.coverage.run]
+[tool.coverage.run]  # https://coverage.readthedocs.io/en/latest/config.html#run
 branch = true
 parallel = true
 concurrency = ["multiprocessing"]
@@ -139,21 +149,22 @@ exclude_lines = [
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = py{312,311,310}-django{50,42,32}
+envlist = py{312,311}-django{52,51,42}
 skip_missing_interpreters = True
 
 [testenv]
 passenv = *
 skip_install = true
 commands_pre =
+    pip install -U pip
     pip install -U pip-tools
-    django32: pip-sync requirements.django32.txt
     django42: pip-sync requirements.django42.txt
     django50: pip-sync requirements.django50.txt
+    django51: pip-sync requirements.django51.txt
 commands =
-    django32: {envpython} -m coverage run --context='{envname}' -m huey_monitor_project test --buffer
-    django42: {envpython} -m coverage run --context='{envname}' -m huey_monitor_project test --buffer --shuffle --parallel
-    django50: {envpython} -m coverage run --context='{envname}' -m huey_monitor_project test --buffer --shuffle --parallel
+    django42: {envpython} -m coverage run --context='{envname}'
+    django50: {envpython} -m coverage run --context='{envname}'
+    django51: {envpython} -m coverage run --context='{envname}'
 """
 
 
@@ -173,6 +184,7 @@ cookiecutter_template = "https://github.com/jedie/cookiecutter_templates/"
 cookiecutter_directory = "managed-django-project"
 applied_migrations = [
     "3c16cf7", # 2023-12-21T22:22:06+01:00
+    "e2b20e5", # 2024-09-26T19:43:41+02:00
 ]
 
 [manageprojects.cookiecutter_context.cookiecutter]
