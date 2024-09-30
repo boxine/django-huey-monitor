@@ -42,14 +42,14 @@ if sys.platform == 'win32':  # wtf
     BIN_NAME = 'Scripts'
     FILE_EXT = '.exe'
 else:
-    # Files under Linux/Mac and all other than Windows, e.g.: .../.venv/bin/python
+    # Files under Linux/Mac and all other than Windows, e.g.: .../.venv/bin/python3
     BIN_NAME = 'bin'
     FILE_EXT = ''
 
 BASE_PATH = Path(__file__).parent
 VENV_PATH = BASE_PATH / '.venv'
 BIN_PATH = VENV_PATH / BIN_NAME
-PYTHON_PATH = BIN_PATH / f'python{FILE_EXT}'
+PYTHON_PATH = BIN_PATH / f'python3{FILE_EXT}'
 PIP_PATH = BIN_PATH / f'pip{FILE_EXT}'
 PIP_SYNC_PATH = BIN_PATH / f'pip-sync{FILE_EXT}'
 
@@ -62,7 +62,7 @@ PROJECT_SHELL_SCRIPT = BIN_PATH / 'huey_monitor_project'
 
 
 def get_dep_hash():
-    """Get SHA512 hash from poetry.lock content."""
+    """Get SHA512 hash from lock file content."""
     return hashlib.sha512(DEP_LOCK_PATH.read_bytes()).hexdigest()
 
 
@@ -98,14 +98,14 @@ def main(argv):
         print(f'Create virtual env here: {VENV_PATH.absolute()}')
         builder = venv.EnvBuilder(symlinks=True, upgrade=True, with_pip=True)
         builder.create(env_dir=VENV_PATH)
+
+    if not PROJECT_SHELL_SCRIPT.is_file() or not venv_up2date():
         # Update pip
         verbose_check_call(PYTHON_PATH, '-m', 'pip', 'install', '-U', 'pip')
 
-    if not PIP_SYNC_PATH.is_file():
         # Install pip-tools
         verbose_check_call(PYTHON_PATH, '-m', 'pip', 'install', '-U', 'pip-tools')
 
-    if not PROJECT_SHELL_SCRIPT.is_file() or not venv_up2date():
         # install requirements via "pip-sync"
         verbose_check_call(PIP_SYNC_PATH, str(DEP_LOCK_PATH))
 
@@ -113,16 +113,16 @@ def main(argv):
         verbose_check_call(PIP_PATH, 'install', '--no-deps', '-e', '.')
         store_dep_hash()
 
-    if 'run_dev_server' not in argv and 'run_huey' not in argv:
-        # ignore "Interrupt from keyboard" signals
-        # But not if we run the dev server or Huey consumer (respect watchfiles signals)
-        signal.signal(signal.SIGINT, noop_sigint_handler)
+    signal.signal(signal.SIGINT, noop_sigint_handler)  # ignore "Interrupt from keyboard" signals
 
     # Call our entry point CLI:
     try:
         verbose_check_call(PROJECT_SHELL_SCRIPT, *argv[1:])
     except subprocess.CalledProcessError as err:
         sys.exit(err.returncode)
+    except KeyboardInterrupt:
+        print('Bye!')
+        sys.exit(130)
 
 
 if __name__ == '__main__':

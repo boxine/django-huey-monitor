@@ -193,10 +193,17 @@ without docker:
 
 | Huey Monitor | Django           | Python             |
 |--------------|------------------|--------------------|
+| >0.10.0      | v4.2, v5.0, v5.1 | v3.11, v3.12       |
 | >v0.7.0      | v3.2, v4.1, v4.2 | v3.9, v3.10, v3.11 |
 | >v0.6.0      | v3.2, v4.0, v4.1 | v3.9, v3.10, v3.11 |
 | >v0.5.0      | v2.2, v3.1, v3.2 | v3.7, v3.8, v3.9   |
 | <=v0.4.0     | v2.2, v3.0, v3.1 | v3.7, v3.8, v3.9   |
+
+
+### v0.10.0
+
+Set min. Python to v3.11.
+Remove Django 3.2.x and add Django v5.1.x to text matrix.
 
 
 ### v0.6.0
