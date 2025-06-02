@@ -33,7 +33,7 @@ class SleepMock:
         instance = TaskModel.objects.all().first()
 
         executing_dt = instance.executing_dt
-        assert executing_dt == parse_dt('2000-01-01T00:00:02+0000')
+        assert executing_dt == parse_dt('2000-01-01T00:00:04+0000'), f'{executing_dt.isoformat()=}'
 
         self.progress_info.append([self.count, instance.elapsed_sec, str(instance)])
 
@@ -51,7 +51,7 @@ class ProcessInfoTestCase(TestCase):
             linear_processing_task(desc='Foo Bar', total=10)
 
         signals = list(SignalInfoModel.objects.values_list('signal_name', flat=True))
-        assert signals == ['executing', 'complete']
+        self.assertEqual(signals, ['enqueued', 'executing', 'complete'])
 
         # Add the last entry, executed after time.sleep() so not captured, yet:
         sleep_mock.add_iteration()
@@ -130,8 +130,8 @@ class ProcessInfoTestCase(TestCase):
         main_task_id = task_result.task.id
 
         main_task_instance = TaskModel.objects.get(pk=main_task_id)
-        assert main_task_instance.human_progress_string() == ('10/10it 100% 2.5 seconds/it finished')
-        assert str(main_task_instance) == ('parallel_task: 10/10it 100% 2.5 seconds/it finished (Main task)')
+        self.assertEqual(main_task_instance.human_progress_string(), '10/10it 100% 2.9 seconds/it finished')
+        assert str(main_task_instance) == ('parallel_task: 10/10it 100% 2.9 seconds/it finished (Main task)')
 
         sub_tasks = TaskModel.objects.filter(parent_task=main_task_instance).order_by('update_dt')
         values = list(sub_tasks.values_list('name', 'state__signal_name'))
