@@ -14,12 +14,12 @@ run-dev-server:  ## Run Django's developer server
 test:  ## Run unittests
 	./manage.py test
 
-tox:  ## Run unittests via tox
-	./manage.py tox p
+nox:  ## Run unittests via nox
+	./manage.py nox
 
 makemessages:  ## Make and compile locales message files
-	./manage.py makemessages --all --no-location --no-obsolete --ignore=htmlcov --ignore=".tox*" --ignore=volumes
-	./manage.py compilemessages --ignore=htmlcov --ignore=".tox*" --ignore=volumes
+	./manage.py makemessages --all --no-location --no-obsolete --ignore=htmlcov --ignore=".nox*" --ignore=volumes
+	./manage.py compilemessages --ignore=htmlcov --ignore=".nox*" --ignore=volumes
 
 clean: ## Remove created files from the test project (e.g.: SQlite, static files)
 	git clean -dfX huey_monitor_project/
@@ -87,4 +87,4 @@ fire-parallel-processing-task:  ## Just fire "parallel processing" Huey Task
 delete-all-tasks-data:  ## Delete all Task/Signal database enties
 	./compose.sh exec django /django/manage.py delete_all_tasks_data
 
-.PHONY: help install update run-dev-server test tox  makemessages clean build up down shell-django shell-huey1 shell-huey2 shell-huey3 logs reload-django reload-huey restart fire-test-tasks fire-parallel-processing-task delete-all-tasks-data
+.PHONY: help install update run-dev-server test nox  makemessages clean build up down shell-django shell-huey1 shell-huey2 shell-huey3 logs reload-django reload-huey restart fire-test-tasks fire-parallel-processing-task delete-all-tasks-data
