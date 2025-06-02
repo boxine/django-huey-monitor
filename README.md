@@ -151,7 +151,7 @@ install                        install huey monitor package
 update                         Update the dependencies as according to the pyproject.toml file
 run-dev-server                 Run Django's developer server
 test                           Run unittests
-tox                            Run unittests via tox
+nox                            Run unittests via nox
 makemessages                   Make and compile locales message files
 clean                          Remove created files from the test project (e.g.: SQlite, static files)
 build                          Update/Build docker services
