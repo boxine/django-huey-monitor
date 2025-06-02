@@ -25,10 +25,14 @@ class HueyMonitorTestCase(HtmlAssertionMixin, TestCase):
         signals = list(
             SignalInfoModel.objects.order_by('create_dt').values_list('task_id', 'signal_name', 'exception_line')
         )
-        assert signals == [
-            (task_model_instance.pk, 'executing', ''),
-            (task_model_instance.pk, 'complete', ''),
-        ]
+        self.assertEqual(
+            signals,
+            [
+                (task_model_instance.pk, 'enqueued', ''),
+                (task_model_instance.pk, 'executing', ''),
+                (task_model_instance.pk, 'complete', ''),
+            ],
+        )
 
         assert task_model_instance.state.signal_name == 'complete'
         url = f'/admin/huey_monitor/taskmodel/{task_model_instance.pk}/change/'
@@ -62,10 +66,14 @@ class HueyMonitorTestCase(HtmlAssertionMixin, TestCase):
         assert TaskModel.objects.count() == 1
 
         signals = list(SignalInfoModel.objects.order_by('create_dt').values_list('signal_name', 'exception_line'))
-        assert signals == [
-            ('executing', ''),
-            ('error', 'This is a test exception'),
-        ]
+        self.assertEqual(
+            signals,
+            [
+                ('enqueued', ''),
+                ('executing', ''),
+                ('error', 'This is a test exception'),
+            ],
+        )
 
         error_signal = SignalInfoModel.objects.get(signal_name='error')
         url = f'/admin/huey_monitor/signalinfomodel/{error_signal.pk}/change/'
