@@ -1,11 +1,7 @@
 import logging
-import os
-import socket
 import sys
-import threading
 import traceback
 import uuid
-from functools import lru_cache
 
 from django.db import transaction
 from django.db.models import Sum
@@ -18,9 +14,6 @@ from huey_monitor.models import SignalInfoModel, TaskModel
 logger = logging.getLogger(__name__)
 
 
-@lru_cache(maxsize=None)
-def get_hostname():
-    return socket.gethostname()
 
 
 def update_task_instance(instance, last_signal, task_finished):
@@ -58,10 +51,6 @@ def store_signals(signal, task, exc=None):
     logger.info('Store Task %s signal %r (finished: %s)', task_id, signal, task_finished)
 
     signal_kwargs = {
-        # TODO: move parts into huey_monitor.models.SignalInfoManager
-        'hostname': get_hostname(),
-        'pid': os.getpid(),
-        'thread': threading.current_thread().name,
         'signal_name': signal,
     }
 
@@ -111,10 +100,6 @@ def startup_handler():
         for task_model_instance in qs:
             logger.warning('Mark "executing" task %s to "unknown"', task_model_instance.pk)
             last_signal = SignalInfoModel.objects.create(
-                # TODO: move parts into huey_monitor.models.SignalInfoManager
-                hostname=get_hostname(),
-                pid=os.getpid(),
-                thread=threading.current_thread().name,
                 task_id=task_model_instance.pk,
                 signal_name='unknown',
                 progress_count=task_model_instance.progress_count,
