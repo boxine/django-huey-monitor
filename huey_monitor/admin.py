@@ -14,26 +14,6 @@ from huey.signals import SIGNAL_EXECUTING
 from huey_monitor.models import SignalInfoModel, TaskModel
 
 
-class FixLookupAllowedMixin:
-    """
-    Work-a-round for: https://code.djangoproject.com/ticket/35020
-    # FIXME: Remove after release into all supported Django versions.
-    """
-
-    def lookup_allowed(self, lookup, value):
-        list_filter = self._get_list_filter()
-        if lookup in list_filter:
-            return True
-        return super().lookup_allowed(lookup, value)
-
-    def _get_list_filter(self):
-        """return list_filter without `request` object."""
-        raise NotImplementedError()
-
-    def get_list_filter(self, request):
-        return self._get_list_filter()
-
-
 class TaskModelChangeList(ChangeList):
     def get_queryset(self, request):
         """
@@ -59,7 +39,7 @@ class TaskModelChangeList(ChangeList):
 
 
 @admin.register(TaskModel)
-class TaskModelAdmin(FixLookupAllowedMixin, admin.ModelAdmin):
+class TaskModelAdmin(admin.ModelAdmin):
     def get_changelist(self, request, **kwargs):
         return TaskModelChangeList
 
@@ -204,7 +184,7 @@ class TaskModelAdmin(FixLookupAllowedMixin, admin.ModelAdmin):
 
 
 @admin.register(SignalInfoModel)
-class SignalInfoModelAdmin(FixLookupAllowedMixin, admin.ModelAdmin):
+class SignalInfoModelAdmin(admin.ModelAdmin):
     def task_name(self, obj):
         return obj.task.name
 
